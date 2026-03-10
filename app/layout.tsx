@@ -16,7 +16,11 @@ export const metadata: Metadata = {
   title: "Student Forge | Servers",
   description: "High-performance student ecosystem for builders and creators.",
   icons: {
-    icon: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660",
+    icon: [
+      { url: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660", type: "image/png" }
+    ],
+    shortcut: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660",
+    apple: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660",
   },
 };
 
