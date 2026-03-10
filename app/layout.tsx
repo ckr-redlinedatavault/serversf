@@ -17,10 +17,10 @@ export const metadata: Metadata = {
   description: "High-performance student ecosystem for builders and creators.",
   icons: {
     icon: [
-      { url: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660", type: "image/png" }
+      { url: "/sf-next-logo.png", type: "image/png" }
     ],
-    shortcut: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660",
-    apple: "https://ik.imagekit.io/dypkhqxip/sf-next-logo?updatedAt=1772993490660",
+    shortcut: "/sf-next-logo.png",
+    apple: "/sf-next-logo.png",
   },
 };
 
