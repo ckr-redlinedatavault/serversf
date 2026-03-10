@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+model Student {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  enrolled  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  tickets   Ticket[]
+}
+
+model Program {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  category    String
+  date        DateTime
+  location    String
+  price       String
+  image       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tickets     Ticket[]
+}
+
+model Ticket {
+  id        String   @id @default(cuid())
+  student   Student  @relation(fields: [studentId], references: [id])
+  studentId String
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  ticketHash String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id               String   @id @default(cuid())
+  userName         String
+  teamName         String
+  teamMembers      String[]
+  eventReview      String
+  juryFeedback     String
+  hackathonJourney String
+  createdAt        DateTime @default(now())
+}
+
+model Contact {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  createdAt DateTime @default(now())
+}
