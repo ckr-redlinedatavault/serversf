@@ -5,10 +5,23 @@ export async function POST(req: Request) {
     try {
         const { email, password } = await req.json();
 
+        // Check against fixed environment variables first
+        const envUser = process.env.CEO_USER;
+        const envPass = process.env.CEO_PASS;
+
+        if (email === envUser && password === envPass) {
+            return NextResponse.json({
+                id: "fixed_ceo_identity",
+                name: "Operational CEO",
+                email: envUser,
+                role: "CEO"
+            });
+        }
+
         const user = await prisma.user.findFirst({
             where: {
                 email,
-                password, // Note: In production use hashed passwords
+                password,
                 role: "CEO"
             }
         });
