@@ -10,21 +10,16 @@ import {
     X,
     User,
     Mail,
-    ShieldCheck
+    ShieldCheck,
+    Calendar,
+    Clock
 } from "lucide-react";
 
-export default function MediaDashboard() {
+export default function MediaSettingsPage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(true);
-
-    const getGreeting = () => {
-        const hour = currentTime.getHours();
-        if (hour < 12) return "Good Morning";
-        if (hour < 18) return "Good Afternoon";
-        return "Good Evening";
-    };
 
     useEffect(() => {
         const storedUser = localStorage.getItem("media_user");
@@ -34,9 +29,8 @@ export default function MediaDashboard() {
         }
         const parsed = JSON.parse(storedUser);
         
-        // Strict check: Must be MEDIA_TEAM and must be APPROVED
         if (parsed.role !== "MEDIA_TEAM" || !parsed.isApproved) {
-            localStorage.removeItem("media_user"); // Clear invalid/unapproved session
+            localStorage.removeItem("media_user");
             router.push("/media/signin?error=pending");
             return;
         }
@@ -77,13 +71,13 @@ export default function MediaDashboard() {
                     <NavItem 
                         icon={<LayoutDashboard size={20} />} 
                         label="Overview" 
-                        active 
                         open={sidebarOpen} 
                         onClick={() => router.push('/media/dashboard')}
                     />
                     <NavItem 
                         icon={<Settings size={20} />} 
                         label="Settings" 
+                        active 
                         open={sidebarOpen} 
                         onClick={() => router.push('/media/settings')}
                     />
@@ -92,10 +86,10 @@ export default function MediaDashboard() {
                 <div className="p-4 mt-auto border-t border-zinc-900">
                     <button 
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-3 p-3 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all"
+                        className="w-full h-12 flex items-center gap-3 p-3 text-zinc-500 hover:text-white hover:bg-zinc-800 rounded-xl transition-all"
                     >
                         <LogOut size={20} />
-                        {sidebarOpen && <span className="text-sm font-bold">Disconnect</span>}
+                        {sidebarOpen && <span className="text-sm font-semibold">Disconnect</span>}
                     </button>
                 </div>
             </aside>
@@ -105,7 +99,7 @@ export default function MediaDashboard() {
                 {/* Top Nav */}
                 <header className="h-20 border-b border-black/5 flex items-center justify-between px-6 bg-[#92E3A9] sticky top-0 z-40">
                     <div className="flex flex-col">
-                        <h2 className="text-xs font-bold text-zinc-900/70 mb-0.5">Team Console / <span className="text-zinc-900">Overview</span></h2>
+                        <h2 className="text-xs font-bold text-zinc-900/70 mb-0.5">Team Console / <span className="text-zinc-900">Settings</span></h2>
                         <p className="text-[10px] font-semibold text-zinc-900/50">
                             {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
                         </p>
@@ -122,19 +116,68 @@ export default function MediaDashboard() {
                 </header>
 
                 <div className="p-6 sm:p-10 w-full">
-                    <div className="relative rounded-[2rem] bg-gradient-to-br from-[#111111] to-[#0A0A0A] border border-zinc-800 p-10 overflow-hidden shadow-2xl">
-                        {/* Abstract background blobs */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#92E3A9]/5 rounded-full blur-[100px] -mr-32 -mt-32" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-zinc-500/5 rounded-full blur-[100px] -ml-32 -mb-32" />
+                    <div className="max-w-4xl">
+                        <h1 className="text-3xl font-semibold mb-8 text-white tracking-tight">Account Settings</h1>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {/* Profile Card */}
+                            <div className="bg-[#0A0A0A] border border-zinc-900 rounded-3xl p-8">
+                                <div className="flex items-center gap-4 mb-8">
+                                    <div className="w-16 h-16 bg-[#92E3A9] rounded-2xl flex items-center justify-center text-zinc-900">
+                                        <User size={32} strokeWidth={2.5} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-bold text-white">{user.name}</h3>
+                                        <p className="text-xs font-bold text-[#92E3A9] uppercase tracking-wider">{user.role.replace('_', ' ')}</p>
+                                    </div>
+                                </div>
 
-                        <div className="relative z-10">
-                            <h1 className="text-5xl font-semibold mb-4 tracking-tight leading-none">
-                                {getGreeting()}, <span className="text-[#92E3A9]">{user.name.split(' ')[0]}</span>
-                            </h1>
-                            
-                            <p className="text-lg text-zinc-400 font-medium max-w-xl leading-relaxed mt-4">
-                                Your identity has been verified by the CTO. You now have full access to the Media Team dashboard and production assets.
-                            </p>
+                                <div className="space-y-6">
+                                    <DetailItem 
+                                        icon={<User className="w-4 h-4 text-zinc-500" />} 
+                                        label="Full Name" 
+                                        value={user.name} 
+                                    />
+                                    <DetailItem 
+                                        icon={<Mail className="w-4 h-4 text-zinc-500" />} 
+                                        label="Email Address" 
+                                        value={user.email} 
+                                    />
+                                    <DetailItem 
+                                        icon={<ShieldCheck className="w-4 h-4 text-zinc-500" />} 
+                                        label="Authorization Status" 
+                                        value={user.isApproved ? "Verified Agent" : "Pending Approval"} 
+                                        valueColor={user.isApproved ? "text-green-500" : "text-yellow-500"}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* System Access Card */}
+                            <div className="bg-[#0A0A0A] border border-zinc-900 rounded-3xl p-8 flex flex-col">
+                                <h3 className="text-lg font-bold text-white mb-6">Security & Access</h3>
+                                
+                                <div className="space-y-6 flex-1">
+                                    <DetailItem 
+                                        icon={<Calendar className="w-4 h-4 text-zinc-500" />} 
+                                        label="Creation Date" 
+                                        value={new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })} 
+                                    />
+                                    <DetailItem 
+                                        icon={<Clock className="w-4 h-4 text-zinc-500" />} 
+                                        label="Session Status" 
+                                        value="Active System Login" 
+                                    />
+                                </div>
+
+                                <div className="mt-8 pt-6 border-t border-zinc-900/50">
+                                    <button 
+                                        onClick={handleLogout}
+                                        className="text-xs font-bold text-[#FF0000] hover:underline uppercase tracking-widest"
+                                    >
+                                        Revoke All Tokens
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -157,11 +200,14 @@ function NavItem({ icon, label, active = false, open, onClick }: { icon: any, la
     );
 }
 
-function StatCard({ label, value }: { label: string, value: string }) {
+function DetailItem({ icon, label, value, valueColor = "text-white" }: { icon: any, label: string, value: string, valueColor?: string }) {
     return (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.08] transition-colors cursor-default">
-            <p className="text-[10px] font-bold text-zinc-500 mb-2">{label}</p>
-            <p className="text-3xl font-black text-white">{value}</p>
+        <div className="flex items-start gap-4">
+            <div className="mt-1">{icon}</div>
+            <div>
+                <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-1">{label}</p>
+                <p className={`text-sm font-bold ${valueColor}`}>{value}</p>
+            </div>
         </div>
     );
 }

@@ -22,10 +22,18 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 
 export default function ApprovalsPage() {
     const router = useRouter();
+    const [currentTime, setCurrentTime] = useState(new Date());
     const [pendingUsers, setPendingUsers] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [approvingId, setApprovingId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+
+    const getGreeting = () => {
+        const hour = currentTime.getHours();
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
 
     const fetchPending = async () => {
         setLoading(true);
@@ -45,7 +53,13 @@ export default function ApprovalsPage() {
         if (isAuth !== "true") {
             router.push("/admin/login");
         }
+
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+
         fetchPending();
+        return () => clearInterval(timer);
     }, [router]);
 
     const handleApprove = async (id: string) => {
@@ -90,14 +104,14 @@ export default function ApprovalsPage() {
         <div className="min-h-screen w-full bg-[#050505] text-white flex font-sans">
             {/* Sidebar */}
             <aside className="w-64 flex flex-col bg-[#92E3A9] h-screen fixed left-0 top-0 z-50 border-r border-black/5">
-                <div className="p-8">
+                <div className="p-6">
                     <div className="flex items-center gap-3">
                         <div className="h-8 w-8 bg-zinc-900 rounded-lg flex items-center justify-center">
                             <ShieldCheck className="w-5 h-5 text-[#92E3A9]" />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-sm font-bold text-zinc-900 tracking-tight leading-none">Admin Panel</span>
-                            <span className="text-[10px] font-semibold text-zinc-900/60 uppercase tracking-widest mt-1">Maintenance</span>
+                            <span className="text-[10px] font-semibold text-zinc-900/60 mt-1 uppercase tracking-tighter">Maintenance</span>
                         </div>
                     </div>
                 </div>
@@ -122,21 +136,23 @@ export default function ApprovalsPage() {
                 <div className="p-4 mt-auto">
                     <button
                         onClick={handleLogout}
-                        className="w-full h-14 flex items-center justify-center gap-3 rounded-xl bg-[#FF0000] text-white hover:bg-[#CC0000] transition-all font-bold shadow-xl shadow-red-500/10 active:scale-[0.98]"
+                        className="w-full h-12 flex items-center justify-center gap-3 rounded-xl bg-[#FF0000] text-white hover:bg-[#CC0000] transition-all font-bold active:scale-[0.98]"
                     >
                         <LogOut className="w-4 h-4" />
-                        <span className="text-xs uppercase tracking-widest">Logout</span>
+                        <span className="text-xs font-semibold">Logout</span>
                     </button>
                 </div>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 ml-64 p-8 md:p-12 min-h-screen flex flex-col">
-                <div className="mb-12 flex justify-between items-end">
+            <main className="flex-1 ml-64 p-6 md:p-10 min-h-screen flex flex-col">
+                <div className="mb-10 flex justify-between items-end">
                     <div>
                         <Breadcrumbs items={[{ label: "Admin", href: "/dashboard" }, { label: "Approvals" }]} />
-                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">Pending Approvals</h1>
-                        <p className="text-zinc-500 text-sm font-medium mt-1">Verify and authorize new team members.</p>
+                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">{getGreeting()}, Admin</h1>
+                        <p className="text-zinc-500 text-sm font-medium mt-1">
+                            Today is {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}, {currentTime.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
                     </div>
 
                     <div className="flex items-center gap-4">
@@ -159,18 +175,18 @@ export default function ApprovalsPage() {
                     </div>
                 </div>
 
-                <div className="flex-1 bg-zinc-900/10 border border-zinc-900 rounded-[2.5rem] p-8 lg:p-10 relative overflow-hidden">
+                <div className="flex-1 bg-zinc-900/10 border border-zinc-900 rounded-[2rem] p-8 lg:p-10 relative overflow-hidden">
                     {loading ? (
                         <div className="h-64 flex flex-col items-center justify-center text-zinc-600 gap-4">
                             <Loader2 className="w-8 h-8 animate-spin text-[#92E3A9]" />
-                            <span className="text-[10px] font-bold uppercase tracking-widest">Querying database...</span>
+                            <span className="text-[10px] font-bold">Querying database...</span>
                         </div>
                     ) : filteredUsers.length === 0 ? (
                         <div className="h-64 flex flex-col items-center justify-center text-zinc-600 gap-4">
                             <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center border border-zinc-800">
                                 <CheckCircle2 className="w-8 h-8 opacity-20" />
                             </div>
-                            <span className="text-[10px] font-bold uppercase tracking-widest">No pending authorization requests</span>
+                            <span className="text-[10px] font-bold">No pending authorization requests</span>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -181,7 +197,7 @@ export default function ApprovalsPage() {
                                     </div>
                                     
                                     <div className="mb-6">
-                                        <div className="w-10 h-10 bg-[#92E3A9] rounded-lg mb-4 flex items-center justify-center text-black font-black text-xs uppercase">
+                                        <div className="w-10 h-10 bg-[#92E3A9] rounded-lg mb-4 flex items-center justify-center text-black font-black text-xs">
                                             {user.name.charAt(0)}
                                         </div>
                                         <h3 className="text-lg font-bold text-white mb-1">{user.name}</h3>
@@ -192,7 +208,7 @@ export default function ApprovalsPage() {
                                         <button
                                             onClick={() => handleApprove(user.id)}
                                             disabled={!!approvingId}
-                                            className="flex-1 bg-[#92E3A9] text-black h-11 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all disabled:opacity-50"
+                                            className="flex-1 bg-[#92E3A9] text-black h-11 rounded-xl text-[10px] font-bold hover:bg-white transition-all disabled:opacity-50"
                                         >
                                             {approvingId === user.id ? (
                                                 <Loader2 className="w-4 h-4 animate-spin mx-auto text-black" />
@@ -212,9 +228,9 @@ export default function ApprovalsPage() {
                     )}
                 </div>
 
-                <footer className="mt-12 pt-8 border-t border-zinc-900 flex justify-between items-center opacity-40">
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Node Maintenance v4.2.0</span>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Forge Super Admin Control</span>
+                <footer className="mt-8 pt-8 border-t border-zinc-900 flex justify-between items-center opacity-40">
+                    <span className="text-[10px] font-bold text-zinc-500">Node Maintenance v4.2.0</span>
+                    <span className="text-[10px] font-bold text-zinc-500">Forge Super Admin Control</span>
                 </footer>
             </main>
         </div>
