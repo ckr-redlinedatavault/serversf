@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     }
 }
 
-export async function GET(req: Request) {
+export async function GET() {
     try {
         const tasks = await prisma.task.findMany({
             orderBy: { createdAt: 'desc' },
