@@ -24,6 +24,7 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
     const [currentTime, setCurrentTime] = useState(new Date());
     const [stats, setStats] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     const fetchStats = async () => {
         try {
@@ -38,6 +39,7 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
     };
 
     useEffect(() => {
+        setMounted(true);
         if (pathname === "/ceo/signin") {
             setLoading(false);
             return;
@@ -53,7 +55,7 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         fetchStats();
         return () => clearInterval(timer);
-    }, [router, pathname]);
+    }, [pathname, router]);
 
     const handleLogout = () => {
         localStorage.removeItem("ceo_user");
@@ -140,7 +142,11 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                     <div className="flex flex-col">
                         <h2 className="text-xs font-bold text-zinc-500">CEO Management Gateway</h2>
                         <p className="text-[10px] font-medium text-zinc-500">
-                            {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })} • {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            {mounted ? (
+                                <>
+                                    {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })} • {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                </>
+                            ) : "..."}
                         </p>
                     </div>
                     <div className="flex items-center gap-6">

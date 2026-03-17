@@ -22,8 +22,10 @@ export default function MediaSettingsPage() {
     const [user, setUser] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         const storedUser = localStorage.getItem("media_user");
         if (!storedUser) {
             router.push("/media/signin");
@@ -115,7 +117,7 @@ export default function MediaSettingsPage() {
                     <div className="flex flex-col">
                         <h2 className="text-xs font-bold text-zinc-900/70 mb-0.5">Team Console / <span className="text-zinc-900">Settings</span></h2>
                         <p className="text-[10px] font-semibold text-zinc-900/50">
-                            {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            {mounted ? currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) : "..."}
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -174,7 +176,7 @@ export default function MediaSettingsPage() {
                                     <DetailItem 
                                         icon={<Calendar className="w-4 h-4 text-zinc-500" />} 
                                         label="Creation Date" 
-                                        value={new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })} 
+                                        value={mounted ? new Date().toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) : "..."} 
                                     />
                                     <DetailItem 
                                         icon={<Clock className="w-4 h-4 text-zinc-500" />} 

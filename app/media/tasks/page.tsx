@@ -26,6 +26,7 @@ export default function MediaTasksPage() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [tasks, setTasks] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     const fetchTasks = async () => {
         try {
@@ -42,6 +43,7 @@ export default function MediaTasksPage() {
     };
 
     useEffect(() => {
+        setMounted(true);
         const storedUser = localStorage.getItem("media_user");
         if (!storedUser) {
             router.push("/media/signin");
@@ -123,7 +125,7 @@ export default function MediaTasksPage() {
                     <div className="flex flex-col">
                         <h2 className="text-xs font-bold opacity-70 mb-0.5">Media Console / <span className="text-black">Tasks</span></h2>
                         <p className="text-[10px] font-semibold opacity-50">
-                            {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            {mounted ? currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) : "..."}
                         </p>
                     </div>
                     <div className="flex items-center gap-4">

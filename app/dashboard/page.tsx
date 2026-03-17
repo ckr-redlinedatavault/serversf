@@ -30,6 +30,7 @@ export default function AdminDashboard() {
         contacts: 0
     });
     const [loading, setLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     const fetchStats = async () => {
         try {
@@ -46,6 +47,7 @@ export default function AdminDashboard() {
     };
 
     useEffect(() => {
+        setMounted(true);
         const isAuth = localStorage.getItem("forge_super_admin");
         if (isAuth !== "true") {
             router.push("/admin/login");
@@ -138,9 +140,13 @@ export default function AdminDashboard() {
                 <div className="mb-10 flex justify-between items-end">
                     <div>
                         <Breadcrumbs items={[{ label: "Admin" }, { label: "Dashboard" }]} />
-                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">{getGreeting()}, Admin</h1>
+                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">{mounted ? getGreeting() : "Hello"}, Admin</h1>
                         <p className="text-zinc-500 text-sm font-medium mt-1">
-                            Today is {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}, {currentTime.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            Today is {mounted ? (
+                                <>
+                                    {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}, {currentTime.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                </>
+                            ) : "..."}
                         </p>
                     </div>
 
@@ -154,7 +160,7 @@ export default function AdminDashboard() {
                         <div className="flex items-center gap-2 text-white bg-zinc-900 px-4 py-2 rounded-xl border border-white/5">
                             <Clock className="w-4 h-4 text-[#92E3A9]" />
                             <span className="text-2xl font-bold tabular-nums">
-                                {currentTime.toLocaleTimeString('en-US', { hour12: false })}
+                                {mounted ? currentTime.toLocaleTimeString('en-US', { hour12: false }) : "--:--:--"}
                             </span>
                         </div>
                     </div>

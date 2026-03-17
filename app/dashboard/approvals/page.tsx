@@ -27,6 +27,7 @@ export default function ApprovalsPage() {
     const [loading, setLoading] = useState(true);
     const [approvingId, setApprovingId] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState("");
+    const [mounted, setMounted] = useState(false);
 
     const getGreeting = () => {
         const hour = currentTime.getHours();
@@ -49,6 +50,7 @@ export default function ApprovalsPage() {
     };
 
     useEffect(() => {
+        setMounted(true);
         const isAuth = localStorage.getItem("forge_super_admin");
         if (isAuth !== "true") {
             router.push("/admin/login");
@@ -149,9 +151,13 @@ export default function ApprovalsPage() {
                 <div className="mb-10 flex justify-between items-end">
                     <div>
                         <Breadcrumbs items={[{ label: "Admin", href: "/dashboard" }, { label: "Approvals" }]} />
-                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">{getGreeting()}, Admin</h1>
+                        <h1 className="text-4xl font-bold tracking-tight text-white mt-4">{mounted ? getGreeting() : "Hello"}, Admin</h1>
                         <p className="text-zinc-500 text-sm font-medium mt-1">
-                            Today is {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}, {currentTime.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                            Today is {mounted ? (
+                                <>
+                                    {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}, {currentTime.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                </>
+                            ) : "..."}
                         </p>
                     </div>
 

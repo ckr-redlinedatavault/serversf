@@ -20,6 +20,7 @@ export default function MediaDashboard() {
     const [user, setUser] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     const getGreeting = () => {
         const hour = currentTime.getHours();
@@ -29,6 +30,7 @@ export default function MediaDashboard() {
     };
 
     useEffect(() => {
+        setMounted(true);
         const storedUser = localStorage.getItem("media_user");
         if (!storedUser) {
             router.push("/media/signin");
@@ -121,7 +123,7 @@ export default function MediaDashboard() {
                     <div className="flex flex-col">
                         <h2 className="text-xs font-bold text-zinc-900/70 mb-0.5">Team Console / <span className="text-zinc-900">Overview</span></h2>
                         <p className="text-[10px] font-semibold text-zinc-900/50">
-                            {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            {mounted ? currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' }) : "..."}
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -143,7 +145,7 @@ export default function MediaDashboard() {
 
                         <div className="relative z-10">
                             <h1 className="text-5xl font-semibold mb-4 tracking-tight leading-none">
-                                {getGreeting()}, <span className="text-[#92E3A9]">{user.name.split(' ')[0]}</span>
+                                {mounted ? getGreeting() : "Hello"}, <span className="text-[#92E3A9]">{user.name.split(' ')[0]}</span>
                             </h1>
                             
                             <p className="text-lg text-zinc-400 font-medium max-w-xl leading-relaxed mt-4">
