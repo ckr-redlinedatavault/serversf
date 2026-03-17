@@ -14,7 +14,9 @@ import {
     Clock,
     CalendarDays,
     Star,
-    Inbox
+    Inbox,
+    Server,
+    Zap
 } from "lucide-react";
 import Breadcrumbs from "../components/Breadcrumbs";
 
@@ -72,6 +74,7 @@ export default function AdminDashboard() {
 
     const navItems = [
         { name: "Overview", icon: LayoutDashboard, slug: "/dashboard", active: true },
+        { name: "Approvals", icon: ShieldCheck, slug: "/dashboard/approvals" },
         { name: "Students", icon: Users, slug: "/dashboard" },
         { name: "Events", icon: Calendar, slug: "/events" },
         { name: "Mailer", icon: Mail, slug: "/mailer" },
@@ -113,7 +116,6 @@ export default function AdminDashboard() {
                 </nav>
 
                 <div className="p-4 mt-auto">
-                    {/* Solid Red Logout Look */}
                     <button
                         onClick={handleLogout}
                         className="w-full h-14 flex items-center justify-center gap-3 rounded-xl bg-[#FF0000] text-white hover:bg-[#CC0000] transition-all font-bold shadow-xl shadow-red-500/10 active:scale-[0.98]"
@@ -175,7 +177,7 @@ export default function AdminDashboard() {
                     ))}
                 </div>
 
-                {/* System Status - Simplified */}
+                {/* System Status - Cleaned up */}
                 <div className="flex-1 flex flex-col gap-6 text-left">
                     <div className="flex-1 p-10 rounded-[3rem] bg-zinc-900/10 border border-zinc-900 relative overflow-hidden flex flex-col">
                         <div className="flex items-center justify-between mb-10">
@@ -188,30 +190,37 @@ export default function AdminDashboard() {
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <div className="space-y-6">
-                                <div className="p-6 rounded-2xl bg-zinc-900/20 border border-white/5">
-                                    <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Database Connection</h4>
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-                                        <span className="text-xs font-bold text-white uppercase tracking-widest">Supabase Primary: Connected</span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                <div className="p-6 rounded-2xl bg-zinc-900/20 border border-white/5 flex flex-col justify-between">
+                                    <div>
+                                        <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Database Connection</h4>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                                            <span className="text-xs font-bold text-white uppercase tracking-widest">Connected</span>
+                                        </div>
                                     </div>
+                                    <Server className="w-6 h-6 text-zinc-800 mt-4 self-end" />
                                 </div>
-                                <div className="p-6 rounded-2xl bg-zinc-900/20 border border-white/5">
-                                    <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Email Protocol</h4>
-                                    <div className="flex items-center gap-3">
-                                        <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-                                        <span className="text-xs font-bold text-white uppercase tracking-widest">SMTP Gmail: Operational</span>
+                                <div className="p-6 rounded-2xl bg-zinc-900/20 border border-white/5 flex flex-col justify-between">
+                                    <div>
+                                        <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Email Protocol</h4>
+                                        <div className="flex items-center gap-3">
+                                            <div className="h-2 w-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+                                            <span className="text-xs font-bold text-white uppercase tracking-widest">Operational</span>
+                                        </div>
                                     </div>
+                                    <Mail className="w-6 h-6 text-zinc-800 mt-4 self-end" />
                                 </div>
-                            </div>
-
-                            <div className="p-8 rounded-2xl bg-zinc-900/5 border border-dashed border-zinc-800 flex flex-col justify-center text-center">
-                                <ShieldCheck className="w-12 h-12 text-[#92E3A9] mx-auto mb-4 opacity-50" />
-                                <p className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest leading-relaxed">
-                                    All systems are functioning within normal parameters. <br /> No critical errors detected in the last 24 hours.
-                                </p>
-                            </div>
+                                <div className="p-6 rounded-2xl bg-zinc-900/20 border border-white/5 flex flex-col justify-between group hover:border-[#92E3A9]/50 transition-all cursor-pointer" onClick={() => router.push('/dashboard/approvals')}>
+                                    <div>
+                                        <h4 className="text-[10px] font-bold text-[#92E3A9] uppercase tracking-widest mb-4">Pending Approvals</h4>
+                                        <div className="flex items-center gap-3">
+                                            <Zap className="w-4 h-4 text-[#92E3A9] animate-pulse" />
+                                            <span className="text-xs font-bold text-white uppercase tracking-widest underline decoration-[#92E3A9]/30 underline-offset-4">Check Requests</span>
+                                        </div>
+                                    </div>
+                                    <ShieldCheck className="w-6 h-6 text-[#92E3A9] mt-4 self-end opacity-40 group-hover:opacity-100 transition-opacity" />
+                                </div>
                         </div>
 
                         <div className="mt-auto flex gap-8 pt-10 border-t border-zinc-900">

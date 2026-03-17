@@ -2,10 +2,15 @@
 
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
+import Script from "next/script";
 
 export default function Home() {
   return (
     <div className="h-screen w-full flex flex-col bg-[#050505] text-white overflow-hidden font-sans">
+      <Script
+        src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.3/dist/dotlottie-wc.js"
+        type="module"
+      />
       {/* Navbar Minimal */}
       <nav className="w-full bg-[#92E3A9] px-12 py-3 sm:px-24 flex items-center justify-between z-50 shadow-lg">
         <div className="flex items-center gap-4">
@@ -38,7 +43,7 @@ export default function Home() {
               A minimalist ecosystem for student builders. Build, ship, and certify your craft with zero friction.
             </p>
 
-            <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="flex flex-col gap-4 sm:flex-row flex-wrap">
               <Link
                 href="/get-started"
                 className="flex h-10 items-center justify-center rounded-lg bg-[#92E3A9] px-6 text-sm font-bold text-zinc-900 transition-colors hover:bg-[#7DCF95]"
@@ -51,14 +56,22 @@ export default function Home() {
               >
                 View projects
               </Link>
+              <Link
+                href="/media/signin"
+                className="flex h-10 items-center justify-center rounded-lg border border-[#92E3A9]/30 bg-[#92E3A9]/5 px-6 text-sm font-bold text-[#92E3A9] transition-all hover:bg-[#92E3A9] hover:text-black"
+              >
+                Media Team Access
+              </Link>
             </div>
           </div>
 
-          <div className="relative hidden lg:block scale-125 translate-x-12 opacity-90">
-            <img
-              src="https://ik.imagekit.io/dypkhqxip/Server%20status-pana%20(1).svg"
-              alt="Forge Digital Ecosystem"
-              className="w-full h-auto max-h-[420px] object-contain mix-blend-lighten"
+          <div className="relative hidden lg:block scale-150 translate-x-12 opacity-90">
+            {/* @ts-expect-error - dotlottie-wc is a custom web component */}
+            <dotlottie-wc
+              src="https://lottie.host/2ae4304a-a072-4326-8d6e-a48f7a4f2198/AfAWtXSkBa.lottie"
+              style={{ width: '100%', height: 'auto', maxHeight: '420px' }}
+              autoplay
+              loop
             />
           </div>
         </div>
@@ -77,9 +90,9 @@ export default function Home() {
               href: "/events"
             },
             {
-              title: "Credential forge",
-              desc: "Industry-standard certification for high-impact projects.",
-              href: "/certifications"
+              title: "Media portal",
+              desc: "Production assets and team coordination hub for creators.",
+              href: "/media/signin"
             }
           ].map((item, idx) => (
             <Link
@@ -110,6 +123,7 @@ export default function Home() {
           </div>
           <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
           <span className="text-xs font-medium text-zinc-500">Controlled by CTO and Technical Team</span>
+          <Link href="/admin/login" className="text-[10px] font-bold bg-zinc-900 text-white px-3 py-1 rounded-md hover:bg-black transition-colors">SUPER ADMIN</Link>
         </div>
 
         <div className="flex items-center gap-4">

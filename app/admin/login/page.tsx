@@ -11,13 +11,32 @@ export default function AdminLoginPage() {
     const [credentials, setCredentials] = useState({ user: "", pass: "" });
     const [error, setError] = useState(false);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (credentials.user === "cto@studentforge.com" && credentials.pass === "ForgeSuperAdmin2026!!") {
-            localStorage.setItem("forge_super_admin", "true");
-            router.push("/dashboard");
-        } else {
+        setLoading(true);
+        setError(false);
+
+        try {
+            const res = await fetch("/api/auth/media/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: credentials.user, password: credentials.pass }),
+            });
+
+            const data = await res.json();
+            if (res.ok) {
+                localStorage.setItem("media_user", JSON.stringify(data));
+                localStorage.setItem("forge_super_admin", "true");
+                router.push("/dashboard");
+            } else {
+                setError(true);
+            }
+        } catch (err) {
             setError(true);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -100,10 +119,11 @@ export default function AdminLoginPage() {
                                 )}
 
                                 <button
+                                    disabled={loading}
                                     type="submit"
-                                    className="w-full bg-[#92E3A9] text-zinc-900 h-14 rounded-xl font-bold text-sm tracking-tight hover:bg-white hover:shadow-[0_0_30px_rgba(146,227,169,0.3)] transition-all duration-300 active:scale-[0.98] shadow-lg shadow-[#92E3A9]/10"
+                                    className="w-full bg-[#92E3A9] text-zinc-900 h-14 rounded-xl font-bold text-sm tracking-tight hover:bg-white hover:shadow-[0_0_30px_rgba(146,227,169,0.3)] transition-all duration-300 active:scale-[0.98] shadow-lg shadow-[#92E3A9]/10 disabled:opacity-70"
                                 >
-                                    Sign In
+                                    {loading ? "Authenticating..." : "Sign In"}
                                 </button>
                             </form>
 

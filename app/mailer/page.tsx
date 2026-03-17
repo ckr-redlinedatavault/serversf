@@ -193,6 +193,7 @@ export default function MailerPage() {
                 </div>
                 <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
                 <span className="text-xs font-medium text-zinc-500">Controlled by Technical Team</span>
+                <Link href="/admin/login" className="text-[10px] font-bold bg-zinc-900 text-white px-3 py-1 rounded-md hover:bg-black transition-colors">SUPER ADMIN</Link>
             </div>
 
             <div className="flex items-center gap-4">
