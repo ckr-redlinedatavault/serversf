@@ -12,7 +12,9 @@ import {
     Mail,
     ShieldCheck,
     Calendar,
-    Clock
+    Clock,
+    FileText,
+    ClipboardCheck
 } from "lucide-react";
 
 export default function MediaSettingsPage() {
@@ -59,7 +61,7 @@ export default function MediaSettingsPage() {
                     {sidebarOpen && (
                         <div className="flex items-center gap-2">
                             <div className="w-2 h-2 rounded-full bg-[#92E3A9] animate-pulse" />
-                            <span className="text-xs font-black text-[#92E3A9]">Media Hub</span>
+                            <span className="text-xs font-black text-[#92E3A9]">Forge Media</span>
                         </div>
                     )}
                     <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-zinc-800 rounded-lg transition-colors">
@@ -73,6 +75,18 @@ export default function MediaSettingsPage() {
                         label="Overview" 
                         open={sidebarOpen} 
                         onClick={() => router.push('/media/dashboard')}
+                    />
+                    <NavItem 
+                        icon={<ClipboardCheck size={20} />} 
+                        label="Admin Tasks" 
+                        open={sidebarOpen} 
+                        onClick={() => router.push('/media/tasks')}
+                    />
+                    <NavItem 
+                        icon={<FileText size={20} />} 
+                        label="Script Submit" 
+                        open={sidebarOpen} 
+                        onClick={() => router.push('/media/scripts')}
                     />
                     <NavItem 
                         icon={<Settings size={20} />} 

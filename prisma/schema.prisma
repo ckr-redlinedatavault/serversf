@@ -86,4 +86,24 @@ model User {
 enum Role {
   MEDIA_TEAM
   CTO
+  CEO
+}
+
+model Task {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  assignedTo  Role     @default(MEDIA_TEAM)
+  status      String   @default("pending") // pending, in_progress, completed
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Script {
+  id          String   @id @default(cuid())
+  title       String
+  content     String
+  submittedBy String
+  status      String   @default("pending") // pending, reviewed, approved
+  createdAt   DateTime @default(now())
 }

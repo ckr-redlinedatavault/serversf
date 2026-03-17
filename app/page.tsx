@@ -124,6 +124,7 @@ export default function Home() {
           <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
           <span className="text-xs font-medium text-zinc-500">Controlled by CTO and Technical Team</span>
           <Link href="/admin/login" className="text-[10px] font-bold bg-zinc-900 text-white px-3 py-1 rounded-md hover:bg-black transition-colors">SUPER ADMIN</Link>
+          <Link href="/ceo/signin" className="text-[10px] font-bold bg-[#92E3A9] text-zinc-900 px-3 py-1 rounded-md hover:bg-[#7DCF95] transition-colors uppercase">CEO Login</Link>
         </div>
 
         <div className="flex items-center gap-4">

@@ -92,8 +92,8 @@ export default function AdminDashboard() {
                             <ShieldCheck className="w-5 h-5 text-[#92E3A9]" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-bold text-zinc-900 tracking-tight leading-none">Admin Panel</span>
-                            <span className="text-[10px] font-semibold text-zinc-900/60 mt-1 uppercase tracking-tighter">Maintenance</span>
+                            <span className="text-sm font-bold text-zinc-900 tracking-tight leading-none">Forge Admin</span>
+                            <span className="text-[10px] font-semibold text-zinc-900/60 mt-1 uppercase tracking-tighter">Servers</span>
                         </div>
                     </div>
                 </div>

@@ -12,20 +12,33 @@ import {
     Mail,
     ShieldCheck,
     FileText,
-    ClipboardCheck
+    ClipboardCheck,
+    Loader2,
+    CheckCircle,
+    Clock,
+    Zap
 } from "lucide-react";
 
-export default function MediaDashboard() {
+export default function MediaTasksPage() {
     const router = useRouter();
     const [user, setUser] = useState<any>(null);
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [tasks, setTasks] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const getGreeting = () => {
-        const hour = currentTime.getHours();
-        if (hour < 12) return "Good Morning";
-        if (hour < 18) return "Good Afternoon";
-        return "Good Evening";
+    const fetchTasks = async () => {
+        try {
+            const res = await fetch("/api/tasks");
+            const data = await res.json();
+            if (data.success) {
+                setTasks(data.tasks);
+            }
+        } catch (error) {
+            console.error("Failed to fetch tasks");
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -34,21 +47,10 @@ export default function MediaDashboard() {
             router.push("/media/signin");
             return;
         }
-        const parsed = JSON.parse(storedUser);
-        
-        // Strict check: Must be MEDIA_TEAM and must be APPROVED
-        if (parsed.role !== "MEDIA_TEAM" || !parsed.isApproved) {
-            localStorage.removeItem("media_user"); // Clear invalid/unapproved session
-            router.push("/media/signin?error=pending");
-            return;
-        }
-        
-        setUser(parsed);
+        setUser(JSON.parse(storedUser));
+        fetchTasks();
 
-        const timer = setInterval(() => {
-            setCurrentTime(new Date());
-        }, 1000);
-
+        const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, [router]);
 
@@ -79,13 +81,13 @@ export default function MediaDashboard() {
                     <NavItem 
                         icon={<LayoutDashboard size={20} />} 
                         label="Overview" 
-                        active 
                         open={sidebarOpen} 
                         onClick={() => router.push('/media/dashboard')}
                     />
                     <NavItem 
                         icon={<ClipboardCheck size={20} />} 
                         label="Admin Tasks" 
+                        active
                         open={sidebarOpen} 
                         onClick={() => router.push('/media/tasks')}
                     />
@@ -117,17 +119,17 @@ export default function MediaDashboard() {
             {/* Main Content */}
             <main className="flex-1 overflow-y-auto relative">
                 {/* Top Nav */}
-                <header className="h-20 border-b border-black/5 flex items-center justify-between px-6 bg-[#92E3A9] sticky top-0 z-40">
+                <header className="h-20 border-b border-black/5 flex items-center justify-between px-6 bg-[#92E3A9] sticky top-0 z-40 text-zinc-900">
                     <div className="flex flex-col">
-                        <h2 className="text-xs font-bold text-zinc-900/70 mb-0.5">Team Console / <span className="text-zinc-900">Overview</span></h2>
-                        <p className="text-[10px] font-semibold text-zinc-900/50">
+                        <h2 className="text-xs font-bold opacity-70 mb-0.5">Media Console / <span className="text-black">Tasks</span></h2>
+                        <p className="text-[10px] font-semibold opacity-50">
                             {currentTime.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long' })}
                         </p>
                     </div>
                     <div className="flex items-center gap-4">
                         <div className="text-right hidden sm:block">
-                            <p className="text-xs font-bold text-zinc-900">{user.name}</p>
-                            <p className="text-[10px] font-bold text-zinc-900/60 lowercase italic">Media Team Active</p>
+                            <p className="text-xs font-bold">{user.name}</p>
+                            <p className="text-[10px] font-bold opacity-60 lowercase italic">Media Agent</p>
                         </div>
                         <div className="w-10 h-10 bg-zinc-900 rounded-xl flex items-center justify-center text-[#92E3A9] font-bold">
                             <User size={20} />
@@ -135,22 +137,56 @@ export default function MediaDashboard() {
                     </div>
                 </header>
 
-                <div className="p-6 sm:p-10 w-full">
-                    <div className="relative rounded-[2rem] bg-gradient-to-br from-[#111111] to-[#0A0A0A] border border-zinc-800 p-10 overflow-hidden shadow-2xl">
-                        {/* Abstract background blobs */}
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#92E3A9]/5 rounded-full blur-[100px] -mr-32 -mt-32" />
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-zinc-500/5 rounded-full blur-[100px] -ml-32 -mb-32" />
-
-                        <div className="relative z-10">
-                            <h1 className="text-5xl font-semibold mb-4 tracking-tight leading-none">
-                                {getGreeting()}, <span className="text-[#92E3A9]">{user.name.split(' ')[0]}</span>
-                            </h1>
-                            
-                            <p className="text-lg text-zinc-400 font-medium max-w-xl leading-relaxed mt-4">
-                                Your identity has been verified by the CTO. You now have full access to the Media Team dashboard and production assets.
-                            </p>
-                        </div>
+                <div className="p-6 sm:p-10 w-full max-w-6xl">
+                    <div className="mb-10">
+                        <h1 className="text-3xl font-semibold mb-2">Admin Tasks</h1>
+                        <p className="text-zinc-500 text-sm">Direct instructions from the CEO and Management.</p>
                     </div>
+
+                    {loading ? (
+                        <div className="h-64 flex flex-col items-center justify-center gap-4 text-zinc-600">
+                            <Loader2 className="w-8 h-8 animate-spin text-[#92E3A9]" />
+                            <p className="text-xs font-bold uppercase tracking-widest">Querying Task Engine...</p>
+                        </div>
+                    ) : tasks.length === 0 ? (
+                        <div className="h-64 border border-zinc-900 rounded-[2.5rem] bg-zinc-900/10 flex flex-col items-center justify-center gap-4 text-zinc-600">
+                            <CheckCircle className="w-12 h-12 opacity-10" />
+                            <p className="text-sm font-medium">All systems clear. No pending tasks.</p>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {tasks.map((task) => (
+                                <div key={task.id} className="bg-zinc-900/30 border border-zinc-900 p-8 rounded-[2rem] hover:border-[#92E3A9]/30 transition-all flex flex-col">
+                                    <div className="flex items-start justify-between mb-6">
+                                        <div className="w-10 h-10 bg-[#92E3A9]/10 rounded-xl flex items-center justify-center text-[#92E3A9]">
+                                            <Zap size={20} />
+                                        </div>
+                                        <div className="px-3 py-1 bg-white/5 border border-white/10 rounded-full flex items-center gap-1.5">
+                                            <Clock size={10} className="text-zinc-500" />
+                                            <span className="text-[9px] font-bold uppercase tracking-wider text-zinc-400">
+                                                {new Date(task.createdAt).toLocaleDateString()}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="text-lg font-bold text-white mb-3">{task.title}</h3>
+                                    <p className="text-xs text-zinc-500 leading-relaxed font-medium mb-8 flex-1 italic">
+                                        "{task.description}"
+                                    </p>
+
+                                    <div className="pt-6 border-t border-zinc-800 flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+                                            <span className="text-[10px] font-semibold text-zinc-400 uppercase tracking-widest">Incoming</span>
+                                        </div>
+                                        <button className="text-[10px] font-bold text-[#92E3A9] hover:underline uppercase tracking-widest underline-offset-4">
+                                            Acknowledge
+                                        </button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </main>
         </div>
@@ -168,14 +204,5 @@ function NavItem({ icon, label, active = false, open, onClick }: { icon: any, la
             {icon}
             {open && <span className="text-sm font-bold">{label}</span>}
         </button>
-    );
-}
-
-function StatCard({ label, value }: { label: string, value: string }) {
-    return (
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:bg-white/[0.08] transition-colors cursor-default">
-            <p className="text-[10px] font-bold text-zinc-500 mb-2">{label}</p>
-            <p className="text-3xl font-black text-white">{value}</p>
-        </div>
     );
 }
