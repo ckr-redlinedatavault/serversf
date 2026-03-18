@@ -16,7 +16,8 @@ import {
     XCircle,
     Loader2,
     Search,
-    RefreshCw
+    RefreshCw,
+    BookOpen
 } from "lucide-react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
@@ -100,6 +101,7 @@ export default function ApprovalsPage() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
+        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
     ];
 
     return (

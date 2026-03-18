@@ -16,7 +16,8 @@ import {
     Star,
     Inbox,
     Server,
-    Zap
+    Zap,
+    BookOpen
 } from "lucide-react";
 import Breadcrumbs from "../components/Breadcrumbs";
 
@@ -82,6 +83,7 @@ export default function AdminDashboard() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
+        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
     ];
 
     return (

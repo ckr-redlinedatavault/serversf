@@ -15,7 +15,8 @@ import {
     ChevronDown,
     ChevronUp,
     Inbox,
-    Clock
+    Clock,
+    BookOpen
 } from "lucide-react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
@@ -59,6 +60,7 @@ export default function AdminContactsPage() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts", active: true },
+        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
     ];
 
     return (

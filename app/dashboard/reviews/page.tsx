@@ -15,7 +15,8 @@ import {
     ChevronDown,
     ChevronUp,
     Quote,
-    Inbox
+    Inbox,
+    BookOpen
 } from "lucide-react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
@@ -75,6 +76,7 @@ export default function AdminReviewsPage() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews", active: true },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
+        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
     ];
 
     return (
