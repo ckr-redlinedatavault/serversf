@@ -1,77 +1,106 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, User, ShieldCheck, Home, ArrowLeft, GraduationCap, Building } from "lucide-react";
 import Link from "next/link";
 import Breadcrumbs from "../components/Breadcrumbs";
+import Footer from "../components/home/Footer";
 
 export default function GetStartedPage() {
     return (
-        <div className="min-h-screen bg-[#050505] text-white flex flex-col font-sans overflow-hidden">
-            {/* Navbar Minimal */}
-            <nav className="w-full bg-[#92E3A9] px-12 py-3 sm:px-24 flex items-center justify-between z-50 shadow-lg">
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="flex items-center gap-4">
-                        <span className="text-sm font-bold tracking-tighter text-zinc-900 uppercase">Student Forge</span>
-                        <div className="h-4 w-[1px] bg-zinc-900/20" />
-                        <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-900/70 uppercase">SERVERS</span>
+        <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100">
+            {/* Minimal Navbar - Sharp Edges */}
+            <nav className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white/95 backdrop-blur-sm">
+                <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
+                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-70">
+                        <Home size={16} />
+                        <span className="text-[14px] tracking-tight">Home</span>
                     </Link>
-                </div>
-                <div className="flex gap-8">
-                    <Link href="/docs" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Documentation</Link>
-                    <Link href="/support" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Support</Link>
+                    <div className="flex items-center gap-3">
+                        <div className="h-1.5 w-1.5 bg-[#92E3A9]" />
+                        <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest">Login Portal</span>
+                    </div>
                 </div>
             </nav>
 
-            <div className="px-12 sm:px-24 pt-8">
-                <Breadcrumbs items={[{ label: "Welcome" }]} />
-            </div>
-
-            <div className="flex-1 flex flex-col items-center justify-center p-6 bg-[#050505]">
-                <div className="max-w-[500px] w-full text-left">
-                    <div className="mb-12">
-                        <h1 className="text-3xl font-bold tracking-tight text-white mb-2">
-                            Sign In
+            <main className="w-full">
+                {/* Header Section - Sharp Black */}
+                <div className="bg-black py-12 lg:py-16">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                        <Breadcrumbs items={[{ label: "Academy", href: "/" }, { label: "Login" }]} />
+                        <h1 className="text-4xl md:text-5xl tracking-tight text-white mt-8 mb-4">
+                            Choose Your Access
                         </h1>
-                        <p className="text-zinc-500 text-sm font-medium">
-                            Please choose how you want to sign in.
+                        <p className="text-zinc-400 text-[15px] leading-relaxed max-w-md font-medium text-[12px] opacity-70">
+                            Please select whether you are a student or a staff member to continue.
                         </p>
                     </div>
+                </div>
 
-                    <div className="space-y-4">
-                        {/* User Entry */}
+                <div className="mx-auto max-w-7xl px-6 lg:px-10 py-12 md:py-16">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {/* Student Entry */}
                         <Link
                             href="/signin"
-                            className="group block p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/50 hover:border-[#92E3A9]/50 transition-all active:scale-[0.99]"
+                            className="group block p-8 border border-zinc-100 transition-all hover:border-black active:scale-[0.99] bg-white relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-[10px] font-bold tracking-[0.3em] text-[#92E3A9] uppercase">User Access</span>
-                                <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-[#92E3A9] transition-colors" />
+                            <div className="flex items-center justify-between gap-12">
+                                <div className="flex-1">
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <div className="w-14 h-14 border border-zinc-100 flex items-center justify-center text-zinc-200 group-hover:text-black group-hover:border-black transition-all">
+                                            <GraduationCap size={28} strokeWidth={1} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl tracking-tight text-zinc-900 mb-2 font-bold">Student Sign-in</h3>
+                                    <p className="text-zinc-500 text-[14px] leading-relaxed mb-6 line-clamp-2">
+                                        Join courses, build your profile, and see all student projects.
+                                    </p>
+                                    
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+                                        <User size={12} strokeWidth={2} /> 
+                                        <span>Student Access</span>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-5 h-5 text-zinc-200 group-hover:text-black transition-colors shrink-0" />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-1">Student Sign In</h3>
-                            <p className="text-zinc-500 text-xs font-medium">Join events and view your projects.</p>
                         </Link>
 
-                        {/* Admin Entry */}
+                        {/* Staff Entry */}
                         <Link
                             href="/admin/login"
-                            className="group block p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800/50 hover:border-[#92E3A9]/50 transition-all active:scale-[0.99]"
+                            className="group block p-8 border border-zinc-100 transition-all hover:border-black active:scale-[0.99] bg-white relative overflow-hidden"
                         >
-                            <div className="flex items-center justify-between mb-2">
-                                <span className="text-[10px] font-bold tracking-[0.3em] text-zinc-600 group-hover:text-[#92E3A9] transition-colors uppercase">Staff Access</span>
-                                <ArrowRight className="w-4 h-4 text-zinc-600 group-hover:text-[#92E3A9] transition-colors" />
+                            <div className="flex items-center justify-between gap-12">
+                                <div className="flex-1">
+                                    <div className="mb-6 flex items-center justify-between">
+                                        <div className="w-14 h-14 border border-zinc-100 flex items-center justify-center text-zinc-200 group-hover:text-black group-hover:border-black transition-all">
+                                            <Building size={28} strokeWidth={1} />
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl tracking-tight text-zinc-900 mb-2 font-bold">Staff Login</h3>
+                                    <p className="text-zinc-500 text-[14px] leading-relaxed mb-6 line-clamp-2">
+                                        Manage courses, check student work, and verify records.
+                                    </p>
+                                    
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-300 uppercase tracking-widest">
+                                        <ShieldCheck size={12} strokeWidth={2} /> 
+                                        <span>Internal Access</span>
+                                    </div>
+                                </div>
+                                <ArrowRight className="w-5 h-5 text-zinc-200 group-hover:text-black transition-colors shrink-0" />
                             </div>
-                            <h3 className="text-lg font-bold text-white mb-1">Admin Portal</h3>
-                            <p className="text-zinc-500 text-xs font-medium">Manage students and view stats.</p>
                         </Link>
                     </div>
 
-                    <div className="mt-12 pt-8 border-t border-zinc-900">
-                        <Link href="/" className="text-[10px] font-bold text-zinc-600 hover:text-white transition-colors uppercase tracking-[0.2em]">
-                            ← Go back to Home
+                    <div className="mt-12 pt-8 border-t border-zinc-100 text-center md:text-left">
+                        <Link href="/" className="group inline-flex items-center gap-3 text-[11px] font-bold text-zinc-300 hover:text-black transition-colors uppercase tracking-widest">
+                            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                            Return to homepage
                         </Link>
                     </div>
                 </div>
-            </div>
+            </main>
+
+            <Footer />
         </div>
     );
 }

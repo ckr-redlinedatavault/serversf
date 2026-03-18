@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Send, CheckCircle2, AlertCircle, ArrowRight } from "lucide-react";
+import { Mail, Send, CheckCircle2, AlertCircle, User } from "lucide-react";
 import Link from "next/link";
+import Breadcrumbs from "../components/Breadcrumbs";
+import Footer from "../components/home/Footer";
 
 export default function ContactPage() {
     const [formData, setFormData] = useState({
@@ -28,149 +30,172 @@ export default function ContactPage() {
 
             const data = await res.json();
             if (data.success) {
-                setStatus({ type: 'success', message: "Your message has been sent. We'll get back to you soon!" });
+                setStatus({ type: 'success', message: "Message sent. We will reply soon." });
                 setFormData({ name: "", email: "", subject: "", message: "" });
             } else {
                 setStatus({ type: 'error', message: data.error || "Failed to send message." });
             }
         } catch (error) {
-            setStatus({ type: 'error', message: "Something went wrong. Please try again." });
+            setStatus({ type: 'error', message: "Error. Please try again later." });
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
-            {/* Navbar Minimal - Same as Main Page */}
-            <nav className="w-full bg-[#92E3A9] px-12 py-3 sm:px-24 flex items-center justify-between z-50 shadow-lg">
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="flex items-center gap-4">
-                        <span className="text-sm font-bold tracking-tighter text-zinc-900 uppercase">Student Forge</span>
-                        <div className="h-4 w-[1px] bg-zinc-900/20" />
-                        <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-900/70 uppercase">SERVERS</span>
+        <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100">
+            {/* Minimal Navbar - Sharp Edges */}
+            <nav className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white/95 backdrop-blur-sm">
+                <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
+                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-70">
+                        <span className="text-[15px] tracking-tight">Student Forge</span>
+                        <div className="h-3 w-[1px] bg-zinc-200" />
+                        <span className="text-[13px] text-zinc-400">Academy</span>
                     </Link>
-                </div>
-                <div className="flex gap-8">
-                    <Link href="/docs" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Documentation</Link>
-                    <Link href="/support" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Support</Link>
+                    <div className="flex gap-8">
+                        <Link href="/courses" className="text-[12px] text-zinc-500 hover:text-black transition-colors">Courses</Link>
+                        <Link href="/docs" className="text-[12px] text-zinc-500 hover:text-black transition-colors">Docs</Link>
+                        <Link href="/support" className="text-[12px] text-zinc-500 hover:text-black transition-colors">Help</Link>
+                        <Link href="/contact" className="text-[12px] text-black font-medium border-b border-black">Contact</Link>
+                    </div>
                 </div>
             </nav>
 
-            <main className="flex-1 flex flex-col justify-center px-12 sm:px-24 py-12 max-w-[1400px] mx-auto w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
-                    {/* Left Side: Information */}
-                    <div>
-                        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white mb-4 leading-none">
-                            Get in Touch
+            <main className="w-full">
+                {/* Header Section - Sharp Black */}
+                <div className="bg-black py-12 lg:py-16">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                        <Breadcrumbs items={[{ label: "Academy", href: "/" }, { label: "Contact Us" }]} />
+                        <h1 className="text-4xl md:text-5xl tracking-tight text-white mt-8 mb-4">
+                            Contact Us
                         </h1>
-                        <p className="text-sm text-zinc-500 leading-relaxed max-w-lg font-medium mb-12">
-                            Have a question or looking to join the ecosystem? Send us a transmission. Our team will review your inquiry and get back to you shortly.
+                        <p className="text-zinc-400 text-[15px] leading-relaxed max-w-md">
+                            Send us a message and we will get back to you as soon as possible.
                         </p>
+                    </div>
+                </div>
 
-                        <div className="space-y-6">
-                            <div className="group p-5 rounded-xl bg-zinc-900/30 border border-zinc-800/50 flex flex-col gap-1 transition-all">
-                                <span className="text-[10px] font-bold text-[#92E3A9] uppercase tracking-widest">Direct Relay</span>
-                                <h3 className="text-sm font-semibold text-zinc-100">contact@studentforge.com</h3>
+                <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 md:py-24">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+                        {/* Info Side */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="space-y-6">
+                                <h3 className="text-[14px] font-medium uppercase tracking-widest text-zinc-400">Where to find us</h3>
+                                <div className="space-y-4">
+                                    <div className="p-6 border border-zinc-100 space-y-2">
+                                        <span className="text-[10px] text-zinc-400 uppercase tracking-widest">Email</span>
+                                        <p className="text-[14px] font-medium text-zinc-900">contact@studentforge.com</p>
+                                    </div>
+                                    <div className="p-6 border border-zinc-100 space-y-2">
+                                        <span className="text-[10px] text-zinc-400 uppercase tracking-widest">Available</span>
+                                        <p className="text-[14px] font-medium text-zinc-900">24/7 Online Support</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="group p-5 rounded-xl bg-zinc-900/30 border border-zinc-800/50 flex flex-col gap-1 transition-all">
-                                <span className="text-[10px] font-bold text-[#92E3A9] uppercase tracking-widest">Uptime Support</span>
-                                <h3 className="text-sm font-semibold text-zinc-100">24/7 Monitoring Protocol</h3>
+                            
+                            <div className="h-[1px] w-12 bg-zinc-100" />
+                            
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-3 text-[13px] text-zinc-500">
+                                    <div className="h-1 w-1 bg-zinc-300" />
+                                    <span>Real-time help status</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-[13px] text-zinc-500">
+                                    <div className="h-1 w-1 bg-zinc-300" />
+                                    <span>Quick response team</span>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Right Side: Simple Form */}
-                    <div className="bg-zinc-900/20 border border-zinc-800/50 rounded-2xl p-8 backdrop-blur-sm shadow-2xl">
-                        {status && (
-                            <div className={`mb-8 p-4 rounded-lg flex items-center gap-3 animate-in fade-in slide-in-from-top-2 duration-300 ${status.type === 'success' ? 'bg-[#92E3A9]/10 border border-[#92E3A9]/20 text-[#92E3A9]' : 'bg-red-500/10 border border-red-500/20 text-red-500'
+                        {/* Form Side */}
+                        <div className="lg:col-span-8">
+                            {status && (
+                                <div className={`mb-10 p-4 border flex items-center gap-3 ${
+                                    status.type === 'success' ? 'bg-zinc-50 border-zinc-100 text-zinc-900' : 'bg-red-50 border-red-100 text-red-600'
                                 }`}>
-                                {status.type === 'success' ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" /> : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
-                                <p className="text-xs font-bold uppercase tracking-widest">{status.message}</p>
-                            </div>
-                        )}
+                                    {status.type === 'success' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
+                                    <span className="text-[12px] font-medium uppercase tracking-wider">{status.message}</span>
+                                </div>
+                            )}
 
-                        <form onSubmit={handleSubmit} className="space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Full Name</label>
-                                    <input
-                                        type="text"
+                            <form onSubmit={handleSubmit} className="space-y-10">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div className="space-y-4">
+                                        <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-wider">Full Name</label>
+                                        <div className="relative">
+                                            <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                            <input 
+                                                required
+                                                type="text"
+                                                className="w-full bg-white border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black"
+                                                placeholder="Your name"
+                                                value={formData.name}
+                                                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-wider">Email Address</label>
+                                        <div className="relative">
+                                            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                            <input 
+                                                required
+                                                type="email"
+                                                className="w-full bg-white border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black"
+                                                placeholder="Your email"
+                                                value={formData.email}
+                                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-wider">Subject</label>
+                                    <div className="relative">
+                                        <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                        <input 
+                                            required
+                                            type="text"
+                                            className="w-full bg-white border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black"
+                                            placeholder="What is this about?"
+                                            value={formData.subject}
+                                            onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-wider">Message</label>
+                                    <textarea 
                                         required
-                                        value={formData.name}
-                                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-[#92E3A9] transition-all text-sm"
-                                        placeholder="Codename"
+                                        rows={5}
+                                        className="w-full bg-white border border-zinc-200 p-4 text-[14px] outline-none transition-colors focus:border-black resize-none"
+                                        placeholder="Type your message here..."
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Email</label>
-                                    <input
-                                        type="email"
-                                        required
-                                        value={formData.email}
-                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                        className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-[#92E3A9] transition-all text-sm"
-                                        placeholder="Relay address"
-                                    />
-                                </div>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Subject</label>
-                                <input
-                                    type="text"
-                                    value={formData.subject}
-                                    onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                                    className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-[#92E3A9] transition-all text-sm"
-                                    placeholder="Transmission topic"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Message</label>
-                                <textarea
-                                    required
-                                    rows={4}
-                                    value={formData.message}
-                                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                                    className="w-full bg-zinc-800/50 border border-zinc-700 rounded-lg px-4 py-3 focus:outline-none focus:border-[#92E3A9] transition-all text-sm resize-none"
-                                    placeholder="Your message payload..."
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                disabled={loading}
-                                className="w-full h-11 bg-[#92E3A9] text-zinc-900 rounded-lg flex items-center justify-center gap-2 font-bold uppercase tracking-widest hover:bg-[#7DCF95] transition-all disabled:opacity-50"
-                            >
-                                {loading ? (
-                                    <div className="h-4 w-4 border-2 border-zinc-900/30 border-t-zinc-900 rounded-full animate-spin" />
-                                ) : (
-                                    <>
-                                        <span>Send Transmission</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </>
-                                )}
-                            </button>
-                        </form>
+
+                                <button 
+                                    disabled={loading}
+                                    type="submit"
+                                    className="w-full bg-black text-white h-12 flex items-center justify-center gap-3 text-[13px] transition-opacity hover:opacity-90 disabled:opacity-50"
+                                >
+                                    {loading ? <div className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : (
+                                        <>
+                                            <span>Send Message</span>
+                                            <Send size={14} />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </main>
 
-            {/* Footer Minimal - Same as Main Page */}
-            <footer className="px-12 sm:px-24 py-5 bg-[#f8f8f8] text-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-200 mt-auto">
-                <div className="flex items-center gap-8">
-                    <div className="flex items-center gap-2.5">
-                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                        <span className="text-xs font-semibold text-zinc-600">Servers are operational</span>
-                    </div>
-                    <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
-                    <span className="text-xs font-medium text-zinc-500">Controlled by CTO and Technical Team</span>
-                </div>
-
-                <div className="flex items-center gap-4">
-                    <span className="text-xs font-medium text-zinc-400">© 2026 Student Forge</span>
-                    <span className="px-2 py-0.5 bg-zinc-200 text-zinc-600 rounded text-[10px] font-bold leading-none">v2.0.4 stable</span>
-                </div>
-            </footer>
+            <Footer />
         </div>
     );
 }

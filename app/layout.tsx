@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Forge | Servers",
-  description: "High-performance student ecosystem for builders and creators.",
+  title: "Student Forge | Academy",
+  description: "Learn to build modern software with our expert-led courses and projects.",
   icons: {
     icon: [
       { url: "/sf-next-logo.png", type: "image/png" }
@@ -32,7 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-zinc-50 selection:text-black`}
       >
         {children}
       </body>

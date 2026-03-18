@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import {
-    LifeBuoy,
-    MessageCircle,
-    AtSign,
-    Globe,
-    ArrowRight,
-    CheckCircle2,
-    Clock,
-    ShieldAlert
+import { 
+    ArrowRight, 
+    CheckCircle2, 
+    Clock, 
+    ShieldAlert, 
+    Home, 
+    ArrowLeft,
+    Send,
+    User,
+    Mail,
+    HelpCircle
 } from "lucide-react";
+import Breadcrumbs from "../components/Breadcrumbs";
+import Footer from "../components/home/Footer";
 
 export default function SupportPage() {
     const [submitted, setSubmitted] = useState(false);
@@ -20,168 +24,178 @@ export default function SupportPage() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         setIsSubmitting(true);
-        // Simulate ticket creation
         setTimeout(() => {
             setSubmitted(true);
             setIsSubmitting(false);
         }, 1500);
     };
 
-    const navbar = (
-        <nav className="w-full bg-[#92E3A9] px-12 py-3 sm:px-24 flex items-center justify-between z-50 shadow-lg">
-            <div className="flex items-center gap-4">
-                <Link href="/" className="flex items-center gap-4">
-                    <span className="text-sm font-bold tracking-tighter text-zinc-900 uppercase">Student Forge</span>
-                    <div className="h-4 w-[1px] bg-zinc-900/20" />
-                    <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-900/70 uppercase">SUPPORT</span>
-                </Link>
-            </div>
-            <div className="flex gap-8">
-                <Link href="/events" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Events</Link>
-                <Link href="/docs" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Documentation</Link>
-            </div>
-        </nav>
-    );
-
-    const footer = (
-        <footer className="px-12 sm:px-24 py-5 bg-[#f8f8f8] text-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-zinc-200 mt-auto">
-            <div className="flex items-center gap-8">
-                <div className="flex items-center gap-2.5">
-                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(34,197,94,0.4)]" />
-                    <span className="text-xs font-semibold text-zinc-600">Support Node Active</span>
-                </div>
-                <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
-                <span className="text-xs font-medium text-zinc-500">Controlled by technical operations</span>
-            </div>
-
-            <div className="flex items-center gap-4">
-                <span className="text-xs font-medium text-zinc-400">© 2026 Student Forge</span>
-                <span className="px-2 py-0.5 bg-zinc-200 text-zinc-600 rounded text-[10px] font-bold leading-none">v2.1.0 stable</span>
-            </div>
-        </footer>
-    );
-
     if (submitted) {
         return (
-            <div className="h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-hidden">
-                {navbar}
-                <div className="flex-1 flex flex-col items-center justify-center p-8">
-                    <div className="max-w-md w-full bg-zinc-900/30 border border-[#92E3A9]/20 p-12 rounded-[3.5rem] text-center shadow-2xl">
-                        <div className="h-20 w-20 bg-[#92E3A9]/10 rounded-full flex items-center justify-center mx-auto mb-8">
-                            <CheckCircle2 className="w-10 h-10 text-[#92E3A9]" />
-                        </div>
-                        <h2 className="text-3xl font-bold mb-4 tracking-tight text-white">Handshake Success</h2>
-                        <p className="text-zinc-500 text-sm mb-10 leading-relaxed font-medium">Your support ticket has been encrypted and sent to our response queue. We usually reach out within 4 standard hours.</p>
-                        <Link href="/" className="inline-flex h-12 w-full items-center justify-center bg-[#92E3A9] text-zinc-900 rounded-lg font-bold text-sm tracking-widest uppercase hover:bg-white transition-all">
-                            Back to Core
-                        </Link>
-                    </div>
+            <div className="min-h-screen bg-white text-zinc-900 flex flex-col items-center justify-center p-6 text-center">
+                <div className="w-20 h-20 border border-zinc-900 flex items-center justify-center mb-8">
+                    <CheckCircle2 className="w-10 h-10 text-zinc-900" strokeWidth={1.5} />
                 </div>
-                {footer}
+                <h1 className="text-4xl tracking-tight mb-4 font-bold">Message Sent</h1>
+                <p className="text-zinc-500 max-w-sm mx-auto leading-relaxed mb-10 text-[15px]">
+                    We have received your support request. Our team will get back to you within 4 hours.
+                </p>
+                <div className="flex gap-4">
+                    <Link href="/" className="bg-black text-white px-10 h-12 flex items-center justify-center text-[12px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90">
+                        Back to Home
+                    </Link>
+                </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen w-full flex flex-col bg-[#050505] text-white font-sans overflow-x-hidden">
-            {navbar}
+        <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100">
+            {/* Minimal Navbar - Sharp Edges */}
+            <nav className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white/95 backdrop-blur-sm">
+                <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
+                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-70">
+                        <Home size={16} />
+                        <span className="text-[14px] tracking-tight">Return home</span>
+                    </Link>
+                    <div className="flex items-center gap-3">
+                        <div className="h-1.5 w-1.5 bg-[#92E3A9]" />
+                        <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest">Help Center</span>
+                    </div>
+                </div>
+            </nav>
 
-            <main className="flex-1 flex flex-col justify-center px-12 sm:px-24 py-16 max-w-[1400px] mx-auto w-full">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start">
-                    {/* Left: Info */}
-                    <div className="lg:col-span-4 lg:sticky lg:top-8">
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-6 leading-none text-left">
-                            Support Node
+            <main className="w-full">
+                {/* Header Section - Sharp Black */}
+                <div className="bg-black py-12 lg:py-16">
+                    <div className="mx-auto max-w-7xl px-6 lg:px-10">
+                        <Breadcrumbs items={[{ label: "Academy", href: "/" }, { label: "Support" }]} />
+                        <h1 className="text-4xl md:text-5xl tracking-tight text-white mt-8 mb-4">
+                            Get Support
                         </h1>
-                        <p className="text-sm text-zinc-500 leading-relaxed max-w-lg font-medium mb-12 text-left">
-                            Experience technical friction? Open a direct channel with our operations team. We specialized in deployment, protocol errors, and system authorization.
+                        <p className="text-zinc-400 text-[15px] leading-relaxed max-w-md">
+                            Ask for help with your course, payments, or any technical issues you are facing.
                         </p>
+                    </div>
+                </div>
 
-                        <div className="space-y-4">
-                            <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 flex items-start gap-4">
-                                <Clock className="w-5 h-5 text-[#92E3A9]" />
-                                <div>
-                                    <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-widest mb-1">Response Time</h3>
-                                    <p className="text-[11px] text-zinc-500 font-medium">Average turnaround: 2-4 hours.</p>
+                <div className="mx-auto max-w-7xl px-6 lg:px-10 py-16 md:py-24">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-20">
+                        {/* Info Side */}
+                        <div className="lg:col-span-4 space-y-12">
+                            <div className="p-8 border border-zinc-100 space-y-10 shadow-sm">
+                                <div className="space-y-6">
+                                    <div className="flex gap-4">
+                                        <Clock className="w-5 h-5 text-zinc-400 shrink-0" />
+                                        <div>
+                                            <h4 className="text-[12px] font-bold uppercase tracking-widest text-zinc-900">Response Time</h4>
+                                            <p className="text-[13px] text-zinc-500 leading-relaxed">We usually reply within 2 to 4 hours on working days.</p>
+                                        </div>
+                                    </div>
+                                    <div className="flex gap-4">
+                                        <ShieldAlert className="w-5 h-5 text-zinc-400 shrink-0" />
+                                        <div>
+                                            <h4 className="text-[12px] font-bold uppercase tracking-widest text-zinc-900">Fast Support</h4>
+                                            <p className="text-[13px] text-zinc-500 leading-relaxed">Get quick answers for payment and login problems.</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="p-6 rounded-2xl bg-zinc-900/30 border border-zinc-900 flex items-start gap-4">
-                                <ShieldAlert className="w-5 h-5 text-[#92E3A9]" />
-                                <div>
-                                    <h3 className="text-xs font-bold text-zinc-200 uppercase tracking-widest mb-1">Priority Lane</h3>
-                                    <p className="text-[11px] text-zinc-500 font-medium">Emergency access for system failures.</p>
+
+                                <div className="space-y-4 pt-10 border-t border-zinc-100">
+                                    <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 uppercase tracking-widest">
+                                        <div className="h-1 w-1 bg-zinc-300" />
+                                        <span>Support is Live</span>
+                                    </div>
+                                    <div className="flex items-center gap-3 text-[11px] font-bold text-zinc-300 uppercase tracking-widest">
+                                        <div className="h-1 w-1 bg-zinc-300" />
+                                        <span>Verified Help Desk</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
 
-                    {/* Right: Ticket Form */}
-                    <div className="lg:col-span-8 bg-zinc-900/20 border border-zinc-900 rounded-3xl p-10 backdrop-blur-sm shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#92E3A9]/5 blur-[100px] rounded-full pointer-events-none" />
+                        {/* Form Side */}
+                        <div className="lg:col-span-8">
+                            <form onSubmit={handleSubmit} className="space-y-10">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                    <div className="space-y-4">
+                                        <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">Your Name</label>
+                                        <div className="relative">
+                                            <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                            <input 
+                                                required
+                                                type="text"
+                                                className="w-full border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black"
+                                                placeholder="Enter your name"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">Email Address</label>
+                                        <div className="relative">
+                                            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                            <input 
+                                                required
+                                                type="email"
+                                                className="w-full border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black"
+                                                placeholder="Enter your email"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Identity</label>
-                                    <input
+                                <div className="space-y-4">
+                                    <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">Category</label>
+                                    <div className="relative">
+                                        <HelpCircle size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300" strokeWidth={1.5} />
+                                        <select className="w-full border border-zinc-200 h-12 px-12 text-[14px] outline-none transition-colors focus:border-black bg-white appearance-none">
+                                            <option>Login Issues</option>
+                                            <option>Course Registration</option>
+                                            <option>Payment Doubts</option>
+                                            <option>Technical Problems</option>
+                                            <option>Other Questions</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <label className="text-[12px] font-medium text-zinc-400 uppercase tracking-widest">Message</label>
+                                    <textarea 
                                         required
-                                        type="text"
-                                        className="w-full bg-zinc-800/40 border border-zinc-800 rounded-xl px-5 py-4 focus:outline-none focus:border-[#92E3A9] transition-all text-sm font-medium"
-                                        placeholder="Full Name"
+                                        rows={6}
+                                        className="w-full border border-zinc-200 p-6 text-[14px] outline-none transition-colors focus:border-black resize-none"
+                                        placeholder="Describe your problem here..."
                                     />
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Relay Address</label>
-                                    <input
-                                        required
-                                        type="email"
-                                        className="w-full bg-zinc-800/40 border border-zinc-800 rounded-xl px-5 py-4 focus:outline-none focus:border-[#92E3A9] transition-all text-sm font-medium"
-                                        placeholder="Email Address"
-                                    />
-                                </div>
-                            </div>
 
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Problem Node</label>
-                                <select className="w-full bg-zinc-800/40 border border-zinc-800 rounded-xl px-5 py-4 focus:outline-none focus:border-[#92E3A9] transition-all text-sm font-medium appearance-none">
-                                    <option>Authentication (Login/Auth)</option>
-                                    <option>Mailer Node (SMTP/Transmissions)</option>
-                                    <option>Event Engine (Logic/Workflows)</option>
-                                    <option>Deployment (CORS/SSL)</option>
-                                    <option>Other System Issues</option>
-                                </select>
-                            </div>
-
-                            <div className="space-y-2">
-                                <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1">Mission Report</label>
-                                <textarea
-                                    required
-                                    rows={4}
-                                    className="w-full bg-zinc-800/40 border border-zinc-800 rounded-xl px-5 py-4 focus:outline-none focus:border-[#92E3A9] transition-all text-sm font-medium resize-none text-zinc-200"
-                                    placeholder="Describe the technical friction step by step..."
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="w-full h-14 bg-[#92E3A9] text-zinc-900 rounded-xl flex items-center justify-center gap-3 font-bold uppercase tracking-widest hover:bg-white transition-all shadow-[0_20px_40px_rgba(146,227,169,0.1)] group disabled:opacity-50"
-                            >
-                                {isSubmitting ? (
-                                    <div className="h-5 w-5 border-2 border-zinc-900/30 border-t-zinc-900 rounded-full animate-spin" />
-                                ) : (
-                                    <>
-                                        <span>Initialize Support Handshake</span>
-                                        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                                    </>
-                                )}
-                            </button>
-                        </form>
+                                <button 
+                                    disabled={isSubmitting}
+                                    type="submit"
+                                    className="w-full bg-black text-white h-14 flex items-center justify-center gap-3 text-[12px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 disabled:opacity-50 group"
+                                >
+                                    {isSubmitting ? (
+                                        <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <>
+                                            <span>Send Message</span>
+                                            <Send size={14} className="group-hover:translate-x-1 transition-transform" />
+                                        </>
+                                    )}
+                                </button>
+                            </form>
+                        </div>
                     </div>
+                </div>
+
+                <div className="mx-auto max-w-7xl px-6 lg:px-10 pb-24 text-center">
+                    <Link href="/" className="group inline-flex items-center gap-3 text-[11px] font-bold text-zinc-300 hover:text-black transition-colors uppercase tracking-widest">
+                        <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
+                        Go back to home
+                    </Link>
                 </div>
             </main>
 
-            {footer}
+            <Footer />
         </div>
     );
 }
