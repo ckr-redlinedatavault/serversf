@@ -164,4 +164,31 @@ model Course {
 
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  enrollments         CourseEnrollment[]
+}
+
+model CourseEnrollment {
+  id              String   @id @default(cuid())
+  course          Course   @relation(fields: [courseId], references: [id])
+  courseId        String
+  
+  // Step 1: Personal Details
+  name            String
+  phone           String
+  email           String
+  college         String
+  branch          String
+  year            String
+  whyJoin         String
+  
+  // Step 2 & 3: Payment Details
+  referenceId     String   @unique
+  transactionId   String
+  bankName        String
+  accountName     String
+  amount          String
+  
+  status          String   @default("pending") // pending, verified, rejected
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

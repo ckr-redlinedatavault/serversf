@@ -17,7 +17,8 @@ import {
     Loader2,
     Search,
     RefreshCw,
-    BookOpen
+    BookOpen,
+    CreditCard
 } from "lucide-react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
@@ -102,6 +103,7 @@ export default function ApprovalsPage() {
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
         { name: "Courses", icon: BookOpen, slug: "/dashboard/courses" },
+        { name: "Enrollments", icon: CreditCard, slug: "/dashboard/enrollments" },
     ];
 
     return (

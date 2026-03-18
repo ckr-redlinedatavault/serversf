@@ -23,7 +23,9 @@ import {
     GraduationCap,
     ChevronRight,
     SearchIcon,
-    Globe
+    Globe,
+    CreditCard,
+    Pencil
 } from "lucide-react";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
@@ -37,6 +39,7 @@ export default function AdminCoursesPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [isAdding, setIsAdding] = useState(false);
+    const [editId, setEditId] = useState<string | null>(null);
 
     // Form State
     const [formData, setFormData] = useState({
@@ -71,6 +74,18 @@ export default function AdminCoursesPage() {
         timeline: { totalDuration: "", weeklyPlan: [{ week: "1", topic: "" }], studyTimePerWeek: "", scheduleType: "Flexible" },
         faqs: [{ question: "", answer: "" }]
     });
+
+    const resetForm = () => {
+        setFormData({
+            title: "", subtitle: "", instructorName: "", instructorBio: "", instructorExp: "", instructorImage: "", thumbnail: "", videoUrl: "", price: "", level: "Beginner", language: "English", description: "",
+            outcomes: [""], skills: [""], targetAudience: [""], requirements: [""], projectsCount: 0, hasRealWorldProjects: true, hasCapstone: false, practiceExercises: "", hasCertificate: true, isShareableLinkedIn: true, issuerName: "Student Forge", totalHours: "", lecturesCount: 0, downloadableResources: 0, access: "Lifetime",
+            curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }],
+            timeline: { totalDuration: "", weeklyPlan: [{ week: "1", topic: "" }], studyTimePerWeek: "", scheduleType: "Flexible" },
+            faqs: [{ question: "", answer: "" }]
+        });
+        setEditId(null);
+        setIsAdding(false);
+    };
 
     const fetchCourses = async () => {
         try {
@@ -121,6 +136,7 @@ export default function AdminCoursesPage() {
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
         { name: "Courses", icon: BookOpen, slug: "/dashboard/courses", active: true },
+        { name: "Enrollments", icon: CreditCard, slug: "/dashboard/enrollments" },
     ];
 
     // Form Handlers
@@ -128,28 +144,48 @@ export default function AdminCoursesPage() {
         e.preventDefault();
         setSaving(true);
         try {
-            const res = await fetch("/api/courses", {
-                method: "POST",
+            const url = editId ? `/api/courses/${editId}` : "/api/courses";
+            const method = editId ? "PUT" : "POST";
+            
+            const res = await fetch(url, {
+                method: method,
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
             });
             const data = await res.json();
             if (data.success) {
-                setIsAdding(false);
+                resetForm();
                 fetchCourses();
-                // Reset form
-                setFormData({
-                    title: "", subtitle: "", instructorName: "", instructorBio: "", instructorExp: "", instructorImage: "", thumbnail: "", videoUrl: "", price: "", level: "Beginner", language: "English", description: "",
-                    outcomes: [""], skills: [""], targetAudience: [""], requirements: [""], projectsCount: 0, hasRealWorldProjects: true, hasCapstone: false, practiceExercises: "", hasCertificate: true, isShareableLinkedIn: true, issuerName: "Student Forge", totalHours: "", lecturesCount: 0, downloadableResources: 0, access: "Lifetime",
-                    curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }],
-                    timeline: { totalDuration: "", weeklyPlan: [{ week: "1", topic: "" }], studyTimePerWeek: "", scheduleType: "Flexible" },
-                    faqs: [{ question: "", answer: "" }]
-                });
             }
         } catch (error) {
             console.error(error);
         } finally {
             setSaving(false);
+        }
+    };
+
+    const handleEdit = (course: any) => {
+        setFormData({
+            ...course,
+            outcomes: course.outcomes || [""],
+            skills: course.skills || [""],
+            targetAudience: course.targetAudience || [""],
+            requirements: course.requirements || [""],
+            curriculum: course.curriculum || [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }],
+            faqs: course.faqs || [{ question: "", answer: "" }]
+        });
+        setEditId(course.id);
+        setIsAdding(true);
+    };
+
+    const handleDelete = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this course? This action cannot be undone.")) return;
+        try {
+            const res = await fetch(`/api/courses/${id}`, { method: "DELETE" });
+            const data = await res.json();
+            if (data.success) fetchCourses();
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -265,7 +301,10 @@ export default function AdminCoursesPage() {
                         </div>
                     </div>
                     <button 
-                        onClick={() => setIsAdding(!isAdding)}
+                        onClick={() => {
+                            if (isAdding) resetForm();
+                            else setIsAdding(true);
+                        }}
                         className="flex items-center gap-2 bg-[#92E3A9] text-black px-6 py-3 rounded-xl font-bold text-xs hover:bg-white transition-all shadow-lg active:scale-95"
                     >
                         {isAdding ? "Close Editor" : <><Plus size={16} /> Create Course</>}
@@ -474,16 +513,16 @@ export default function AdminCoursesPage() {
                         <div className="flex justify-end items-center gap-6 pt-10 border-t border-zinc-900">
                              <button 
                                 type="button" 
-                                onClick={() => setIsAdding(false)} 
+                                onClick={resetForm} 
                                 className="text-xs font-bold text-zinc-500 hover:text-white transition-colors"
                              >
-                                Abort Deployment
+                                Abort {editId ? "Update" : "Deployment"}
                              </button>
                              <button 
                                 disabled={saving}
                                 className="bg-[#92E3A9] text-black px-10 py-4 rounded-xl font-bold text-xs hover:bg-white transition-all shadow-xl shadow-[#92E3A9]/10 flex items-center gap-3"
                              >
-                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4" /> Save & Push Live</>}
+                                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Save className="w-4 h-4" /> {editId ? "Update Course" : "Save & Push Live"}</>}
                              </button>
                         </div>
                     </form>
@@ -522,9 +561,25 @@ export default function AdminCoursesPage() {
                                                 <span className="text-[10px] font-bold">{course.rating || "5.0"}</span>
                                             </div>
                                         </div>
-                                        <Link href={`/courses/${course.id}`} className="p-2 bg-zinc-900 rounded-lg hover:bg-white hover:text-black transition-all">
-                                            <ChevronRight className="w-4 h-4" />
-                                        </Link>
+                                        <div className="flex items-center gap-2">
+                                            <button 
+                                                onClick={() => handleEdit(course)}
+                                                className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-[#92E3A9] hover:border-[#92E3A9]/30 transition-all font-bold"
+                                                title="Edit Mission"
+                                            >
+                                                <Pencil className="w-3.5 h-3.5" />
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(course.id)}
+                                                className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-red-500 hover:border-red-500/30 transition-all font-bold"
+                                                title="Terminate Mission"
+                                            >
+                                                <Trash2 className="w-3.5 h-3.5" />
+                                            </button>
+                                            <Link href={`/courses/${course.id}`} className="p-2 bg-zinc-900 border border-zinc-800 rounded-lg text-white hover:bg-white hover:text-black transition-all">
+                                                <ChevronRight className="w-4 h-4" />
+                                            </Link>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
