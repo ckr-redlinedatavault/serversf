@@ -21,6 +21,7 @@ export default function Home() {
           </Link>
         </div>
         <div className="flex gap-8">
+          <Link href="/courses" className="text-xs font-bold text-zinc-900 border-b-2 border-zinc-900 pb-1">Courses</Link>
           <Link href="/docs" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Documentation</Link>
           <Link href="/support" className="text-xs font-semibold text-zinc-900/80 hover:text-zinc-900 transition-colors">Support</Link>
         </div>
@@ -77,8 +78,13 @@ export default function Home() {
         </div>
 
         {/* Compact Service Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-t border-zinc-900 pt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 border-t border-zinc-900 pt-8">
           {[
+            {
+              title: "Course academy",
+              desc: "Professional technical curriculum designed for the next generation of engineers.",
+              href: "/courses"
+            },
             {
               title: "Mailer system",
               desc: "Bulk personalized outreach for scaling student communities.",
@@ -100,7 +106,7 @@ export default function Home() {
               href={item.href}
               className="group p-5 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-[#92E3A9]/50 transition-colors flex flex-col gap-2 h-full"
             >
-              <h3 className="text-sm font-semibold text-zinc-100 group-hover:text-[#92E3A9] transition-colors">
+              <h3 className="text-sm font-semibold text-zinc-100 group-hover:text-[#92E3A9] transition-colors uppercase tracking-tight">
                 {item.title}
               </h3>
               <p className="text-[12px] text-zinc-500 leading-snug">

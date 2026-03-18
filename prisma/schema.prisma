@@ -107,3 +107,61 @@ model Script {
   status      String   @default("pending") // pending, reviewed, approved
   createdAt   DateTime @default(now())
 }
+
+model Course {
+  id              String   @id @default(cuid())
+  title           String
+  subtitle        String?
+  instructorName  String
+  instructorBio   String?
+  instructorExp   String?
+  instructorImage String?
+  rating          Float    @default(0)
+  ratingCount     Int      @default(0)
+  enrolledCount   Int      @default(0)
+  language        String   @default("English")
+  lastUpdated     DateTime @default(now())
+  thumbnail       String?
+  videoUrl        String?
+  price           String?
+  level           String   @default("Beginner") // Beginner, Intermediate, Advanced
+  
+  // Section 2: Overview
+  description     String
+  outcomes        String[] // Array of strings (What You Will Learn)
+  skills          String[] // Skills You'll Gain
+  targetAudience  String[] // Who This Course Is For
+  
+  // Section 3 & 4: Curriculum & Timeline 
+  // Structure: [{ moduleTitle: string, lessons: [{ title: string, duration: string, type: string, preview: boolean }] }]
+  curriculum      Json?    
+  // Structure: { totalDuration: string, weeklyPlan: [{ week: string, topic: string }], studyTimePerWeek: string, scheduleType: string }
+  timeline        Json?    
+  
+  // Section 5: Requirements
+  requirements    String[]
+  
+  // Section 6: Assignments
+  projectsCount      Int     @default(0)
+  hasRealWorldProjects Boolean @default(true)
+  hasCapstone        Boolean @default(false)
+  practiceExercises  String?
+  
+  // Section 7: Certification
+  hasCertificate      Boolean @default(true)
+  isShareableLinkedIn Boolean @default(true)
+  issuerName          String?
+  
+  // Section 10: What's Included
+  totalHours           String?
+  lecturesCount        Int     @default(0)
+  downloadableResources Int     @default(0)
+  access              String  @default("Lifetime")
+  
+  // Section 11: FAQs
+  // Structure: [{ question: string, answer: string }]
+  faqs                Json?   
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}

@@ -13,7 +13,8 @@ import {
     Loader2,
     Crown,
     Activity,
-    Search
+    Search,
+    BookOpen
 } from "lucide-react";
 import Link from "next/link";
 
@@ -122,6 +123,12 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                         label="Global Messages" 
                         active={pathname === "/ceo/messages"}
                         badge={stats?.messages} 
+                    />
+                    <SidebarNavItem 
+                        href="/ceo/courses"
+                        icon={<BookOpen size={18} />} 
+                        label="Course Studio" 
+                        active={pathname === "/ceo/courses"}
                     />
                 </nav>
 
