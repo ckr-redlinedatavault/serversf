@@ -124,12 +124,6 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                         active={pathname === "/ceo/messages"}
                         badge={stats?.messages} 
                     />
-                    <SidebarNavItem 
-                        href="/ceo/courses"
-                        icon={<BookOpen size={18} />} 
-                        label="Course Studio" 
-                        active={pathname === "/ceo/courses"}
-                    />
                 </nav>
 
                 <div className="p-4 mt-auto border-t border-zinc-900">

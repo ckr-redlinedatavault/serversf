@@ -83,7 +83,7 @@ export default function AdminDashboard() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts" },
-        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
+        { name: "Courses", icon: BookOpen, slug: "/dashboard/courses" },
     ];
 
     return (

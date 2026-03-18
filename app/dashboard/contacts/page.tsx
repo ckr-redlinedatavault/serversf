@@ -60,7 +60,7 @@ export default function AdminContactsPage() {
         { name: "Mailer", icon: Mail, slug: "/mailer" },
         { name: "Reviews", icon: Star, slug: "/dashboard/reviews" },
         { name: "Contacts", icon: Inbox, slug: "/dashboard/contacts", active: true },
-        { name: "Courses", icon: BookOpen, slug: "/ceo/courses" },
+        { name: "Courses", icon: BookOpen, slug: "/dashboard/courses" },
     ];
 
     return (
