@@ -15,9 +15,9 @@ export default function Home() {
       <nav className="w-full bg-[#92E3A9] px-12 py-3 sm:px-24 flex items-center justify-between z-50 shadow-lg">
         <div className="flex items-center gap-4">
           <Link href="/" className="flex items-center gap-4">
-            <span className="text-sm font-bold tracking-tighter text-zinc-900 uppercase">Student Forge</span>
+            <span className="text-sm font-bold tracking-tight text-zinc-900">Student Forge</span>
             <div className="h-4 w-[1px] bg-zinc-900/20" />
-            <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-900/70 uppercase">SERVERS</span>
+            <span className="text-[10px] font-bold text-zinc-900/70">Servers</span>
           </Link>
         </div>
         <div className="flex gap-8">
@@ -32,11 +32,11 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center mb-6">
           <div className="w-full">
             <div className="mb-6">
-              <span className="text-[10px] font-black text-[#92E3A9] uppercase tracking-[0.4em] ml-1">Welcome to</span>
+              <span className="text-[10px] font-black text-[#92E3A9]">Welcome to</span>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mt-2 leading-none flex items-center gap-6">
                 Student Forge
                 <div className="h-10 w-[2px] bg-[#92E3A9]" />
-                <span className="text-[#92E3A9] text-3xl font-black uppercase tracking-tighter">Servers</span>
+                <span className="text-[#92E3A9] text-3xl font-black">Servers</span>
               </h1>
             </div>
 
@@ -106,13 +106,13 @@ export default function Home() {
               href={item.href}
               className="group p-8 rounded-none bg-[#92E3A9] border border-black/5 hover:bg-white transition-all duration-500 flex flex-col gap-4 h-full shadow-xl hover:shadow-2xl"
             >
-              <h3 className="text-sm font-black text-black group-hover:text-black transition-colors uppercase tracking-widest">
+              <h3 className="text-sm font-black text-black group-hover:text-black transition-colors">
                 {item.title}
               </h3>
               <p className="text-[12px] text-zinc-900 font-medium leading-relaxed">
                 {item.desc}
               </p>
-              <div className="flex items-center gap-1 text-[10px] font-black text-black uppercase tracking-widest mt-auto pt-6 border-t border-black/10">
+              <div className="flex items-center gap-1 text-[10px] font-black text-black mt-auto pt-6 border-t border-black/10">
                 Launch mission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
@@ -129,8 +129,8 @@ export default function Home() {
           </div>
           <div className="h-4 w-[1px] bg-zinc-300 hidden sm:block" />
           <span className="text-xs font-medium text-zinc-500">Controlled by CTO and Technical Team</span>
-          <Link href="/admin/login" className="text-[10px] font-bold bg-zinc-900 text-white px-3 py-1 rounded-md hover:bg-black transition-colors">SUPER ADMIN</Link>
-          <Link href="/ceo/signin" className="text-[10px] font-bold bg-[#92E3A9] text-zinc-900 px-3 py-1 rounded-md hover:bg-[#7DCF95] transition-colors uppercase">CEO Login</Link>
+          <Link href="/admin/login" className="text-[10px] font-bold bg-zinc-900 text-white px-3 py-1 rounded-md hover:bg-black transition-colors">Super Admin</Link>
+          <Link href="/ceo/signin" className="text-[10px] font-bold bg-[#92E3A9] text-zinc-900 px-3 py-1 rounded-md hover:bg-[#7DCF95] transition-colors">CEO Login</Link>
         </div>
 
         <div className="flex items-center gap-4">
