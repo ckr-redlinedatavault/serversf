@@ -104,16 +104,16 @@ export default function Home() {
             <Link
               key={idx}
               href={item.href}
-              className="group p-5 rounded-xl bg-zinc-900/30 border border-zinc-800/50 hover:border-[#92E3A9]/50 transition-colors flex flex-col gap-2 h-full"
+              className="group p-8 rounded-none bg-[#92E3A9] border border-black/5 hover:bg-white transition-all duration-500 flex flex-col gap-4 h-full shadow-xl hover:shadow-2xl"
             >
-              <h3 className="text-sm font-semibold text-zinc-100 group-hover:text-[#92E3A9] transition-colors uppercase tracking-tight">
+              <h3 className="text-sm font-black text-black group-hover:text-black transition-colors uppercase tracking-widest">
                 {item.title}
               </h3>
-              <p className="text-[12px] text-zinc-500 leading-snug">
+              <p className="text-[12px] text-zinc-900 font-medium leading-relaxed">
                 {item.desc}
               </p>
-              <div className="flex items-center gap-1 text-[10px] font-bold text-[#92E3A9] uppercase tracking-widest mt-auto pt-2 opacity-80 group-hover:opacity-100">
-                Launch mission <ArrowRight className="w-3 h-3" />
+              <div className="flex items-center gap-1 text-[10px] font-black text-black uppercase tracking-widest mt-auto pt-6 border-t border-black/10">
+                Launch mission <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
             </Link>
           ))}
