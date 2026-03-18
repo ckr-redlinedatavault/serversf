@@ -6,9 +6,10 @@ import {
     Star, Users, Clock, Globe, BookOpen, GraduationCap, 
     ShieldCheck, Zap, FileText, CheckCircle, ChevronDown, 
     Loader2, IndianRupee, HelpCircle,
-    ArrowLeft, Award, Briefcase, Sparkles, Book
+    ArrowLeft, Award, Briefcase, Sparkles, Book, Home
 } from "lucide-react";
 import Link from "next/link";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 export default function CourseDetailPage() {
     const { id } = useParams();
@@ -54,10 +55,17 @@ export default function CourseDetailPage() {
         <div className="min-h-screen bg-[#050505] text-white font-sans selection:bg-[#92E3A9] selection:text-black">
             {/* Minimal Navbar */}
             <nav className="w-full bg-[#0A0A0A] border-b border-zinc-900 px-6 py-4 md:px-24 flex items-center justify-between sticky top-0 z-50">
-                <Link href="/courses" className="flex items-center gap-3 group">
-                    <ArrowLeft className="w-4 h-4 text-zinc-400 group-hover:text-[#92E3A9] transition-colors" />
-                    <span className="text-[10px] font-bold tracking-tight text-white uppercase">Back to Modules</span>
-                </Link>
+                <div className="flex items-center gap-6">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Home className="w-4 h-4 text-zinc-400 group-hover:text-[#92E3A9] transition-colors" />
+                        <span className="text-[10px] font-bold tracking-tight text-white uppercase hidden sm:block">Home</span>
+                    </Link>
+                    <div className="w-[1px] h-4 bg-zinc-800 hidden sm:block" />
+                    <Link href="/courses" className="flex items-center gap-3 group">
+                        <ArrowLeft className="w-4 h-4 text-zinc-400 group-hover:text-[#92E3A9] transition-colors" />
+                        <span className="text-[10px] font-bold tracking-tight text-white uppercase">Back to Modules</span>
+                    </Link>
+                </div>
                 <div className="flex gap-4 md:gap-8 items-center">
                     <div className="hidden sm:flex items-center gap-6 mr-6">
                         <span className="text-[10px] font-medium text-zinc-500 uppercase tracking-widest">Instructor: <span className="text-white">{course.instructorName}</span></span>
@@ -75,6 +83,7 @@ export default function CourseDetailPage() {
             <header className="px-6 md:px-24 py-16 md:py-20 border-b border-zinc-900 bg-zinc-950/20">
                 <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                     <div>
+                        <Breadcrumbs items={[{ label: "Academy", href: "/courses" }, { label: course.title }]} />
                         <div className="flex flex-wrap items-center gap-4 mb-6">
                             <div className="px-3 py-1 bg-zinc-900 border border-zinc-800 rounded-full text-[10px] font-bold text-[#92E3A9] uppercase tracking-widest">
                                 {course.level} Specialization

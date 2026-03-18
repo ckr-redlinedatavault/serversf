@@ -14,7 +14,7 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
     return (
-        <nav className="flex items-center space-x-2 text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
+        <nav className="flex flex-wrap items-center gap-y-2 gap-x-2 text-[10px] font-bold uppercase tracking-[0.2em] mb-8">
             <Link
                 href="/"
                 className="text-zinc-500 hover:text-[#92E3A9] transition-colors flex items-center gap-1.5"
@@ -24,7 +24,7 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
             </Link>
 
             {items.map((item, index) => (
-                <div key={index} className="flex items-center space-x-2">
+                <div key={index} className="flex items-center gap-x-2">
                     <ChevronRight className="w-3 h-3 text-zinc-700" />
                     {item.href ? (
                         <Link

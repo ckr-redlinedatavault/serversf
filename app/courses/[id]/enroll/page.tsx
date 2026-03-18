@@ -16,7 +16,8 @@ import {
     GraduationCap, 
     Building2,
     Calendar,
-    PenTool
+    PenTool,
+    Home
 } from "lucide-react";
 import Breadcrumbs from "../../../components/Breadcrumbs";
 
@@ -120,10 +121,17 @@ export default function EnrollmentPage() {
         <div className="min-h-screen bg-[#050505] text-white selection:bg-[#92E3A9] selection:text-black pb-20">
             {/* Minimal Sub-Navbar */}
             <nav className="w-full bg-[#92E3A9] px-6 py-4 md:px-24 flex items-center justify-between sticky top-0 z-50 shadow-2xl">
-                <Link href={`/courses/${id}`} className="flex items-center gap-3 group">
-                    <ArrowLeft className="w-4 h-4 text-zinc-900 group-hover:-translate-x-1 transition-transform" />
-                    <span className="text-[10px] font-black tracking-tight text-zinc-900">Back to Module</span>
-                </Link>
+                <div className="flex items-center gap-6">
+                    <Link href="/" className="flex items-center gap-2 group">
+                        <Home className="w-4 h-4 text-zinc-900 group-hover:scale-110 transition-transform" />
+                        <span className="text-[10px] font-black tracking-tight text-zinc-900 uppercase hidden sm:block">Home</span>
+                    </Link>
+                    <div className="w-[1px] h-4 bg-zinc-900/10 hidden sm:block" />
+                    <Link href={`/courses/${id}`} className="flex items-center gap-3 group">
+                        <ArrowLeft className="w-4 h-4 text-zinc-900 group-hover:-translate-x-1 transition-transform" />
+                        <span className="text-[10px] font-black tracking-tight text-zinc-900">Back to Module</span>
+                    </Link>
+                </div>
                 <div className="flex gap-4 items-center">
                     <span className="text-[10px] font-black text-zinc-900/40 uppercase tracking-widest hidden sm:block">Mission Initialization</span>
                     <div className="h-2 w-32 bg-zinc-900/10 rounded-full overflow-hidden">
@@ -208,9 +216,9 @@ export default function EnrollmentPage() {
                             <div className="flex flex-col items-center text-center space-y-6 bg-black/40 rounded-3xl p-10 border border-zinc-800">
                                 <div className="p-1.5 bg-white rounded-3xl shadow-2xl">
                                     <img 
-                                        src="/qr-placeholder.png" // Replace with actual QR if needed, or placeholder
+                                        src="https://ik.imagekit.io/dypkhqxip/Screenshot%202026-03-18%20at%2011.01.58.png"
                                         alt="UPI QR Code"
-                                        className="w-48 h-48 md:w-64 md:h-64 rounded-2xl"
+                                        className="w-48 h-48 md:w-64 md:h-64 rounded-2xl object-contain bg-white"
                                     />
                                 </div>
                                 <div className="space-y-2">
