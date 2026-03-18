@@ -11,6 +11,25 @@ import {
 import Link from "next/link";
 import Breadcrumbs from "../../components/Breadcrumbs";
 
+const COMMON_FAQS = [
+    {
+        question: "Is this course completely self-paced?",
+        answer: "Yes, once you initialize enrollment, you can access the modules at your own speed and convenience."
+    },
+    {
+        question: "Will I receive a verified certificate?",
+        answer: "Upon successful completion of all modules and projects, a verified digital certificate will be issued to your profile."
+    },
+    {
+        question: "How long do I have access to the materials?",
+        answer: "You get lifetime access to the specific version of the course you enrolled in, including all future small updates."
+    },
+    {
+        question: "Can I access the course on mobile devices?",
+        answer: "Our platform is fully responsive. You can learn from your mobile, tablet, or desktop seamlessly."
+    }
+];
+
 export default function CourseDetailPage() {
     const { id } = useParams();
     const router = useRouter();
@@ -300,22 +319,20 @@ export default function CourseDetailPage() {
                         </section>
 
                         {/* FAQs */}
-                        {course.faqs && course.faqs.length > 0 && (
-                            <section>
-                                <SectionHeader title="Base FAQ" />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    {course.faqs?.map((faq: any, idx: number) => (
-                                        <div key={idx} className="p-6 bg-zinc-950 border border-zinc-900 rounded-2xl">
-                                            <h5 className="text-sm font-bold mb-3 flex items-start gap-3">
-                                                <HelpCircle className="w-4 h-4 text-[#92E3A9] mt-0.5 shrink-0" />
-                                                {faq.question}
-                                            </h5>
-                                            <p className="text-xs text-zinc-500 font-medium leading-relaxed italic">"{faq.answer}"</p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        )}
+                        <section>
+                            <SectionHeader title="Base FAQ" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {[...COMMON_FAQS, ...(course.faqs || [])].map((faq: any, idx: number) => (
+                                    <div key={idx} className="p-6 bg-zinc-950 border border-zinc-900 rounded-2xl group hover:border-[#92E3A9]/20 transition-all">
+                                        <h5 className="text-sm font-bold mb-3 flex items-start gap-3 group-hover:text-white transition-colors">
+                                            <HelpCircle className="w-4 h-4 text-[#92E3A9] mt-0.5 shrink-0" />
+                                            {faq.question}
+                                        </h5>
+                                        <p className="text-xs text-zinc-500 font-medium leading-relaxed italic">"{faq.answer}"</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
                     </div>
 
                     {/* Sidebar */}
