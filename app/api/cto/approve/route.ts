@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { sendApprovalEmail } from "@/lib/mail";
 
 export async function POST(req: Request) {
   try {
@@ -14,9 +15,19 @@ export async function POST(req: Request) {
       data: { isApproved: true },
     });
 
-    return NextResponse.json({ message: `User ${updatedUser.name} approved.` });
-  } catch (error) {
+    // Send the professional email notification
+    let mailSent = false;
+    if (updatedUser.email) {
+      mailSent = await sendApprovalEmail(updatedUser.email, updatedUser.name);
+    }
+
+    return NextResponse.json({ 
+      success: true,
+      message: `User ${updatedUser.name} approved.`,
+      notification: mailSent ? "Email sent successfully" : "Email failed to send"
+    });
+  } catch (error: any) {
     console.error("Approval error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message || "Internal server error" }, { status: 500 });
   }
 }
