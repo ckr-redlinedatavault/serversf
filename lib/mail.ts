@@ -15,7 +15,7 @@ export const sendApprovalEmail = async (email: string, name: string) => {
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <title>Student Forge - Access Approved</title>
+        <title>Forge Media - Welcome</title>
         <style type="text/css">
             @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;800&display=swap');
             body { font-family: 'Outfit', 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 0; background-color: #050505; color: #ffffff; width: 100% !important; }
@@ -31,40 +31,36 @@ export const sendApprovalEmail = async (email: string, name: string) => {
             .button { display: inline-block; background-color: #92E3A9; color: #000000 !important; padding: 18px 40px; border-radius: 16px; text-decoration: none; font-weight: 700; font-size: 14px; text-align: center; transition: all 0.2s ease; box-shadow: 0 10px 20px rgba(146, 227, 169, 0.2); }
             .footer { padding: 40px; background-color: #0f0f0f; border-top: 1px solid #1a1a1a; text-align: center; }
             .footer-text { font-size: 12px; color: #52525b; line-height: 1.5; }
-            .signature { margin-top: 40px; border-top: 1px solid #1a1a1a; paddingTop: 24px; }
-            .signature-name { font-weight: 700; color: #ffffff; font-size: 14px; }
-            .signature-title { color: #92E3A9; font-size: 12px; font-weight: 600; margin-top: 4px; }
         </style>
     </head>
     <body style="background-color: #050505;">
         <div class="container">
             <div class="content">
                 <div class="logo-wrap">
-                    <a href="#" class="logo-text">STUDENT<span>FORGE</span></a>
+                    <a href="#" class="logo-text">FORGE<span>MEDIA</span></a>
                 </div>
                 
                 <div style="text-align: center;">
-                    <div class="status-badge">System Verification Complete</div>
-                    <h1>Identity Verified, ${name}.</h1>
-                    <p>Welcome to the Forge. Your account has been reviewed and approved by the Super Admin node. All media channels and technical assets are now at your disposal.</p>
+                    <div class="status-badge">Approved!</div>
+                    <h1>Welcome To The Team, ${name}.</h1>
+                    <p>Good news! Your account has been approved by the admin. You now have full access to the Media dashboard and all our internal tools.</p>
                 </div>
 
                 <div class="cta-wrap">
-                    <a href="https://studentforge.com/login" class="button">Access Control Panel</a>
+                    <a href="https://studentforge.com/login" class="button">Go To Dashboard</a>
                 </div>
 
-                <div class="signature">
-                    <p style="margin-bottom: 12px;">Protocol initialized by:</p>
-                    <div class="signature-name">Super Admin Node</div>
-                    <div class="signature-title">Security & Operations Protocol</div>
+                <div style="margin-top: 40px; border-top: 1px solid #1a1a1a; padding-top: 24px; text-align: center;">
+                    <p style="margin-bottom: 4px; color: #ffffff; font-weight: 700;">Forge Admin Team</p>
+                    <p style="font-size: 12px; color: #92E3A9; margin: 0;">Student Forge Technologies</p>
                 </div>
             </div>
             
             <div class="footer">
                 <div class="footer-text">
-                    This is a secure automated transmission from the Forge Media Network.<br/>
-                    Do not share your authorization credentials with unauthorized units.<br/><br/>
-                    &copy; 2026 Student Forge Technologies • Sydney Node v4.2.0 • Security L-5
+                    This is an automated message to let you know your account is ready.<br/>
+                    Please keep your login details safe.<br/><br/>
+                    &copy; 2026 Student Forge Technologies
                 </div>
             </div>
         </div>
@@ -74,15 +70,15 @@ export const sendApprovalEmail = async (email: string, name: string) => {
 
     try {
         await transporter.sendMail({
-            from: '"Student Forge Security" <studentforgetechnologies@gmail.com>',
+            from: '"Forge Admin" <studentforgetechnologies@gmail.com>',
             to: email,
-            subject: "PROTOCOL: Access Authorization for " + name,
+            subject: "Your account is approved, " + name + "!",
             html: html,
         });
-        console.log(`Professional approval email sent to ${email}`);
+        console.log(`Simplified approval email sent to ${email}`);
         return true;
     } catch (error) {
-        console.error("Professional Mail Error:", error);
+        console.error("Simple Mail Error:", error);
         return false;
     }
 };
