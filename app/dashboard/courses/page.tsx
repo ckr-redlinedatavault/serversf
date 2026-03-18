@@ -67,7 +67,7 @@ export default function AdminCoursesPage() {
         lecturesCount: 0,
         downloadableResources: 0,
         access: "Lifetime",
-        curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false }] }],
+        curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }],
         timeline: { totalDuration: "", weeklyPlan: [{ week: "1", topic: "" }], studyTimePerWeek: "", scheduleType: "Flexible" },
         faqs: [{ question: "", answer: "" }]
     });
@@ -141,7 +141,7 @@ export default function AdminCoursesPage() {
                 setFormData({
                     title: "", subtitle: "", instructorName: "", instructorBio: "", instructorExp: "", instructorImage: "", thumbnail: "", videoUrl: "", price: "", level: "Beginner", language: "English", description: "",
                     outcomes: [""], skills: [""], targetAudience: [""], requirements: [""], projectsCount: 0, hasRealWorldProjects: true, hasCapstone: false, practiceExercises: "", hasCertificate: true, isShareableLinkedIn: true, issuerName: "Student Forge", totalHours: "", lecturesCount: 0, downloadableResources: 0, access: "Lifetime",
-                    curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false }] }],
+                    curriculum: [{ moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }],
                     timeline: { totalDuration: "", weeklyPlan: [{ week: "1", topic: "" }], studyTimePerWeek: "", scheduleType: "Flexible" },
                     faqs: [{ question: "", answer: "" }]
                 });
@@ -172,13 +172,13 @@ export default function AdminCoursesPage() {
     const addModule = () => {
         setFormData({
             ...formData,
-            curriculum: [...formData.curriculum, { moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false }] }]
+            curriculum: [...formData.curriculum, { moduleTitle: "", lessons: [{ title: "", duration: "", type: "Video", preview: false, level: "Beginner" }] }]
         });
     };
 
     const addLesson = (mIdx: number) => {
         const newCurr = [...formData.curriculum];
-        newCurr[mIdx].lessons.push({ title: "", duration: "", type: "Video", preview: false });
+        newCurr[mIdx].lessons.push({ title: "", duration: "", type: "Video", preview: false, level: "Beginner" });
         setFormData({ ...formData, curriculum: newCurr });
     };
 
@@ -294,7 +294,7 @@ export default function AdminCoursesPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2 block">Pricing (Locked $)</label>
+                                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest ml-1 mb-2 block">Pricing (Locked ₹)</label>
                                     <input 
                                         className="w-full bg-zinc-900/50 border border-zinc-800 rounded-xl px-6 py-4 text-sm outline-none focus:border-[#92E3A9] transition-all"
                                         value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} placeholder="e.g. 49.99"
@@ -404,7 +404,7 @@ export default function AdminCoursesPage() {
                                         <div className="space-y-3">
                                             {module.lessons.map((lesson, lIdx) => (
                                                 <div key={lIdx} className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center bg-zinc-900/10 p-4 rounded-xl border border-white/5">
-                                                    <div className="md:col-span-7">
+                                                    <div className="md:col-span-5">
                                                         <input 
                                                             className="w-full bg-transparent text-xs font-medium outline-none"
                                                             value={lesson.title} placeholder="Lesson Name"
@@ -414,6 +414,21 @@ export default function AdminCoursesPage() {
                                                                 setFormData({...formData, curriculum: newCurr});
                                                             }}
                                                         />
+                                                    </div>
+                                                    <div className="md:col-span-2">
+                                                        <select
+                                                            className="w-full bg-transparent text-[10px] font-bold outline-none uppercase text-[#92E3A9]"
+                                                            value={lesson.level}
+                                                            onChange={e => {
+                                                                const newCurr = [...formData.curriculum];
+                                                                newCurr[mIdx].lessons[lIdx].level = e.target.value;
+                                                                setFormData({...formData, curriculum: newCurr});
+                                                            }}
+                                                        >
+                                                            <option className="bg-zinc-900">Beginner</option>
+                                                            <option className="bg-zinc-900">Intermediate</option>
+                                                            <option className="bg-zinc-900">Advanced</option>
+                                                        </select>
                                                     </div>
                                                     <div className="md:col-span-3">
                                                         <div className="flex items-center gap-2">
@@ -491,7 +506,7 @@ export default function AdminCoursesPage() {
                                     <div className="flex items-center gap-2 mb-3">
                                         <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{course.instructorName}</span>
                                         <div className="h-1 w-1 rounded-full bg-zinc-800" />
-                                        <span className="text-[10px] font-bold text-[#92E3A9]">{course.price === "0" || !course.price ? "OPEN ACCESS" : `$${course.price}`}</span>
+                                        <span className="text-[10px] font-bold text-[#92E3A9]">{course.price === "0" || !course.price ? "OPEN ACCESS" : `₹${course.price}`}</span>
                                     </div>
                                     <h3 className="text-base font-bold text-white mb-2 leading-tight group-hover:text-[#92E3A9] transition-colors">{course.title}</h3>
                                     <p className="text-[11px] text-zinc-500 line-clamp-2 mb-6 font-medium leading-relaxed">{course.subtitle || course.description}</p>

@@ -198,7 +198,12 @@ export default function CourseDetailPage() {
                                                             <div className="w-8 h-8 rounded-full flex items-center justify-center text-zinc-800 group-hover/it:text-[#92E3A9]">
                                                                 <PlayCircle className="w-5 h-5" />
                                                             </div>
-                                                            <span className="text-sm font-bold text-zinc-400 group-hover/it:text-white transition-colors">{lesson.title}</span>
+                                                            <div className="flex flex-col">
+                                                                <span className="text-sm font-bold text-zinc-400 group-hover/it:text-white transition-colors">{lesson.title}</span>
+                                                                {lesson.level && (
+                                                                    <span className="text-[8px] font-black text-[#92E3A9]/60 uppercase tracking-tighter">{lesson.level}</span>
+                                                                )}
+                                                            </div>
                                                         </div>
                                                         <div className="flex items-center gap-4">
                                                             <span className="text-[10px] font-bold text-zinc-800 tabular-nums">{lesson.duration}</span>
@@ -298,7 +303,7 @@ export default function CourseDetailPage() {
                              <div className="pt-8 border-t border-zinc-900 flex flex-col gap-4">
                                   <div className="flex items-center justify-between">
                                       <span className="text-[10px] font-black text-zinc-600">Valuation</span>
-                                      <span className="text-3xl font-black text-[#92E3A9]">{course.price === "0" || !course.price ? "Open Access" : `$${course.price}`}</span>
+                                      <span className="text-3xl font-black text-[#92E3A9]">{course.price === "0" || !course.price ? "Open Access" : `₹${course.price}`}</span>
                                   </div>
                                   <button className="w-full bg-[#92E3A9] text-black py-5 rounded-2xl font-black text-xs hover:bg-white transition-all shadow-xl shadow-[#92E3A9]/10">
                                       Initialize Enrollment

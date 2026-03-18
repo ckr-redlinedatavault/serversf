@@ -98,7 +98,7 @@ export default function CoursesPage() {
                                         {course.level}
                                     </div>
                                     <div className="absolute bottom-4 right-4 px-2.5 py-1 bg-[#92E3A9] rounded-lg text-[10px] font-semibold text-black shadow-lg">
-                                        {course.price === "0" || !course.price ? "Free" : `$${course.price}`}
+                                        {course.price === "0" || !course.price ? "Free" : `₹${course.price}`}
                                     </div>
                                 </div>
                                 <div className="p-6 flex flex-col flex-1">
