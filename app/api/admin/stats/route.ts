@@ -3,15 +3,13 @@ import prisma from '@/lib/prisma';
 
 export async function GET() {
     try {
-        if (!(prisma as any).student) {
-            return NextResponse.json({ success: false, error: "System sync required. Please restart server." }, { status: 500 });
-        }
-
-        // Count real records from the database
-        const studentCount = await (prisma as any).student.count();
-        const eventCount = await (prisma as any).event.count();
-        const reviewCount = await (prisma as any).review.count();
-        const contactCount = await (prisma as any).contact.count();
+        // Counting real records from the database using updated Prisma Client
+        const [studentCount, eventCount, reviewCount, contactCount] = await Promise.all([
+            prisma.student.count(),
+            prisma.event.count(),
+            prisma.review.count(),
+            prisma.contact.count()
+        ]);
 
         return NextResponse.json({
             success: true,
@@ -23,10 +21,10 @@ export async function GET() {
             }
         });
     } catch (error: any) {
-        console.error("[API] Stats GET Error:", error.message);
+        console.error("[API] Admin Core Stats Error:", error.message);
         return NextResponse.json({
             success: false,
-            error: "Failed to fetch stats"
+            error: "Failed to fetch dashboard intelligence. " + error.message
         }, { status: 500 });
     }
 }

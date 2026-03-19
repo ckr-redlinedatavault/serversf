@@ -10,15 +10,8 @@ export async function POST(req: Request) {
             return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
         }
 
-        if (!(prisma as any).contact) {
-            console.error("[API] Critical: Contact model not found in Prisma Client. This usually means you need to restart 'npm run dev' to refresh the cache.");
-            return NextResponse.json({
-                success: false,
-                error: "System sync required. Please restart the dev server (Ctrl+C and npm run dev)."
-            }, { status: 500 });
-        }
-
-        const contact = await (prisma as any).contact.create({
+        // Standardizing the contact creation with verified Prisma Client
+        const contact = await prisma.contact.create({
             data: {
                 name,
                 email,
@@ -36,12 +29,21 @@ export async function POST(req: Request) {
 
 export async function GET() {
     try {
-        const contacts = await (prisma as any).contact.findMany({
+        // Fetching with explicit ordering to ensure latest transmissions appear first
+        const contacts = await prisma.contact.findMany({
             orderBy: { createdAt: 'desc' }
         });
-        return NextResponse.json({ success: true, contacts });
+        
+        return NextResponse.json({ 
+            success: true, 
+            contacts: contacts || [], 
+            count: contacts.length 
+        });
     } catch (error: any) {
         console.error("[API] Contact GET Error:", error.message);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        return NextResponse.json({ 
+            success: false, 
+            error: "Failed to synchronize inquiry logs. " + error.message 
+        }, { status: 500 });
     }
 }
