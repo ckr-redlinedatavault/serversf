@@ -51,34 +51,34 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* Animation Section */}
-          <div className="relative flex justify-center opacity-90 lg:justify-end z-20">
-            <div className="relative w-full max-w-[420px] lg:max-w-[520px]">
+          {/* Animation Section - Improved Mobile Alignment */}
+          <div className="relative flex justify-center opacity-90 lg:justify-end z-20 mt-12 lg:mt-0">
+            <div className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[520px] aspect-square flex items-center justify-center">
               
-              {/* Interaction Tooltip / Speech Bubble */}
+              {/* Interaction Tooltip / Speech Bubble - Better Mobile Center */}
               <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4 }}
-                className="absolute top-0 right-2 z-20 sm:top-4 sm:right-6 flex flex-col items-end gap-2"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="absolute -top-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:top-4 sm:right-6 z-30 flex flex-col items-center sm:items-end gap-2 w-full sm:w-auto"
               >
-                <div className="relative bg-black px-4 py-2 text-[12px] font-medium text-white shadow-2xl">
+                <div className="relative bg-black px-5 py-2.5 text-[11px] sm:text-[12px] font-medium text-white shadow-2xl whitespace-nowrap">
                   {"Hi! I'm Catty. I'm here to help you.".split("").map((char, i) => (
                     <motion.span
                       key={i}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
-                      transition={{ delay: i * 0.04 }}
+                      transition={{ delay: i * 0.03 }}
                     >
                       {char}
                     </motion.span>
                   ))}
-                  {/* Speech bubble tail */}
-                  <div className="absolute -bottom-1 left-6 h-2 w-2 rotate-45 bg-black" />
+                  {/* Speech bubble tail - Centered for mobile */}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 h-2.5 w-2.5 rotate-45 bg-black" />
                 </div>
                 
                 {/* Secondary Message with Typewriter Reveal */}
-                <div className="bg-zinc-900 px-3 py-1.5 text-[11px] font-bold text-[#92E3A9] shadow-xl">
+                <div className="bg-zinc-900 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold text-[#92E3A9] shadow-xl">
                   {"Ready to start!".split("").map((char, i) => (
                     <motion.span
                       key={i}
@@ -95,7 +95,7 @@ export default function Hero() {
               {/* @ts-expect-error - dotlottie-wc is a custom web component */}
               <dotlottie-wc
                 src="https://lottie.host/2ae4304a-a072-4326-8d6e-a48f7a4f2198/AfAWtXSkBa.lottie"
-                style={{ width: '100%', height: 'auto' }}
+                style={{ width: '100%', height: '100%' }}
                 autoplay
                 loop
               />
