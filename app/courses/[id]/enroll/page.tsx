@@ -366,21 +366,27 @@ export default function EnrollmentPage() {
                             {step === 2 && (
                                 <div className="space-y-12 animate-in fade-in slide-in-from-bottom-5 duration-700">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* Razorpay Method */}
+                                        {/* Razorpay Method - Official Look */}
                                         <div 
                                             onClick={() => setPaymentMethod("razorpay")}
-                                            className={`p-8 border cursor-pointer transition-all flex flex-col items-center gap-4 ${paymentMethod === "razorpay" ? 'border-black bg-zinc-50/50' : 'border-zinc-100 hover:border-zinc-300'}`}
+                                            className={`relative p-8 border cursor-pointer transition-all flex flex-col items-center gap-4 ${paymentMethod === "razorpay" ? 'border-black bg-zinc-50/50' : 'border-zinc-100 hover:border-zinc-300'}`}
                                         >
-                                            <div className={`w-12 h-12 flex items-center justify-center ${paymentMethod === "razorpay" ? 'text-[#3395FF]' : 'text-zinc-300'}`}>
-                                                <CreditCard size={28} />
+                                            <div className="w-24 h-8 flex items-center justify-center grayscale brightness-0 opacity-40 group-hover:opacity-60 transition-all">
+                                                <img 
+                                                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" 
+                                                    alt="Razorpay" 
+                                                    className={`w-full h-full object-contain ${paymentMethod === "razorpay" ? 'grayscale-0 brightness-100 opacity-100' : ''}`}
+                                                />
                                             </div>
                                             <div className="text-center">
-                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Instant Checkout</h4>
-                                                <p className="text-[11px] text-zinc-400 font-medium font-medium">Card, Netbanking, Wallet</p>
+                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Razorpay Checkout</h4>
+                                                <p className="text-[11px] text-zinc-400 font-medium">Card, UPI, Netbanking</p>
                                             </div>
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${paymentMethod === "razorpay" ? 'border-black' : 'border-zinc-200'}`}>
-                                                {paymentMethod === "razorpay" && <div className="w-2.5 h-2.5 bg-black rounded-full" />}
-                                            </div>
+                                            {paymentMethod === "razorpay" && (
+                                                <div className="absolute top-4 right-4 text-[#3395FF]">
+                                                    <CheckCircle size={16} fill="currentColor" className="text-white" />
+                                                </div>
+                                            )}
                                         </div>
 
                                         {/* UPI QR Method */}
@@ -388,15 +394,12 @@ export default function EnrollmentPage() {
                                             onClick={() => setPaymentMethod("upi")}
                                             className={`p-8 border cursor-pointer transition-all flex flex-col items-center gap-4 ${paymentMethod === "upi" ? 'border-black bg-zinc-50/50' : 'border-zinc-100 hover:border-zinc-300'}`}
                                         >
-                                            <div className={`w-12 h-12 flex items-center justify-center ${paymentMethod === "upi" ? 'text-black' : 'text-zinc-300'}`}>
+                                            <div className={`w-12 h-8 flex items-center justify-center ${paymentMethod === "upi" ? 'text-black opacity-100' : 'text-zinc-300 opacity-40'}`}>
                                                 <QrCode size={28} />
                                             </div>
                                             <div className="text-center">
-                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Manual UPI Pay</h4>
-                                                <p className="text-[11px] text-zinc-400 font-medium">Google Pay, PhonePe, Paytm</p>
-                                            </div>
-                                            <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${paymentMethod === "upi" ? 'border-black' : 'border-zinc-200'}`}>
-                                                {paymentMethod === "upi" && <div className="w-2.5 h-2.5 bg-black rounded-full" />}
+                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Manual UPI Scan</h4>
+                                                <p className="text-[11px] text-zinc-400 font-medium">Verify via Transaction ID</p>
                                             </div>
                                         </div>
                                     </div>
@@ -404,20 +407,25 @@ export default function EnrollmentPage() {
                                     <div className="border border-zinc-100 p-12 flex flex-col items-center justify-center text-center bg-zinc-50/10">
                                         {paymentMethod === "razorpay" ? (
                                             <>
-                                                <div className="space-y-6 mb-12">
-                                                    <h3 className="text-2xl font-bold tracking-tight text-zinc-900">Razorpay Secure</h3>
-                                                    <p className="text-[14px] text-zinc-500 max-w-sm mx-auto leading-relaxed font-medium">
+                                                <div className="mb-10 flex flex-col items-center">
+                                                    <img 
+                                                        src="https://razorpay.com/assets/razorpay-glyph.svg" 
+                                                        alt="Razorpay" 
+                                                        className="w-16 h-16 mb-4"
+                                                    />
+                                                    <h3 className="text-3xl font-bold tracking-tight text-zinc-900">Secure Checkout</h3>
+                                                    <p className="text-[15px] text-zinc-500 max-w-sm mx-auto mt-4 leading-relaxed font-medium">
                                                         Complete your payment of <span className="text-black font-bold">₹{finalPrice}</span> instantly.
                                                     </p>
                                                 </div>
                                                 <button 
                                                     disabled={submitting}
                                                     onClick={handleRazorpayPayment}
-                                                    className="w-full max-w-xs bg-black text-white h-14 flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 active:scale-[0.98] shadow-xl shadow-black/10"
+                                                    className="w-full max-w-xs bg-[#3395FF] text-white h-14 flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 active:scale-[0.98] shadow-xl shadow-[#3395FF]/20"
                                                 >
                                                     {submitting ? <Loader2 size={16} className="animate-spin" /> : (
                                                         <>
-                                                            Confirm & Pay
+                                                            Pay with Razorpay
                                                             <ArrowRight size={16} />
                                                         </>
                                                     )}
