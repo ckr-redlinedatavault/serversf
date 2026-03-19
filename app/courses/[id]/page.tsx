@@ -27,6 +27,7 @@ export default function CourseDetailPage() {
     const router = useRouter();
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [openModule, setOpenModule] = useState<number | null>(0); // Default open first module
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -55,16 +56,16 @@ export default function CourseDetailPage() {
         <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100">
             {/* Minimal Navbar - Sharp Edges */}
             <nav className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white/95 backdrop-blur-sm">
-                <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
-                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-70">
-                        <span className="text-[15px] tracking-tight">Student Forge</span>
-                        <div className="h-3 w-[1px] bg-zinc-200" />
-                        <span className="text-[13px] text-zinc-400">Academy</span>
+                <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
+                    <Link href="/" className="flex items-center gap-2 transition-opacity hover:opacity-70 group">
+                        <span className="text-[15px] font-bold tracking-tight">Student Forge</span>
+                        <div className="hidden sm:block h-3 w-[1px] bg-zinc-200" />
+                        <span className="hidden sm:block text-[13px] text-zinc-400">Academy</span>
                     </Link>
-                    <div className="flex items-center gap-8">
-                        <Link href="/courses" className="text-[12px] text-zinc-500 hover:text-black">Courses</Link>
-                        <Link href={`/courses/${id}/enroll`} className="bg-black text-white px-5 h-9 flex items-center justify-center text-[11px] font-medium transition-opacity hover:opacity-90">
-                            Register for course
+                    <div className="flex items-center gap-4 sm:gap-8">
+                        <Link href="/courses" className="text-[12px] text-zinc-500 hover:text-black font-medium">Courses</Link>
+                        <Link href={`/courses/${id}/enroll`} className="bg-black text-white px-4 sm:px-6 h-10 flex items-center justify-center text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 active:scale-[0.98]">
+                            Join Now
                         </Link>
                     </div>
                 </div>
@@ -142,25 +143,82 @@ export default function CourseDetailPage() {
                                 </div>
                             </section>
 
-                            {/* Curriculum */}
+                            {/* Curriculum - Interactive Accordion */}
                             <section>
-                                <h2 className="text-[20px] font-bold tracking-tight mb-6 flex items-center gap-3">
-                                    What you will learn
+                                <h2 className="text-[20px] font-bold tracking-tight mb-8 flex items-center gap-3">
+                                    Course Syllabus
                                     <div className="h-[1px] flex-1 bg-zinc-100" />
                                 </h2>
-                                <div className="border border-zinc-100 divide-y divide-zinc-100">
-                                    {[1, 2, 3, 4].map((module) => (
-                                        <div key={module} className="p-6 flex items-center justify-between group hover:bg-zinc-50 transition-colors cursor-pointer">
-                                            <div className="flex items-center gap-6">
-                                                <span className="text-[12px] font-bold text-zinc-300">0{module}</span>
-                                                <div className="space-y-1">
-                                                    <h3 className="text-[14px] font-bold text-zinc-900">Module name {module}</h3>
-                                                    <p className="text-[11px] text-zinc-400">Detailed topics covered in this module.</p>
-                                                </div>
+                                <div className="border border-zinc-100 overflow-hidden">
+                                    {course.curriculum && Array.isArray(course.curriculum) ? (
+                                        course.curriculum.map((mod: any, idx: number) => (
+                                            <div key={idx} className="border-b border-zinc-50 last:border-0">
+                                                <button 
+                                                    onClick={() => setOpenModule(openModule === idx ? null : idx)}
+                                                    className={`w-full p-6 flex items-center justify-between transition-colors ${openModule === idx ? 'bg-zinc-50' : 'bg-white hover:bg-zinc-50/50'}`}
+                                                >
+                                                    <div className="flex items-center gap-6">
+                                                        <span className={`text-[12px] font-bold ${openModule === idx ? 'text-black' : 'text-zinc-300'}`}>
+                                                            {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
+                                                        </span>
+                                                        <div className="text-left">
+                                                            <h3 className="text-[14px] font-bold text-zinc-900">{mod.moduleTitle}</h3>
+                                                            <p className="text-[11px] text-zinc-400">{mod.lessons?.length || 0} lessons • {mod.duration || 'Flexible'}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className={`transition-transform duration-300 ${openModule === idx ? 'rotate-180 text-black' : 'text-zinc-200'}`}>
+                                                        <ChevronRight size={16} />
+                                                    </div>
+                                                </button>
+                                                
+                                                {openModule === idx && (
+                                                    <div className="bg-white px-8 pb-6 animate-in slide-in-from-top-2 duration-300">
+                                                        <ul className="space-y-4 pt-4 border-t border-zinc-100">
+                                                            {mod.lessons?.map((lesson: any, lIdx: number) => (
+                                                                <li key={lIdx} className="flex items-center justify-between group cursor-pointer">
+                                                                    <div className="flex items-center gap-4">
+                                                                        <div className="w-8 h-8 flex items-center justify-center text-zinc-300 group-hover:text-black transition-colors">
+                                                                            <PlayCircle size={16} />
+                                                                        </div>
+                                                                        <span className="text-[13px] text-zinc-600 group-hover:text-black transition-colors">{lesson.title}</span>
+                                                                    </div>
+                                                                    <span className="text-[11px] text-zinc-300 font-medium">{lesson.duration}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    </div>
+                                                )}
                                             </div>
-                                            <PlayCircle className="w-4 h-4 text-zinc-200 group-hover:text-black transition-colors" />
-                                        </div>
-                                    ))}
+                                        ))
+                                    ) : (
+                                        /* Fallback for courses without curriculum data */
+                                        [1, 2, 3, 4].map((m, idx) => (
+                                            <div key={idx} className="border-b border-zinc-50 last:border-0">
+                                                <button 
+                                                    onClick={() => setOpenModule(openModule === idx ? null : idx)}
+                                                    className={`w-full p-6 flex items-center justify-between ${openModule === idx ? 'bg-zinc-50' : 'bg-white hover:bg-zinc-50/50'}`}
+                                                >
+                                                    <div className="flex items-center gap-6">
+                                                        <span className={`text-[12px] font-bold ${openModule === idx ? 'text-black' : 'text-zinc-300'}`}>0{m}</span>
+                                                        <div className="text-left">
+                                                            <h3 className="text-[14px] font-bold text-zinc-900">Course Foundation {m}</h3>
+                                                            <p className="text-[11px] text-zinc-400">Core concepts and practical implementation.</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className={`transition-transform duration-300 ${openModule === idx ? 'rotate-180 text-black' : 'text-zinc-200'}`}>
+                                                        <ChevronRight size={16} />
+                                                    </div>
+                                                </button>
+                                                {openModule === idx && (
+                                                    <div className="bg-white px-8 pb-6">
+                                                        <div className="py-8 text-center border-t border-zinc-100">
+                                                            <p className="text-[12px] text-zinc-400 italic">Detailed syllabus available after enrollment.</p>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))
+                                    )}
                                 </div>
                             </section>
 
