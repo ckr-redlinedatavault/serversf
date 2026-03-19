@@ -182,13 +182,21 @@ model CourseEnrollment {
   whyJoin         String
   
   // Step 2 & 3: Payment Details
-  referenceId     String   @unique
-  transactionId   String
-  bankName        String
-  accountName     String
+  paymentMethod   String   @default("MANUAL_UPI") // RAZORPAY, MANUAL_UPI
   amount          String
   
-  status          String   @default("pending") // pending, verified, rejected
+  // Manual UPI Specific
+  referenceId     String?  @unique // UTR / Ref No
+  transactionId   String?  // Internal or Manual ID
+  bankName        String?
+  accountName     String?
+  
+  // Razorpay Specific
+  razorpayOrderId    String?  @unique
+  razorpayPaymentId  String?  @unique
+  razorpaySignature  String?
+  
+  status          String   @default("pending") // pending, verified, rejected, captured
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }

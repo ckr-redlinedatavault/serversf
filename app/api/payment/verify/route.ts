@@ -31,12 +31,15 @@ export async function POST(req: Request) {
           branch: formData.branch,
           year: formData.year,
           whyJoin: formData.whyJoin,
-          referenceId: razorpay_payment_id,
-          transactionId: razorpay_order_id,
-          bankName: "Razorpay",
-          accountName: "Direct Payment",
+          
+          paymentMethod: "RAZORPAY",
           amount: formData.amount.toString(),
-          status: "paid"
+          
+          razorpayOrderId: razorpay_order_id,
+          razorpayPaymentId: razorpay_payment_id,
+          razorpaySignature: razorpay_signature,
+          
+          status: "captured"
         }
       });
 
