@@ -34,6 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-zinc-50 selection:text-black`}
       >
+        <script src="https://checkout.razorpay.com/v1/checkout.js" async></script>
         {children}
       </body>
     </html>

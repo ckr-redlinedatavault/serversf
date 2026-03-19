@@ -150,22 +150,34 @@ export default function ProjectsPage() {
                                     </div>
 
                                     <div className="border-t border-zinc-50 p-6 space-y-4 bg-zinc-50/10">
-                                        <div className="flex items-center justify-between text-[12px]">
-                                            <div className="flex items-center gap-2">
-                                                <UserCircle size={14} className="text-red-500" />
-                                                <span className="text-zinc-600 font-medium">{project.teamLeader}</span>
+                                        <div className="flex flex-col gap-4 text-[12px]">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <UserCircle size={14} className="text-red-500" />
+                                                    <span className="text-zinc-600 font-bold">{project.teamLeader}</span>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-zinc-400">
+                                                    <Users size={14} />
+                                                    <span>{project.teamMembers?.length || 0} Members</span>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-2 text-zinc-400">
-                                                <Users size={14} />
-                                                <span>Team: {project.teamMembers?.length || 0}</span>
-                                            </div>
+                                            {project.teamMembers && project.teamMembers.length > 0 && (
+                                                <div className="border-t border-zinc-100 pt-3">
+                                                    <p className="text-[11px] text-zinc-400 uppercase tracking-widest mb-1.5 font-bold">The Team</p>
+                                                    <p className="text-[13px] text-zinc-500 leading-relaxed font-medium">
+                                                        {project.teamMembers.join(", ")}
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                         
                                         <Link 
-                                            href={`/projects/${project.id}`}
+                                            href={project.githubRepo || `/projects/${project.id}`}
+                                            target={project.githubRepo ? "_blank" : "_self"}
+                                            rel={project.githubRepo ? "noopener noreferrer" : ""}
                                             className="w-full h-11 border border-zinc-200 flex items-center justify-center gap-2 text-[12px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all group/btn"
                                         >
-                                            View project
+                                            {project.githubRepo ? "Open Github" : "View Story"}
                                             <ArrowRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
                                         </Link>
                                     </div>

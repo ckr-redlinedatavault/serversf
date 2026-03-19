@@ -55,12 +55,12 @@ export default function Hero() {
           <div className="relative flex justify-center opacity-90 lg:justify-end z-20 mt-12 lg:mt-0">
             <div className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[520px] aspect-square flex items-center justify-center">
               
-              {/* Interaction Tooltip / Speech Bubble - Better Mobile Center */}
+              {/* Interaction Tooltip / Speech Bubble - Better Vertical Alignment */}
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.2 }}
-                className="absolute -top-6 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:top-4 sm:right-6 z-30 flex flex-col items-center sm:items-end gap-2 w-full sm:w-auto"
+                className="absolute top-2 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:top-12 md:top-16 sm:right-4 md:right-8 z-30 flex flex-col items-center sm:items-start gap-2 w-full sm:w-auto"
               >
                 <div className="relative bg-black px-5 py-2.5 text-[11px] sm:text-[12px] font-medium text-white shadow-2xl whitespace-nowrap">
                   {"Hi! I'm Catty. I'm here to help you.".split("").map((char, i) => (
@@ -73,12 +73,12 @@ export default function Hero() {
                       {char}
                     </motion.span>
                   ))}
-                  {/* Speech bubble tail - Centered for mobile */}
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 sm:left-auto sm:right-8 h-2.5 w-2.5 rotate-45 bg-black" />
+                  {/* Speech bubble tail - Left side for desktop */}
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 sm:left-8 sm:translate-x-0 h-2.5 w-2.5 rotate-45 bg-black" />
                 </div>
                 
-                {/* Secondary Message with Typewriter Reveal */}
-                <div className="bg-zinc-900 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold text-[#92E3A9] shadow-xl">
+                {/* Secondary Message with Typewriter Reveal - Pushed to right */}
+                <div className="bg-zinc-900 px-3 py-1.5 text-[10px] sm:text-[11px] font-bold text-[#92E3A9] shadow-xl sm:self-end">
                   {"Ready to start!".split("").map((char, i) => (
                     <motion.span
                       key={i}
