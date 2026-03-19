@@ -134,6 +134,10 @@ export default function EnrollmentPage() {
             const orderData = await orderRes.json();
             if (!orderData.success) throw new Error(orderData.error);
 
+            if (!window.Razorpay) {
+              throw new Error("Razorpay script not loaded yet. Please wait a moment.");
+            }
+
             const options = {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_RQUvSCLKCFnWZH",
                 amount: orderData.order.amount,
@@ -169,6 +173,7 @@ export default function EnrollmentPage() {
             const rzp = new window.Razorpay(options);
             rzp.open();
         } catch (err: any) {
+             console.error("Payment Step Error:", err);
              setError(err.message || "Something went wrong. Please try again.");
         } finally {
             setSubmitting(false);
@@ -202,7 +207,6 @@ export default function EnrollmentPage() {
         }
     };
 
-    // Deep link UPI generation for manual payment
     const upiId = "6302933597@hdfc";
     const upiName = "Student Forge";
     const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${finalPrice}&cu=INR`;
@@ -260,7 +264,7 @@ export default function EnrollmentPage() {
                             Enrollment Portal
                         </h1>
                         <p className="text-zinc-400 text-[15px] leading-relaxed font-medium">
-                            Step {step} of {paymentMethod === "upi" ? "3" : "2"}: {step === 1 ? 'Candidate Details' : step === 2 ? 'Payment Method' : 'Verification'}
+                            Step {step} of {paymentMethod === "upi" || paymentMethod === "razorpay" ? "3" : "2"}: {step === 1 ? 'Candidate Details' : step === 2 ? 'Payment Method' : 'Verification'}
                         </p>
                     </div>
                 </div>
@@ -291,9 +295,7 @@ export default function EnrollmentPage() {
                              <div className="space-y-8">
                                  <ProgressItem number="01" label="Candidate Info" active={step === 1} completed={step > 1} />
                                  <ProgressItem number="02" label="Payment" active={step === 2} completed={step > 2} />
-                                 {paymentMethod === "upi" && (
-                                     <ProgressItem number="03" label="Verification" active={step === 3} completed={step > 3} />
-                                 )}
+                                 <ProgressItem number="03" label="Status" active={step === 3} completed={step > 3} />
                              </div>
                         </aside>
 
@@ -364,137 +366,123 @@ export default function EnrollmentPage() {
                             )}
 
                             {step === 2 && (
-                                <div className="space-y-12 animate-in fade-in slide-in-from-bottom-5 duration-700">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        {/* Razorpay Method - Official Look */}
+                                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-700 max-w-xl">
+                                    {/* Compact Payment Selector */}
+                                    <div className="flex flex-col sm:flex-row gap-4">
                                         <div 
                                             onClick={() => setPaymentMethod("razorpay")}
-                                            className={`relative p-8 border cursor-pointer transition-all flex flex-col items-center gap-4 ${paymentMethod === "razorpay" ? 'border-black bg-zinc-50/50' : 'border-zinc-100 hover:border-zinc-300'}`}
+                                            className={`flex-1 p-5 border cursor-pointer transition-all flex items-center gap-4 ${paymentMethod === "razorpay" ? 'border-zinc-900 bg-zinc-50' : 'border-zinc-100 hover:border-zinc-200 opacity-60'}`}
                                         >
-                                            <div className="w-24 h-8 flex items-center justify-center grayscale brightness-0 opacity-40 group-hover:opacity-60 transition-all">
-                                                <img 
-                                                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" 
-                                                    alt="Razorpay" 
-                                                    className={`w-full h-full object-contain ${paymentMethod === "razorpay" ? 'grayscale-0 brightness-100 opacity-100' : ''}`}
-                                                />
+                                            <div className="w-10 h-10 flex items-center justify-center bg-white border border-zinc-100 shadow-sm">
+                                                <img src="https://razorpay.com/assets/razorpay-glyph.svg" className="w-5 h-5" alt="R" />
                                             </div>
-                                            <div className="text-center">
-                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Razorpay Checkout</h4>
-                                                <p className="text-[11px] text-zinc-400 font-medium">Card, UPI, Netbanking</p>
+                                            <div className="text-left">
+                                                <h4 className="text-[13px] font-bold uppercase tracking-wider leading-none mb-1">Razorpay</h4>
+                                                <p className="text-[10px] text-zinc-400 font-medium">Automatic</p>
                                             </div>
-                                            {paymentMethod === "razorpay" && (
-                                                <div className="absolute top-4 right-4 text-[#3395FF]">
-                                                    <CheckCircle size={16} fill="currentColor" className="text-white" />
+                                        </div>
+
+                                        <div 
+                                            onClick={() => setPaymentMethod("upi")}
+                                            className={`flex-1 p-5 border cursor-pointer transition-all flex items-center gap-4 ${paymentMethod === "upi" ? 'border-zinc-900 bg-zinc-50' : 'border-zinc-100 hover:border-zinc-200 opacity-60'}`}
+                                        >
+                                            <div className="w-10 h-10 flex items-center justify-center bg-white border border-zinc-100 shadow-sm">
+                                                <QrCode size={18} className="text-black" />
+                                            </div>
+                                            <div className="text-left">
+                                                <h4 className="text-[13px] font-bold uppercase tracking-wider leading-none mb-1">Manual UPI</h4>
+                                                <p className="text-[10px] text-zinc-400 font-medium">QR Scan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Main Checkout Box - Less Padding */}
+                                    <div className="border border-zinc-100 bg-white relative overflow-hidden shadow-sm">
+                                        {paymentMethod === "razorpay" && (
+                                            <div className="w-full bg-red-50 border-b border-red-100 py-2.5 px-6 flex items-center justify-center gap-2">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                                <p className="text-[9px] font-bold text-red-600 uppercase tracking-[0.1em]">
+                                                    Provider issue: Please use Manual UPI
+                                                </p>
+                                            </div>
+                                        )}
+                                        
+                                        <div className="p-8 md:p-10 flex flex-col items-center justify-center w-full">
+                                            {paymentMethod === "razorpay" ? (
+                                                <div className="text-center space-y-6">
+                                                    <div className="space-y-4">
+                                                        <h3 className="text-xl font-bold tracking-tight text-zinc-900 uppercase tracking-widest text-[14px]">Razorpay Checkout</h3>
+                                                        <p className="text-[13px] text-zinc-500 max-w-[280px] mx-auto leading-relaxed font-medium">
+                                                            Currently unavailable due to service issues. Please switch to <span className="text-black font-bold">Manual UPI</span>.
+                                                        </p>
+                                                    </div>
+                                                    <button 
+                                                        disabled={true}
+                                                        className="w-full max-w-[280px] bg-zinc-50 text-zinc-300 border border-zinc-100 h-12 flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-widest cursor-not-allowed"
+                                                    >
+                                                        Payment Locked <Lock size={12} />
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div className="w-full space-y-8 flex flex-col items-center">
+                                                    {!isRevealed ? (
+                                                        <div className="text-center space-y-6 flex flex-col items-center">
+                                                            <div className="w-12 h-12 bg-black text-white flex items-center justify-center">
+                                                                <Lock size={18} />
+                                                            </div>
+                                                            <div className="space-y-3">
+                                                                <h3 className="text-xl font-bold tracking-tight uppercase tracking-widest text-[14px]">Manual Transfer</h3>
+                                                                <p className="text-[13px] text-zinc-500 max-w-[280px] mx-auto leading-relaxed font-medium">
+                                                                   Verification is required after scanning the QR code.
+                                                                </p>
+                                                            </div>
+                                                            <button 
+                                                                onClick={() => setIsRevealed(true)}
+                                                                className="text-[10px] font-bold uppercase tracking-[0.2em] border-b border-black pb-1 hover:opacity-50 transition-opacity"
+                                                            >
+                                                                Reveal Scan Code
+                                                            </button>
+                                                        </div>
+                                                    ) : (
+                                                        <div className="text-center animate-in zoom-in-95 duration-500 space-y-8 flex flex-col items-center">
+                                                            <div className="p-4 bg-zinc-50 border border-zinc-100 shadow-inner">
+                                                                <img 
+                                                                    src={qrSource}
+                                                                    alt="Scan QR"
+                                                                    className="w-40 h-40 mix-blend-multiply"
+                                                                />
+                                                            </div>
+                                                            <div className="space-y-2">
+                                                                <h3 className="text-2xl font-bold tracking-tighter text-zinc-900">₹{finalPrice}</h3>
+                                                                <p className="text-[9px] text-zinc-400 uppercase tracking-widest font-bold">Total amount to pay</p>
+                                                            </div>
+                                                            <button 
+                                                                onClick={nextStep}
+                                                                className="w-full max-w-[280px] bg-black text-white h-12 flex items-center justify-center gap-3 text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90"
+                                                            >
+                                                                I have paid <ChevronRight size={14} />
+                                                            </button>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             )}
                                         </div>
-
-                                        {/* UPI QR Method */}
-                                        <div 
-                                            onClick={() => setPaymentMethod("upi")}
-                                            className={`p-8 border cursor-pointer transition-all flex flex-col items-center gap-4 ${paymentMethod === "upi" ? 'border-black bg-zinc-50/50' : 'border-zinc-100 hover:border-zinc-300'}`}
-                                        >
-                                            <div className={`w-12 h-8 flex items-center justify-center ${paymentMethod === "upi" ? 'text-black opacity-100' : 'text-zinc-300 opacity-40'}`}>
-                                                <QrCode size={28} />
-                                            </div>
-                                            <div className="text-center">
-                                                <h4 className="text-[14px] font-bold uppercase tracking-wider mb-1">Manual UPI Scan</h4>
-                                                <p className="text-[11px] text-zinc-400 font-medium">Verify via Transaction ID</p>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="border border-zinc-100 p-12 flex flex-col items-center justify-center text-center bg-zinc-50/10">
-                                        {paymentMethod === "razorpay" ? (
-                                            <>
-                                                <div className="mb-10 flex flex-col items-center">
-                                                    <img 
-                                                        src="https://razorpay.com/assets/razorpay-glyph.svg" 
-                                                        alt="Razorpay" 
-                                                        className="w-16 h-16 mb-4"
-                                                    />
-                                                    <h3 className="text-3xl font-bold tracking-tight text-zinc-900">Secure Checkout</h3>
-                                                    <p className="text-[15px] text-zinc-500 max-w-sm mx-auto mt-4 leading-relaxed font-medium">
-                                                        Complete your payment of <span className="text-black font-bold">₹{finalPrice}</span> instantly.
-                                                    </p>
-                                                </div>
-                                                <button 
-                                                    disabled={submitting}
-                                                    onClick={handleRazorpayPayment}
-                                                    className="w-full max-w-xs bg-[#3395FF] text-white h-14 flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 active:scale-[0.98] shadow-xl shadow-[#3395FF]/20"
-                                                >
-                                                    {submitting ? <Loader2 size={16} className="animate-spin" /> : (
-                                                        <>
-                                                            Pay with Razorpay
-                                                            <ArrowRight size={16} />
-                                                        </>
-                                                    )}
-                                                </button>
-                                            </>
-                                        ) : (
-                                            <>
-                                                {!isRevealed ? (
-                                                    <div className="flex flex-col items-center py-6">
-                                                        <div className="w-20 h-20 bg-black text-white flex items-center justify-center mb-8">
-                                                            <Lock size={24} />
-                                                        </div>
-                                                        <h3 className="text-2xl font-bold tracking-tight mb-4">Manual UPI Payment</h3>
-                                                        <p className="text-[14px] text-zinc-500 max-w-xs mx-auto mb-10 leading-relaxed font-medium">
-                                                            You will need to manually verify your payment ID after scanning.
-                                                        </p>
-                                                        <button 
-                                                            onClick={() => setIsRevealed(true)}
-                                                            className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] border-b-2 border-black pb-1.5 hover:opacity-70 transition-opacity"
-                                                        >
-                                                            <Eye size={14} /> Reveal QR Code
-                                                        </button>
-                                                    </div>
-                                                ) : (
-                                                    <div className="flex flex-col items-center animate-in zoom-in-95 duration-500">
-                                                        <div className="border border-zinc-100 p-3 mb-8 bg-white shadow-sm">
-                                                            <img 
-                                                                src={qrSource}
-                                                                alt="UPI QR Code"
-                                                                className="w-48 h-48 lg:w-56 lg:h-56 object-contain"
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2 mb-10">
-                                                            <h3 className="text-3xl font-bold tracking-tighter text-zinc-900">₹{finalPrice}</h3>
-                                                            <span className="text-[10px] text-zinc-400 uppercase tracking-widest font-bold">Scan to Pay now</span>
-                                                        </div>
-                                                        <button 
-                                                            onClick={nextStep}
-                                                            className="w-full max-w-xs bg-black text-white h-14 flex items-center justify-center gap-3 text-[13px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90"
-                                                        >
-                                                            I have paid, Proceed <ChevronRight size={16} />
-                                                        </button>
-                                                    </div>
-                                                )}
-                                            </>
-                                        )}
-
-                                        <div className="mt-12 flex flex-col items-center gap-4">
-                                            <div className="flex items-center gap-2 text-[#92E3A9]">
-                                                <ShieldCheck size={18} />
-                                                <span className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Student Forge Verified</span>
-                                            </div>
-                                        </div>
                                     </div>
                                     
-                                    <div className="flex gap-4">
+                                    <div className="flex justify-center">
                                         <button 
                                             onClick={prevStep}
-                                            className="flex-1 border border-zinc-100 text-zinc-400 h-14 text-[12px] font-bold transition-all hover:bg-zinc-50 uppercase tracking-widest"
+                                            className="text-[10px] text-zinc-300 font-bold uppercase tracking-widest hover:text-black transition-colors"
                                         >
-                                            Go Back
+                                            Change Details
                                         </button>
                                     </div>
                                     
-                                    {error && <p className="text-red-500 text-[12px] font-medium text-center">{error}</p>}
+                                    {error && <p className="text-red-500 text-[11px] font-bold text-center tracking-wide">{error}</p>}
                                 </div>
                             )}
 
-                            {step === 3 && paymentMethod === "upi" && (
+                            {step === 3 && (
                                 <form onSubmit={handleManualSubmit} className="space-y-12 animate-in fade-in slide-in-from-bottom-5 duration-700">
                                     <div className="border-l-4 border-black p-8 bg-zinc-50/50 space-y-4">
                                         <h4 className="text-[14px] font-bold uppercase tracking-wider">Verification Required</h4>
@@ -516,7 +504,7 @@ export default function EnrollmentPage() {
                                             onClick={prevStep}
                                             className="flex-1 border border-zinc-100 text-zinc-400 h-14 text-[12px] font-bold transition-all hover:bg-zinc-50 uppercase tracking-widest"
                                         >
-                                            Back to QR
+                                            Back
                                         </button>
                                         <button 
                                             type="submit"

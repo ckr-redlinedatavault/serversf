@@ -4,6 +4,11 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const { amount, courseId, name } = await req.json();
+    console.log("Creating Razorpay Order for amount:", amount, "Course:", courseId);
+    
+    if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+      throw new Error("Razorpay API Keys are missing in Environment Variables");
+    }
 
     const order = await razorpay.orders.create({
       amount: Math.round(Number(amount) * 100), // INR → paise
@@ -14,6 +19,8 @@ export async function POST(req: Request) {
         studentName: name
       },
     });
+
+    console.log("Order created successfully:", order.id);
 
     return NextResponse.json({ success: true, order });
   } catch (error: any) {
