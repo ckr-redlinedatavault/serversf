@@ -39,7 +39,7 @@ export default function InternSignupPage() {
             const data = await res.json();
             if (res.ok) {
                 localStorage.setItem("intern_user", JSON.stringify(data.user));
-                router.push("/intern-form"); 
+                router.push("/intern/dashboard"); 
             } else {
                 alert(data.error || "Registration failed.");
             }
