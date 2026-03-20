@@ -49,13 +49,6 @@ export default function Navbar() {
             Intern login
           </Link>
 
-          {/* Sharp Edged Black Solid Button - Regular Font */}
-          <Link
-            href="/courses"
-            className="inline-flex h-10 items-center justify-center bg-black px-4 sm:px-6 text-[13px] text-white transition-opacity hover:opacity-90 active:scale-[0.98] font-medium"
-          >
-            Join now
-          </Link>
         </div>
       </div>
     </nav>
