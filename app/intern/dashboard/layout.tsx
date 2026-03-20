@@ -57,21 +57,20 @@ export default function InternDashboardLayout({
                     </div>
                 </div>
 
-                <nav className="flex-1 px-6 space-y-2">
+                <nav className="flex-1 px-8 space-y-4">
                     {navItems.map((item) => {
                         const isActive = pathname === item.slug;
                         return (
                             <Link 
                                 key={item.name}
                                 href={item.slug} 
-                                className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                                className={`block transition-all ${
                                     isActive 
-                                    ? "bg-white/5 text-[#92E3A9] font-bold" 
-                                    : "text-zinc-500 hover:text-white"
+                                    ? "text-[#92E3A9] font-bold" 
+                                    : "text-zinc-500 hover:text-white font-medium"
                                 }`}
                             >
-                                <item.icon size={18} strokeWidth={isActive ? 2.5 : 2} />
-                                <span className="text-[13px]">{item.name}</span>
+                                <span className="text-[13px] uppercase tracking-widest">{item.name}</span>
                             </Link>
                         );
                     })}
@@ -80,30 +79,26 @@ export default function InternDashboardLayout({
                 <div className="p-8 mt-auto">
                     <button 
                         onClick={handleLogout}
-                        className="w-full flex h-11 items-center justify-center gap-2 bg-zinc-900 text-zinc-400 text-[11px] font-bold hover:bg-white hover:text-black transition-all uppercase tracking-widest"
+                        className="w-full h-11 flex items-center justify-center gap-2 bg-zinc-900 text-zinc-400 text-[10px] font-bold hover:bg-white hover:text-black transition-all uppercase tracking-widest"
                     >
-                        <LogOut size={16} />
-                        <span>Logout</span>
+                        <span>Logout Session</span>
                     </button>
                 </div>
             </aside>
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
-                {/* Simplified Green Top Navigation Bar */}
+                {/* Simplified Green Top Navigation Bar - No Icons */}
                 <header className="h-14 bg-[#92E3A9] border-b border-black/5 flex items-center justify-between px-8 sticky top-0 z-40">
                     <div className="flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 bg-black rounded-full" />
-                        <span className="text-[11px] font-bold text-black uppercase tracking-[0.2em]">Verified Session</span>
+                        <div className="h-1 w-1 bg-black rounded-full" />
+                        <span className="text-[10px] font-bold text-black uppercase tracking-[0.2em]">Verified Intern Session</span>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center pr-2">
                         <div className="text-right">
                             <p className="text-[11px] font-bold text-black leading-none">{user.name}</p>
-                            <p className="text-[9px] font-bold text-black/50 uppercase tracking-widest mt-0.5">Intern</p>
-                        </div>
-                        <div className="h-8 w-8 bg-black text-[#92E3A9] flex items-center justify-center font-bold text-xs ring-4 ring-black/5">
-                            {user.name?.charAt(0)}
+                            <p className="text-[9px] font-bold text-black/50 uppercase tracking-widest mt-0.5">Global Node 1</p>
                         </div>
                     </div>
                 </header>

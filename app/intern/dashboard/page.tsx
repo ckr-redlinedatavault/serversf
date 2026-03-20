@@ -57,14 +57,9 @@ export default function InternDashboard() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-zinc-100 mt-12">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 bg-black flex items-center justify-center">
-                                <Clock className="text-[#92E3A9]" size={20} />
-                            </div>
-                            <div className="text-left">
-                                <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Full Access Date</p>
-                                <p className="text-[18px] font-bold text-black tracking-tight">22 March, 2026</p>
-                            </div>
+                        <div className="flex flex-col gap-1">
+                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Access Deployment</p>
+                            <p className="text-[18px] font-bold text-black tracking-tight">22 March, 2026</p>
                         </div>
                     </div>
 
