@@ -137,6 +137,19 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                         />
                     </div>
 
+                    {/* Security & Monitoring */}
+                    <div className="space-y-1">
+                        <div className="px-4 mb-2">
+                            <span className="text-[10px] font-bold text-zinc-700 tracking-widest uppercase">Monitoring</span>
+                        </div>
+                        <SidebarNavItem 
+                            href="/ceo/logs"
+                            icon={<ShieldCheck size={18} />} 
+                            label="System Logs" 
+                            active={pathname === "/ceo/logs"}
+                        />
+                    </div>
+
                     {/* Data Capture / Forms */}
                     <div className="space-y-1">
                         <div className="px-4 mb-2">
