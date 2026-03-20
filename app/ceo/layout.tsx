@@ -14,7 +14,9 @@ import {
     Crown,
     Activity,
     Search,
-    BookOpen
+    BookOpen,
+    FileText,
+    ChevronDown
 } from "lucide-react";
 import Link from "next/link";
 
@@ -124,6 +126,25 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                         active={pathname === "/ceo/messages"}
                         badge={stats?.messages} 
                     />
+
+                    <div className="pt-4 pb-2 px-4">
+                        <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Data Capture</span>
+                    </div>
+
+                    <SidebarNavGroup 
+                        label="Forms" 
+                        icon={<FileText size={18} />}
+                        isOpen={pathname.includes("/ceo/forms")}
+                    >
+                        <SidebarNavItem 
+                            href="/ceo/forms/intern"
+                            icon={<Users size={14} />} 
+                            label="Intern Form" 
+                            active={pathname === "/ceo/forms/intern"}
+                            badge={stats?.interns}
+                            isNested
+                        />
+                    </SidebarNavGroup>
                 </nav>
 
                 <div className="p-4 mt-auto border-t border-zinc-900">
@@ -169,11 +190,12 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
     );
 }
 
-function SidebarNavItem({ href, icon, label, active = false, badge }: { href: string, icon: any, label: string, active?: boolean, badge?: number }) {
+function SidebarNavItem({ href, icon, label, active = false, badge, isNested = false }: { href: string, icon: any, label: string, active?: boolean, badge?: number, isNested?: boolean }) {
     return (
         <Link href={href} className={`
             w-full flex items-center justify-between p-3 rounded-xl transition-all
-            ${active ? 'bg-[#92E3A9] text-black font-bold' : 'text-zinc-500 hover:text-white hover:bg-zinc-800 font-semibold'}
+            ${active ? 'bg-[#92E3A9] text-black font-bold scale-[1.02]' : 'text-zinc-500 hover:text-white hover:bg-zinc-800 font-semibold'}
+            ${isNested ? 'pl-11 py-2 mt-1' : ''}
         `}>
             <div className="flex items-center gap-3">
                 {icon}
@@ -185,5 +207,32 @@ function SidebarNavItem({ href, icon, label, active = false, badge }: { href: st
                 </span>
             )}
         </Link>
+    );
+}
+
+function SidebarNavGroup({ label, icon, children, isOpen: initialOpen = false }: { label: string, icon: any, children: React.ReactNode, isOpen?: boolean }) {
+    const [isOpen, setIsOpen] = useState(initialOpen);
+    
+    return (
+        <div className="space-y-1">
+            <button 
+                onClick={() => setIsOpen(!isOpen)}
+                className={`
+                    w-full flex items-center justify-between p-3 rounded-xl transition-all
+                    text-zinc-500 hover:text-white hover:bg-zinc-800 font-semibold
+                `}
+            >
+                <div className="flex items-center gap-3">
+                    {icon}
+                    <span className="text-xs">{label}</span>
+                </div>
+                <ChevronDown size={14} className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+            {isOpen && (
+                <div className="flex flex-col">
+                    {children}
+                </div>
+            )}
+        </div>
     );
 }

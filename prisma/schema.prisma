@@ -211,3 +211,15 @@ model Project {
   status          String   @default("live") // default to live as requested "every submitted project must be shown"
   hackathonName   String   @default("HACK FORGE Hackathon 2026")
 }
+
+model InternForm {
+  id            String   @id @default(cuid())
+  name          String
+  year          String
+  branch        String
+  college       String
+  phoneNumber   String
+  githubLink    String
+  portfolioLink String?
+  createdAt     DateTime @default(now())
+}
