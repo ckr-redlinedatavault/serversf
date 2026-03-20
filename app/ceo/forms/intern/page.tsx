@@ -11,11 +11,11 @@ import {
     Filter,
     Loader2,
     Phone,
-    Briefcase,
     Building2,
     Clock,
     UserCheck,
-    ArrowUpRight
+    ArrowUpRight,
+    Download
 } from "lucide-react";
 
 export default function InternFormsAdmin() {
@@ -41,6 +41,38 @@ export default function InternFormsAdmin() {
         }
     };
 
+    const downloadCSV = () => {
+        if (submissions.length === 0) return;
+
+        const headers = ["ID", "Name", "Year", "Branch", "College", "Phone", "GitHub", "Portfolio", "Applied Date"];
+        const rows = submissions.map(s => [
+            s.id,
+            s.name,
+            s.year,
+            s.branch,
+            s.college,
+            s.phoneNumber,
+            s.githubLink,
+            s.portfolioLink || "N/A",
+            new Date(s.createdAt).toLocaleString()
+        ]);
+
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.setAttribute("href", url);
+        link.setAttribute("download", `intern_applications_${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = "hidden";
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
     const filteredSubmissions = submissions.filter(s => 
         s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         s.college.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -49,7 +81,7 @@ export default function InternFormsAdmin() {
 
     return (
         <div className="p-6 space-y-6">
-            {/* Stats Overview - Compacted */}
+            {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <StatCard 
                     label="Total Applications" 
@@ -57,39 +89,51 @@ export default function InternFormsAdmin() {
                     icon={<Users className="w-4 h-4 text-[#92E3A9]" />} 
                 />
                 <StatCard 
-                    label="Active Results" 
+                    label="Filtered Results" 
                     value={filteredSubmissions.length} 
                     icon={<Clock className="w-4 h-4 text-[#92E3A9]" />} 
                 />
                 <StatCard 
-                    label="Potential Hires" 
+                    label="Potential Candidates" 
                     value={Math.floor(submissions.length * 0.2)} 
                     icon={<UserCheck className="w-4 h-4 text-[#92E3A9]" />} 
                 />
             </div>
 
-            {/* Header Section - More Compact */}
+            {/* Header Section */}
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-[#0A0A0A] p-6 rounded-3xl border border-zinc-900 shadow-xl">
                 <div className="space-y-0.5">
                     <h1 className="text-xl font-bold text-white uppercase tracking-tight">
                         Intern Intake <span className="text-[#92E3A9]">Protocol</span>
                     </h1>
-                    <p className="text-zinc-500 text-[11px] font-medium">Managing {submissions.length} student applications for 2026.</p>
+                    <p className="text-zinc-500 text-[11px] font-medium">Exporting enabled for authorized personnel only.</p>
                 </div>
 
-                <div className="relative group">
-                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 transition-colors group-focus-within:text-[#92E3A9]" />
-                    <input 
-                        type="text" 
-                        placeholder="Search candidates..." 
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-6 py-2.5 text-[11px] font-semibold outline-none focus:border-[#92E3A9]/40 transition-all w-64 placeholder:text-zinc-700 text-white"
-                    />
+                <div className="flex items-center gap-3">
+                    <div className="relative group">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-600 transition-colors group-focus-within:text-[#92E3A9]" />
+                        <input 
+                            type="text" 
+                            placeholder="Search records..." 
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="bg-zinc-950 border border-zinc-800 rounded-xl pl-10 pr-6 py-2.5 text-[11px] font-semibold outline-none focus:border-[#92E3A9]/40 transition-all w-56 placeholder:text-zinc-700 text-white"
+                        />
+                    </div>
+                    <button 
+                        onClick={downloadCSV}
+                        className="h-10 px-4 bg-zinc-900 hover:bg-[#92E3A9] hover:text-black rounded-xl flex items-center gap-2 text-[10px] font-black text-zinc-500 uppercase tracking-widest border border-zinc-800 transition-all group"
+                    >
+                        <Download className="w-3.5 h-3.5" />
+                        <span>Export CSV</span>
+                    </button>
+                    <button className="h-10 w-10 bg-zinc-900 rounded-xl flex items-center justify-center text-zinc-500 hover:text-white border border-zinc-800 transition-all">
+                        <Filter className="w-3.5 h-3.5" />
+                    </button>
                 </div>
             </div>
 
-            {/* Application List - Tighter Padding */}
+            {/* Application List */}
             <div className="bg-[#0A0A0A] border border-zinc-900 rounded-3xl overflow-hidden shadow-xl overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                     <thead>
@@ -106,7 +150,7 @@ export default function InternFormsAdmin() {
                                 <td colSpan={4} className="px-6 py-32 text-center">
                                     <div className="flex flex-col items-center gap-4">
                                         <Loader2 className="w-8 h-8 text-[#92E3A9] animate-spin" />
-                                        <p className="text-[10px] font-black text-[#92E3A9] uppercase tracking-[0.3em]">Loading Encrypted Data</p>
+                                        <p className="text-[10px] font-black text-[#92E3A9] uppercase tracking-[0.3em]">Syncing Records</p>
                                     </div>
                                 </td>
                             </tr>
