@@ -41,10 +41,18 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* Intern login - Sharp Edge Bordered Button */}
+          <Link
+            href="/intern/signin"
+            className="hidden md:inline-flex h-10 items-center justify-center border border-black px-4 sm:px-6 text-[13px] text-black transition-colors hover:bg-zinc-50 active:scale-[0.98] font-medium"
+          >
+            Intern login
+          </Link>
+
           {/* Sharp Edged Black Solid Button - Regular Font */}
           <Link
             href="/courses"
-            className="inline-flex h-10 items-center justify-center bg-black px-4 sm:px-6 text-[11px] text-white transition-opacity hover:opacity-90 active:scale-[0.98] font-bold uppercase tracking-widest"
+            className="inline-flex h-10 items-center justify-center bg-black px-4 sm:px-6 text-[13px] text-white transition-opacity hover:opacity-90 active:scale-[0.98] font-medium"
           >
             Join now
           </Link>

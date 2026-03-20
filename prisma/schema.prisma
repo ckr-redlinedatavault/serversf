@@ -81,12 +81,14 @@ model User {
   isApproved Boolean  @default(false)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  internForm InternForm? @relation("InternUserForm")
 }
 
 enum Role {
   MEDIA_TEAM
   CTO
   CEO
+  INTERN
 }
 
 model Task {
@@ -214,6 +216,8 @@ model Project {
 
 model InternForm {
   id            String   @id @default(cuid())
+  userId        String?  @unique
+  user          User?    @relation("InternUserForm", fields: [userId], references: [id])
   name          String
   year          String
   branch        String
@@ -221,5 +225,14 @@ model InternForm {
   phoneNumber   String
   githubLink    String
   portfolioLink String?
+  status        String   @default("pending") // pending, active, completed, rejected
   createdAt     DateTime @default(now())
+}
+
+model ResetToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  email     String
+  expires   DateTime
+  createdAt DateTime @default(now())
 }

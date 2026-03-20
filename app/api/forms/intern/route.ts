@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json();
-        const { name, year, branch, college, phoneNumber, githubLink, portfolioLink } = body;
+        const { name, year, branch, college, phoneNumber, githubLink, portfolioLink, userId } = body;
 
         // Validation
         if (!name || !year || !branch || !college || !phoneNumber || !githubLink) {
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
 
         const submission = await prisma.internForm.create({
             data: {
+                userId,
                 name,
                 year,
                 branch,
