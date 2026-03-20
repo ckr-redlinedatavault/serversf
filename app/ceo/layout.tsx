@@ -176,9 +176,6 @@ export default function CEOLayout({ children }: { children: React.ReactNode }) {
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-zinc-500" />
                             <input type="text" placeholder="Global search..." className="bg-zinc-900 border border-zinc-800 rounded-full px-8 py-1.5 text-[10px] outline-none focus:border-[#92E3A9] w-48" />
                         </div>
-                        <div className="w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center">
-                            <Activity className="w-4 h-4 text-[#92E3A9]" />
-                        </div>
                     </div>
                 </header>
 
