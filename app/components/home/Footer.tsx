@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-black py-16">
+    <footer className="w-full bg-black py-24">
       {/* 
         Full width container matching the design language of the 
         Navbar and Services section 
