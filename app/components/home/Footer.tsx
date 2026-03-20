@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Crown } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -34,6 +35,15 @@ export default function Footer() {
             <div className="border border-zinc-800 px-3 py-1 text-[11px] text-zinc-600">
               v2.0.4 - stable
             </div>
+
+            {/* CEO Access Portal */}
+            <Link 
+              href="/ceo/signin" 
+              className="group flex items-center gap-2 border border-zinc-800 bg-zinc-950/50 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-zinc-600 transition-all hover:border-[#92E3A9]/30 hover:text-[#92E3A9]"
+            >
+              <Crown className="w-3 h-3 text-[#92E3A9] group-hover:scale-110 transition-transform" strokeWidth={2.5} />
+              CEO Login
+            </Link>
           </div>
         </div>
 
