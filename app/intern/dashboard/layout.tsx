@@ -90,38 +90,20 @@ export default function InternDashboardLayout({
 
             {/* Main Content Area */}
             <div className="flex-1 flex flex-col">
-                {/* Green Top Navigation Bar */}
+                {/* Simplified Green Top Navigation Bar */}
                 <header className="h-14 bg-[#92E3A9] border-b border-black/5 flex items-center justify-between px-8 sticky top-0 z-40">
-                    <div className="flex items-center gap-4">
-                        <Link href="/" className="flex items-center gap-2 bg-black text-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-opacity">
-                            <ArrowLeft size={12} />
-                            <span>Go to Main</span>
-                        </Link>
-                        <div className="h-4 w-[1px] bg-black/10 mx-2" />
-                        <span className="text-[11px] font-bold text-black uppercase tracking-widest">Workspace: Sydney Node</span>
+                    <div className="flex items-center gap-2">
+                        <div className="h-1.5 w-1.5 bg-black rounded-full" />
+                        <span className="text-[11px] font-bold text-black uppercase tracking-[0.2em]">Verified Session</span>
                     </div>
 
-                    <div className="flex items-center gap-6">
-                        <div className="hidden md:flex items-center gap-2 bg-white/20 px-3 py-1.5 border border-black/5">
-                            <Search size={14} className="text-black/60" />
-                            <input 
-                                type="text" 
-                                placeholder="Search modules..." 
-                                className="bg-transparent text-[11px] text-black placeholder:text-black/40 outline-none w-32"
-                            />
+                    <div className="flex items-center gap-3">
+                        <div className="text-right">
+                            <p className="text-[11px] font-bold text-black leading-none">{user.name}</p>
+                            <p className="text-[9px] font-bold text-black/50 uppercase tracking-widest mt-0.5">Intern</p>
                         </div>
-                        <button className="relative p-1">
-                            <Bell size={18} className="text-black" />
-                            <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full border border-[#92E3A9]" />
-                        </button>
-                        <div className="flex items-center gap-3 pl-4 border-l border-black/10">
-                            <div className="text-right">
-                                <p className="text-[11px] font-bold text-black leading-none">{user.name}</p>
-                                <p className="text-[9px] font-bold text-black/60 uppercase tracking-tighter mt-1">Verified Intern</p>
-                            </div>
-                            <div className="h-8 w-8 bg-black text-[#92E3A9] flex items-center justify-center font-bold text-xs">
-                                {user.name?.charAt(0)}
-                            </div>
+                        <div className="h-8 w-8 bg-black text-[#92E3A9] flex items-center justify-center font-bold text-xs ring-4 ring-black/5">
+                            {user.name?.charAt(0)}
                         </div>
                     </div>
                 </header>
