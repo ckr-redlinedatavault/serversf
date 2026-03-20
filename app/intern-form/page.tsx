@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
     Send, 
     CheckCircle2,
@@ -10,13 +10,47 @@ import {
     Briefcase,
     Calendar,
     Award,
-    AlertCircle
+    AlertCircle,
+    Timer
 } from "lucide-react";
 import Link from "next/link";
 
 export default function InternFormPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
+    const [timeLeft, setTimeLeft] = useState("");
+    
+    // Deadline: March 20, 2026, 7:00 PM IST
+    const deadline = new Date("2026-03-20T19:00:00+05:30");
+
+    useEffect(() => {
+        const calculateTimeLeft = () => {
+            const now = new Date();
+            const difference = deadline.getTime() - now.getTime();
+            
+            if (difference <= 0) {
+                setIsClosed(true);
+                setTimeLeft("FORM CLOSED");
+                return;
+            }
+
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+            
+            const timeString = hours > 0 
+                ? `${hours}h ${minutes}m ${seconds}s`
+                : `${minutes}m ${seconds}s`;
+            
+            setTimeLeft(timeString);
+        };
+
+        calculateTimeLeft();
+        const timer = setInterval(calculateTimeLeft, 1000);
+        return () => clearInterval(timer);
+    }, []);
+
     const [agreements, setAgreements] = useState({
         terms: false,
         workload: false,
@@ -95,6 +129,30 @@ export default function InternFormPage() {
         );
     }
 
+    if (isClosed) {
+        return (
+            <div className="min-h-screen bg-white text-zinc-900 flex items-center justify-center p-6 font-sans">
+                <div className="max-w-md w-full border border-zinc-200 p-10 bg-white text-center space-y-8">
+                    <div className="h-20 w-20 bg-red-50 rounded-full flex items-center justify-center mx-auto border border-red-100">
+                        <Timer className="w-10 h-10 text-red-500 animate-pulse" />
+                    </div>
+                    <div className="space-y-3">
+                        <h1 className="text-3xl font-bold uppercase tracking-tight text-zinc-900">Form Closed</h1>
+                        <p className="text-zinc-500 text-[15px] leading-relaxed">
+                            The application period for this intake has ended as of <br/>
+                            <span className="font-bold text-black uppercase tracking-widest text-[12px]">March 20, 2026 • 7:00 PM IST</span>
+                        </p>
+                    </div>
+                    <div className="pt-4 border-t border-zinc-100">
+                        <Link href="/" className="inline-flex h-12 items-center justify-center px-8 border border-black text-[11px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all">
+                            Back to Home
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="min-h-screen bg-white text-zinc-900 selection:bg-[#92E3A9] selection:text-black font-sans">
             {/* Background Accent */}
@@ -105,8 +163,18 @@ export default function InternFormPage() {
                 {/* Left Side: Form */}
                 <div className="flex-1 space-y-12">
                     <div className="space-y-4">
-                        <div className="inline-flex items-center gap-2 border border-zinc-200 bg-white px-3 py-1 mb-2">
-                            <span className="text-[12px] text-zinc-500">Intake Process 2026</span>
+                        <div className="flex items-center gap-4 mb-2">
+                            <div className="inline-flex items-center gap-2 border border-zinc-200 bg-white px-3 py-1">
+                                <span className="text-[12px] text-zinc-500">Intake Process 2026</span>
+                            </div>
+                            
+                            {/* Live Timer Countdown */}
+                            <div className="flex items-center gap-3 px-3 py-1 bg-zinc-900 border border-zinc-800">
+                                <Timer size={14} className="text-[#92E3A9] animate-pulse" />
+                                <span className="text-[11px] font-bold text-white uppercase tracking-[0.2em]">
+                                    Closes in: <span className="text-[#92E3A9] ml-1">{timeLeft}</span>
+                                </span>
+                            </div>
                         </div>
                         <h1 className="text-4xl tracking-tight text-zinc-900 md:text-5xl uppercase">
                             Application <span className="text-[#92E3A9]">Form</span>

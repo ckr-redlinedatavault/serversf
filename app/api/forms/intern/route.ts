@@ -3,6 +3,17 @@ import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {
+        // Deadline Check: March 20, 2026, 7:00 PM IST
+        const deadline = new Date("2026-03-20T19:00:00+05:30");
+        const now = new Date();
+
+        if (now > deadline) {
+            return NextResponse.json({ 
+                success: false, 
+                error: "The application period for internships has ended as of March 20, 2026, 7:00 PM IST." 
+            }, { status: 403 });
+        }
+
         const body = await req.json();
         const { name, year, branch, college, phoneNumber, githubLink, portfolioLink } = body;
 
