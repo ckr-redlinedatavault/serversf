@@ -37,7 +37,7 @@ export default function Hero() {
             <div className="flex flex-col gap-4 sm:flex-row sm:justify-center lg:justify-start">
               <Link
                 href="/courses"
-                className="flex h-12 items-center justify-center bg-black px-10 text-[14px] text-white transition-opacity hover:opacity-90 active:scale-[0.98] uppercase tracking-widest font-bold"
+                className="flex h-12 items-center justify-center bg-black px-10 text-[15px] text-white transition-opacity hover:opacity-90 active:scale-[0.98] font-medium"
               >
                 View Courses
               </Link>
