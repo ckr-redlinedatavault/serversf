@@ -95,8 +95,8 @@ export default function InternFormsAdmin() {
                 />
                 <StatCard 
                     label="Potential Candidates" 
-                    value={Math.floor(submissions.length * 0.2)} 
-                    icon={<UserCheck className="w-4 h-4 text-[#92E3A9]" />} 
+                    value={submissions.filter(s => s.portfolioLink && s.portfolioLink.trim() !== "").length} 
+                    icon={<UserCheck className="w-4 h-4 text-red-500" />} 
                 />
             </div>
 
@@ -169,7 +169,15 @@ export default function InternFormsAdmin() {
                                                 <span className="text-sm font-black text-[#92E3A9] uppercase">{submission.name.charAt(0)}</span>
                                             </div>
                                             <div className="flex flex-col">
-                                                <span className="text-sm font-bold text-white tracking-tight group-hover:text-[#92E3A9] transition-colors line-clamp-1">{submission.name}</span>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-sm font-bold text-white tracking-tight group-hover:text-[#92E3A9] transition-colors line-clamp-1">{submission.name}</span>
+                                                    {submission.portfolioLink && submission.portfolioLink.trim() !== "" && (
+                                                        <div className="flex items-center gap-1.5 px-1.5 py-0.5 bg-red-500/10 border border-red-500/20 rounded">
+                                                            <div className="w-1 h-1 bg-red-500 rounded-full animate-pulse" />
+                                                            <span className="text-[8px] font-black text-red-500 uppercase tracking-widest">Potential</span>
+                                                        </div>
+                                                    )}
+                                                </div>
                                                 <span className="text-[9px] text-zinc-600 font-bold uppercase mt-0.5 whitespace-nowrap">
                                                     Applied {new Date(submission.createdAt).toLocaleDateString()}
                                                 </span>
