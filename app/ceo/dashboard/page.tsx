@@ -3,14 +3,14 @@
 import { useEffect, useState } from "react";
 import { 
     Users,
-    Star,
     PlusCircle,
-    ChevronRight,
     Loader2,
     ClipboardList,
-    Activity,
     MessageSquare,
-    FileText
+    FileText,
+    Trash2,
+    CheckCircle2,
+    RefreshCw
 } from "lucide-react";
 
 export default function CEODashboard() {
@@ -60,6 +60,31 @@ export default function CEODashboard() {
         }
     };
 
+    const handleUpdateStatus = async (id: string, status: string) => {
+        try {
+            const res = await fetch("/api/tasks", {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id, status }),
+            });
+            if (res.ok) fetchOverview();
+        } catch (error) {
+            console.error("Update failed");
+        }
+    };
+
+    const handleDeleteTask = async (id: string) => {
+        if (!confirm("Are you sure you want to delete this task?")) return;
+        try {
+            const res = await fetch(`/api/tasks?id=${id}`, {
+                method: "DELETE",
+            });
+            if (res.ok) fetchOverview();
+        } catch (error) {
+            console.error("Delete failed");
+        }
+    };
+
     if (!stats || loading) {
         return (
             <div className="h-full w-full flex items-center justify-center p-20">
@@ -72,11 +97,11 @@ export default function CEODashboard() {
         <div className="p-6 max-w-[1400px] mx-auto w-full space-y-8">
             {/* Header */}
             <div>
-                <h1 className="text-2xl font-bold mb-1 uppercase tracking-tight">Executive <span className="text-[#92E3A9]">Overview</span></h1>
-                <p className="text-zinc-500 text-xs font-medium uppercase tracking-widest">System deployment: Nominal • Security: Active</p>
+                <h1 className="text-2xl font-bold mb-1">Executive <span className="text-[#92E3A9]">Overview</span></h1>
+                <p className="text-zinc-500 text-xs font-medium tracking-tight">System deployment: Nominal • Security: Active</p>
             </div>
 
-            {/* Stats Matrix - Using REAL Data */}
+            {/* Stats Matrix */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <StatCard 
                     icon={<Users className="w-4 h-4" />} 
@@ -112,12 +137,12 @@ export default function CEODashboard() {
                             <PlusCircle className="w-5 h-5 text-[#92E3A9]" />
                             Direct Task Broadcast
                         </h3>
-                        <p className="text-zinc-500 text-[11px] font-medium uppercase tracking-widest">Deploy operational objectives to registered units.</p>
+                        <p className="text-zinc-500 text-[11px] font-medium tracking-tight">Deploy operational objectives to registered units.</p>
                     </div>
                     
                     <form onSubmit={handleCreateTask} className="space-y-4 flex-1">
                         <div>
-                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 block">Identifier</label>
+                            <label className="text-[10px] font-black text-zinc-600 mb-2 block">Identifier</label>
                             <input 
                                 required
                                 placeholder="Task Title"
@@ -127,7 +152,7 @@ export default function CEODashboard() {
                             />
                         </div>
                         <div>
-                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-2 block">Objectives</label>
+                            <label className="text-[10px] font-black text-zinc-600 mb-2 block">Objectives</label>
                             <textarea 
                                 required
                                 placeholder="Outcome requirements..."
@@ -139,7 +164,7 @@ export default function CEODashboard() {
                         </div>
                         <button 
                             disabled={isCreatingTask}
-                            className="w-full h-12 bg-[#92E3A9] text-black rounded-xl font-black text-[11px] uppercase tracking-widest hover:bg-white transition-all flex items-center justify-center gap-2 mt-2"
+                            className="w-full h-12 bg-[#92E3A9] text-black rounded-xl font-bold text-[12px] flex items-center justify-center gap-2 mt-2"
                         >
                             {isCreatingTask ? <Loader2 className="w-4 h-4 animate-spin" /> : "Deploy Command"}
                         </button>
@@ -150,32 +175,50 @@ export default function CEODashboard() {
                 <div className="bg-[#0A0A0A] border border-zinc-900 rounded-3xl p-8 shadow-2xl flex flex-col">
                     <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-lg font-bold mb-2 flex items-center gap-3">
-                                <Activity className="w-5 h-5 text-[#92E3A9]" />
-                                Operational Log
-                            </h3>
-                            <p className="text-[11px] font-medium text-zinc-500 uppercase tracking-widest">Audit trail of broadcasted commands.</p>
+                            <h3 className="text-lg font-bold mb-2">Operational Log</h3>
+                            <p className="text-[11px] font-medium text-zinc-500 tracking-tight">Audit trail of all broadcasted commands.</p>
                         </div>
-                        <button onClick={fetchOverview} className="h-8 px-3 bg-zinc-900 border border-zinc-800 rounded-lg text-[9px] font-black text-[#92E3A9] uppercase tracking-widest hover:border-[#92E3A9]/30 transition-all">Refresh</button>
+                        <button onClick={fetchOverview} className="h-8 px-3 bg-zinc-900 border border-zinc-800 rounded-lg text-[10px] font-black text-[#92E3A9] flex items-center gap-2 hover:border-[#92E3A9]/30 transition-all group">
+                            <RefreshCw className="w-3 h-3 group-hover:rotate-180 transition-transform duration-500" />
+                            <span>Refresh</span>
+                        </button>
                     </div>
                      
                     <div className="space-y-3 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                         {tasks.map((task) => (
-                            <div key={task.id} className="bg-zinc-950 border border-zinc-900/50 p-4 rounded-xl flex flex-col group hover:border-[#92E3A9]/20 transition-all border-l-2 border-l-[#92E3A9]/40">
+                            <div key={task.id} className="bg-zinc-950 border border-zinc-900/50 p-5 rounded-xl flex flex-col group hover:border-[#92E3A9]/20 transition-all border-l-2 border-l-[#92E3A9]/40 relative overflow-hidden">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className={`text-[9px] font-black px-2 py-0.5 rounded uppercase tracking-tighter ${
+                                    <span className={`text-[10px] font-bold px-3 py-1 rounded tracking-tighter ${
                                         task.status === 'pending' ? 'bg-yellow-500/10 text-yellow-500' : 'bg-green-500/10 text-green-500'
                                     }`}>
-                                        {task.status}
+                                        {task.status.charAt(0).toUpperCase() + task.status.slice(1)}
                                     </span>
-                                    <span className="text-[9px] font-bold text-zinc-700">{new Date(task.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-[10px] font-bold text-zinc-700">{new Date(task.createdAt).toLocaleDateString()}</span>
                                 </div>
                                 <h4 className="font-bold text-sm mb-1 group-hover:text-[#92E3A9] transition-colors line-clamp-1">{task.title}</h4>
-                                <p className="text-[10px] text-zinc-600 line-clamp-1 font-medium">{task.description}</p>
+                                <p className="text-[11px] text-zinc-600 line-clamp-2 font-medium mb-6">{task.description}</p>
+                                
+                                <div className="flex items-center gap-2 pt-4 border-t border-zinc-900">
+                                    {task.status === 'pending' && (
+                                        <button 
+                                            onClick={() => handleUpdateStatus(task.id, 'completed')}
+                                            className="flex-1 flex items-center justify-center gap-2 py-2 bg-green-500/10 hover:bg-green-500 text-green-500 hover:text-white rounded-lg text-[10px] font-bold transition-all"
+                                        >
+                                            <CheckCircle2 className="w-3 h-3" />
+                                            Mark Completed
+                                        </button>
+                                    )}
+                                    <button 
+                                        onClick={() => handleDeleteTask(task.id)}
+                                        className="h-8 px-3 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg flex items-center justify-center transition-all group/trash"
+                                    >
+                                        <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
                             </div>
                         ))}
                         {tasks.length === 0 && (
-                            <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-700 text-[10px] font-bold uppercase tracking-widest">
+                            <div className="h-32 border border-dashed border-zinc-800 rounded-2xl flex items-center justify-center text-zinc-700 text-[10px] font-bold tracking-tight">
                                 No commands broadcasted
                             </div>
                         )}
@@ -194,9 +237,9 @@ function StatCard({ icon, label, value, trend }: { icon: any, label: string, val
                 <div className="p-2.5 bg-zinc-950 rounded-xl border border-zinc-900 text-zinc-600 group-hover:text-[#92E3A9] transition-colors">
                     {icon}
                 </div>
-                <span className="text-[9px] font-black text-[#92E3A9] bg-[#92E3A9]/10 px-2 py-0.5 rounded uppercase tracking-tighter">{trend}</span>
+                <span className="text-[9px] font-bold text-[#92E3A9] bg-[#92E3A9]/10 px-2 py-0.5 rounded tracking-tighter">{trend}</span>
             </div>
-            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.2em] mb-1.5 relative z-10">{label}</p>
+            <p className="text-[10px] font-black text-zinc-600 tracking-tight mb-1.5 relative z-10">{label}</p>
             <p className="text-3xl font-bold text-white relative z-10 font-mono tracking-tighter">{value}</p>
         </div>
     );

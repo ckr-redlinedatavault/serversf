@@ -30,3 +30,29 @@ export async function GET() {
         return NextResponse.json({ success: false, error: "Failed to fetch tasks" }, { status: 500 });
     }
 }
+
+export async function PATCH(req: Request) {
+    try {
+        const { id, status } = await req.json();
+        const task = await prisma.task.update({
+            where: { id },
+            data: { status }
+        });
+        return NextResponse.json({ success: true, task });
+    } catch (error) {
+        return NextResponse.json({ success: false, error: "Failed to update task" }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get("id");
+        if (!id) return NextResponse.json({ success: false, error: "Missing ID" }, { status: 400 });
+
+        await prisma.task.delete({ where: { id } });
+        return NextResponse.json({ success: true });
+    } catch (error) {
+        return NextResponse.json({ success: false, error: "Failed to delete task" }, { status: 500 });
+    }
+}
