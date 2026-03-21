@@ -1,4 +1,4 @@
-import { razorpay } from "@/lib/razorpay";
+import { getRazorpayInstance } from "@/lib/razorpay";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -10,6 +10,7 @@ export async function POST(req: Request) {
       throw new Error("Razorpay API Keys are missing in Environment Variables");
     }
 
+    const razorpay = getRazorpayInstance();
     const order = await razorpay.orders.create({
       amount: Math.round(Number(amount) * 100), // INR → paise
       currency: "INR",

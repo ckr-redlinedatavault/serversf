@@ -1,11 +1,26 @@
 import Razorpay from "razorpay";
 
-// We check if keys are present. If not, we provide a placeholder to prevent build errors.
-// The actual error will catch at runtime if someone tries to use it without Env Vars.
-const KEY_ID = process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder";
-const KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || "razor_secret_placeholder";
+export const getRazorpayInstance = () => {
+    const key_id = process.env.RAZORPAY_KEY_ID?.trim();
+    const key_secret = process.env.RAZORPAY_KEY_SECRET?.trim();
 
+    if (!key_id || !key_id.startsWith("rzp_")) {
+        throw new Error("Razorpay Key ID is missing or invalid in environment variables.");
+    }
+
+    if (!key_secret) {
+        throw new Error("Razorpay Key Secret is missing in environment variables.");
+    }
+
+    return new Razorpay({
+        key_id,
+        key_secret,
+    });
+};
+
+// Also keep the existing export for now if it is used, but ensure it's updated
 export const razorpay = new Razorpay({
-  key_id: KEY_ID,
-  key_secret: KEY_SECRET,
+  key_id: (process.env.RAZORPAY_KEY_ID || "rzp_test_placeholder").trim(),
+  key_secret: (process.env.RAZORPAY_KEY_SECRET || "razor_secret_placeholder").trim(),
 });
+

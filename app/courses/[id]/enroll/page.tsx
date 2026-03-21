@@ -142,7 +142,7 @@ export default function EnrollmentPage() {
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_RQUvSCLKCFnWZH",
                 amount: orderData.order.amount,
                 currency: "INR",
-                name: "Student Forge",
+                name: "HDFC Collect Now via Razorpay",
                 description: `Academy Enrollment: ${course?.title}`,
                 order_id: orderData.order.id,
                 handler: async function (response: any) {
@@ -208,7 +208,7 @@ export default function EnrollmentPage() {
     };
 
     const upiId = "6302933597@hdfc";
-    const upiName = "Student Forge";
+    const upiName = "HDFC Collect Now via Razorpay";
     const upiLink = `upi://pay?pa=${upiId}&pn=${encodeURIComponent(upiName)}&am=${finalPrice}&cu=INR`;
     const qrSource = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(upiLink)}`;
 
@@ -377,7 +377,7 @@ export default function EnrollmentPage() {
                                                 <img src="https://razorpay.com/assets/razorpay-glyph.svg" className="w-5 h-5" alt="R" />
                                             </div>
                                             <div className="text-left">
-                                                <h4 className="text-[13px] font-bold uppercase tracking-wider leading-none mb-1">Razorpay</h4>
+                                                <h4 className="text-[13px] font-bold uppercase tracking-wider leading-none mb-1">HDFC Collect Now via Razorpay</h4>
                                                 <p className="text-[10px] text-zinc-400 font-medium">Automatic</p>
                                             </div>
                                         </div>
@@ -398,29 +398,27 @@ export default function EnrollmentPage() {
 
                                     {/* Main Checkout Box - Less Padding */}
                                     <div className="border border-zinc-100 bg-white relative overflow-hidden shadow-sm">
-                                        {paymentMethod === "razorpay" && (
-                                            <div className="w-full bg-red-50 border-b border-red-100 py-2.5 px-6 flex items-center justify-center gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                                                <p className="text-[9px] font-bold text-red-600 uppercase tracking-[0.1em]">
-                                                    Provider issue: Please use Manual UPI
-                                                </p>
-                                            </div>
-                                        )}
-                                        
                                         <div className="p-8 md:p-10 flex flex-col items-center justify-center w-full">
                                             {paymentMethod === "razorpay" ? (
                                                 <div className="text-center space-y-6">
                                                     <div className="space-y-4">
-                                                        <h3 className="text-xl font-bold tracking-tight text-zinc-900 uppercase tracking-widest text-[14px]">Razorpay Checkout</h3>
+                                                        <h3 className="text-xl font-bold tracking-tight text-zinc-900 uppercase tracking-widest text-[14px]">HDFC Collect Now via Razorpay</h3>
                                                         <p className="text-[13px] text-zinc-500 max-w-[280px] mx-auto leading-relaxed font-medium">
-                                                            Currently unavailable due to service issues. Please switch to <span className="text-black font-bold">Manual UPI</span>.
+                                                            Pay securely using your preferred method including Cards, UPI, or Netbanking.
                                                         </p>
                                                     </div>
                                                     <button 
-                                                        disabled={true}
-                                                        className="w-full max-w-[280px] bg-zinc-50 text-zinc-300 border border-zinc-100 h-12 flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-widest cursor-not-allowed"
+                                                        onClick={handleRazorpayPayment}
+                                                        disabled={submitting}
+                                                        className="w-full max-w-[280px] bg-black text-white h-12 flex items-center justify-center gap-2 text-[11px] font-bold uppercase tracking-widest transition-opacity hover:opacity-90 active:scale-[0.98]"
                                                     >
-                                                        Payment Locked <Lock size={12} />
+                                                        {submitting ? (
+                                                            <Loader2 size={16} className="animate-spin" />
+                                                        ) : (
+                                                            <>
+                                                                Pay Securely <CreditCard size={12} />
+                                                            </>
+                                                        )}
                                                     </button>
                                                 </div>
                                             ) : (

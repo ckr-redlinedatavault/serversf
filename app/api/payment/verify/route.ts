@@ -14,12 +14,13 @@ export async function POST(req: Request) {
       formData
     } = body;
 
-    if (!process.env.RAZORPAY_KEY_SECRET) {
+    const secret = process.env.RAZORPAY_KEY_SECRET?.trim();
+    if (!secret) {
       throw new Error("Missing RAZORPAY_KEY_SECRET. Security check aborted.");
     }
 
     const generatedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .createHmac("sha256", secret)
       .update(razorpay_order_id + "|" + razorpay_payment_id)
       .digest("hex");
 
