@@ -22,6 +22,13 @@ export default function Footer() {
                 All systems functional
               </span>
             </div>
+            <div className="h-4 w-[1px] bg-zinc-800" />
+            <Link 
+              href="/payment-gateway/login" 
+              className="text-[12px] text-zinc-500 hover:text-white transition-colors"
+            >
+              Payment Portal
+            </Link>
           </div>
         </div>
 

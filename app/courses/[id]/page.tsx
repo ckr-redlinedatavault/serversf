@@ -73,33 +73,33 @@ export default function CourseDetailPage() {
 
             <main className="w-full">
                 {/* Header Section - Sharp Black */}
-                <div className="bg-black py-8 lg:py-10">
+                <div className="bg-[#0055FF] py-8 lg:py-10">
                     <div className="mx-auto max-w-7xl px-6 lg:px-10">
-                        <Breadcrumbs items={[{ label: "Academy", href: "/courses" }, { label: course.title }]} />
+                        <Breadcrumbs white items={[{ label: "Academy", href: "/courses" }, { label: course.title }]} />
                         
                         <div className="mt-8 flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
                             <div className="max-w-3xl">
                                 <h1 className="text-4xl md:text-5xl tracking-tight text-white mb-6">
                                     {course.title}
                                 </h1>
-                                <p className="text-zinc-400 text-[16px] leading-relaxed line-clamp-2">
+                                <p className="text-white/70 text-[16px] leading-relaxed line-clamp-2">
                                     {course.subtitle || course.description}
                                 </p>
                                 
                                 <div className="mt-8 flex flex-wrap gap-6 items-center">
-                                    <div className="flex items-center gap-1.5 text-zinc-400 text-[12px]">
-                                        <Star className="w-4 h-4 text-[#92E3A9] fill-current" />
+                                    <div className="flex items-center gap-1.5 text-white/50 text-[12px]">
+                                        <Star className="w-4 h-4 text-white fill-current" />
                                         <span className="text-white font-medium">{course.rating || "5.0"}</span>
                                         <span>Course Rating</span>
                                     </div>
-                                    <div className="h-3 w-[1px] bg-zinc-800" />
-                                    <div className="flex items-center gap-1.5 text-zinc-400 text-[12px]">
+                                    <div className="h-3 w-[1px] bg-white/10" />
+                                    <div className="flex items-center gap-1.5 text-white/50 text-[12px]">
                                         <Users className="w-4 h-4" />
                                         <span className="text-white font-medium">{course.enrolledCount}+</span>
                                         <span>Students Enrolled</span>
                                     </div>
-                                    <div className="h-3 w-[1px] bg-zinc-800" />
-                                    <div className="flex items-center gap-1.5 text-zinc-400 text-[12px]">
+                                    <div className="h-3 w-[1px] bg-white/10" />
+                                    <div className="flex items-center gap-1.5 text-white/50 text-[12px]">
                                         <Globe className="w-4 h-4" />
                                         <span>English</span>
                                     </div>
@@ -108,12 +108,12 @@ export default function CourseDetailPage() {
 
                             {/* Minimal Search Bar in Header */}
                             <div className="relative w-full lg:w-80 group">
-                                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-600" strokeWidth={1.5} />
-                                <input 
-                                    type="text" 
-                                    placeholder="Search in course..." 
-                                    className="h-10 w-full border border-zinc-800 bg-zinc-900 px-10 text-[12px] text-white outline-none transition-colors focus:border-[#92E3A9]"
-                                />
+                                 <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={1.5} />
+                                 <input 
+                                     type="text" 
+                                     placeholder="Search in course..." 
+                                     className="h-10 w-full border border-white/10 bg-white/10 px-10 text-[12px] text-white outline-none transition-colors focus:bg-white/15 placeholder:text-white/30"
+                                 />
                             </div>
                         </div>
                     </div>
@@ -135,7 +135,7 @@ export default function CourseDetailPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
                                         {(course.targetAudience?.length > 0 ? course.targetAudience : ["Engineering students"]).map((item: string, i: number) => (
                                             <div key={i} className="flex items-start gap-3 p-4 border border-zinc-50 bg-zinc-50/30">
-                                                <CheckCircle2 className="w-4 h-4 text-[#92E3A9] shrink-0 mt-0.5" />
+                                                <CheckCircle2 className="w-4 h-4 text-[#0055FF] shrink-0 mt-0.5" />
                                                 <span className="text-[13px] font-medium text-zinc-700">{item}</span>
                                             </div>
                                         ))}
@@ -255,7 +255,7 @@ export default function CourseDetailPage() {
                                     <div className="flex items-end gap-2 mb-8">
                                         <span className="text-3xl font-bold tracking-tighter">₹{course.price || "1499"}</span>
                                         <span className="text-zinc-400 text-sm line-through mb-1">₹{parseInt(course.price || "1499") + 2000}</span>
-                                        <span className="bg-[#92E3A9] text-black text-[10px] font-bold px-2 py-0.5 ml-2 mb-1.5">SPECIAL PRICE</span>
+                                        <span className="bg-[#0055FF] text-white text-[10px] font-bold px-2 py-0.5 ml-2 mb-1.5">SPECIAL PRICE</span>
                                     </div>
 
                                     <div className="space-y-4 mb-8">

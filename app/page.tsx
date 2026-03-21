@@ -2,7 +2,12 @@
 
 import Script from "next/script";
 import Navbar from "./components/home/Navbar";
+import SubNavbar from "./components/home/SubNavbar";
+import TopBanner from "./components/home/TopBanner";
 import Hero from "./components/home/Hero";
+import QuoteSection from "./components/home/QuoteSection";
+import Resources from "./components/home/Resources";
+import Impact from "./components/home/Impact";
 import Footer from "./components/home/Footer";
 
 export default function Home() {
@@ -13,10 +18,15 @@ export default function Home() {
         type="module"
       />
       
+      <TopBanner />
       <Navbar />
+      <SubNavbar />
 
       <main className="flex-1 w-full">
         <Hero />
+        <QuoteSection />
+        <Resources />
+        <Impact />
       </main>
 
       <Footer />

@@ -53,15 +53,15 @@ export default function InternSigninPage() {
     return (
         <div className="min-h-screen bg-white text-zinc-900 font-sans selection:bg-zinc-100 flex flex-col">
             {/* Minimal Navbar - Sharp Edges with Green Background */}
-            <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-[#92E3A9]">
+            <nav className="sticky top-0 z-50 w-full border-b border-black/5 bg-[#0055FF]">
                 <div className="mx-auto flex h-14 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
                     <Link href="/" className="flex h-9 items-center justify-center bg-black px-4 text-[12px] text-white transition-opacity hover:opacity-90 active:scale-[0.95] gap-2">
                         <ArrowLeft size={14} />
                         <span>Go back</span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <div className="h-1.5 w-1.5 bg-black" />
-                        <span className="text-[11px] font-bold text-black uppercase tracking-widest">Intern Access</span>
+                        <img src="/sf-next-logo.png" alt="SF Logo" className="h-9 w-9 object-contain" />
+                        <span className="text-[12px] font-bold text-white uppercase tracking-widest">Intern Access</span>
                     </div>
                 </div>
             </nav>
@@ -69,7 +69,7 @@ export default function InternSigninPage() {
             <main className="flex-1 flex flex-col lg:flex-row">
                 {/* Left Side: Visual Illustration Area */}
                 <div className="hidden lg:flex lg:w-1/2 bg-zinc-50 items-center justify-center p-12 lg:p-24 border-r border-zinc-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-64 h-64 bg-[#92E3A9]/10 rounded-full blur-[100px] -ml-32 -mt-32" />
+                    <div className="absolute top-0 left-0 w-64 h-64 bg-[#0055FF]/10 rounded-full blur-[100px] -ml-32 -mt-32" />
                     <div className="relative z-10 w-full max-w-xl">
                         <img 
                             src="https://ik.imagekit.io/dypkhqxip/Coding%20workshop-bro.svg" 
@@ -81,7 +81,7 @@ export default function InternSigninPage() {
 
                 {/* Right Side: Signin Form */}
                 <div className="flex-1 lg:w-1/2 flex flex-col items-center justify-center p-6 lg:p-12 bg-white relative overflow-hidden">
-                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#92E3A9]/5 rounded-full blur-[100px] -mr-32 -mb-32" />
+                    <div className="absolute bottom-0 right-0 w-64 h-64 bg-[#0055FF]/5 rounded-full blur-[100px] -mr-32 -mb-32" />
                     
                     <div className="w-full max-w-[360px] space-y-8 relative z-10">
                         <div className="space-y-6">

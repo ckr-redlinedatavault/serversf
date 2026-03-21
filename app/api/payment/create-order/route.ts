@@ -1,9 +1,12 @@
 import { getRazorpayInstance } from "@/lib/razorpay";
 import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
+  let body: any = {};
   try {
-    const { amount, courseId, name } = await req.json();
+    body = await req.json();
+    const { amount, courseId, name } = body;
     console.log("Creating Razorpay Order for amount:", amount, "Course:", courseId);
     
     if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
@@ -26,6 +29,24 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, order });
   } catch (error: any) {
     console.error("Razorpay Order Error:", error);
+
+    try {
+      await prisma.failedTransaction.create({
+        data: {
+          courseId: body.courseId,
+          name: body.name,
+          email: body.email,
+          phone: body.phone,
+          amount: body.amount?.toString(),
+          paymentMethod: "RAZORPAY",
+          reason: `Order Creation Failed: ${error.message}`,
+          errorDetails: { stack: error.stack }
+        }
+      });
+    } catch (logError) {
+      console.error("Failed to log failed transaction:", logError);
+    }
+
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

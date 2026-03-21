@@ -32,7 +32,7 @@ export default function SignInPage() {
                         <span className="text-[14px] tracking-tight">Go back</span>
                     </Link>
                     <div className="flex items-center gap-3">
-                        <div className="h-1.5 w-1.5 bg-[#92E3A9]" />
+                        <img src="/sf-next-logo.png" alt="SF Logo" className="h-9 w-9 object-contain" />
                         <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest">User Access</span>
                     </div>
                 </div>

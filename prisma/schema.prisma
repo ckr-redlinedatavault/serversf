@@ -236,3 +236,18 @@ model ResetToken {
   expires   DateTime
   createdAt DateTime @default(now())
 }
+
+model FailedTransaction {
+  id              String   @id @default(cuid())
+  courseId        String?
+  email           String?
+  name            String?
+  phone           String?
+  amount          String?
+  paymentMethod   String?
+  reason          String?
+  errorDetails    Json?
+  razorpayOrderId String?   @unique
+  razorpayPaymentId String? @unique
+  createdAt       DateTime  @default(now())
+}

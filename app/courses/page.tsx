@@ -36,9 +36,13 @@ export default function CoursesPage() {
             {/* Minimal Navbar - Sharp Edges */}
             <nav className="sticky top-0 z-50 w-full border-b border-zinc-100 bg-white/95 backdrop-blur-sm">
                 <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-6 lg:px-10">
-                    <Link href="/" className="flex items-center gap-3 transition-opacity hover:opacity-70">
-                        <Home size={16} />
-                        <span className="text-[14px] tracking-tight">Home</span>
+                    <Link href="/" className="flex items-center gap-3 group transition-all">
+                        <img src="/sf-next-logo.png" alt="Student Forge Logo" className="h-9 w-9 object-contain transition-transform group-hover:scale-105 duration-300" />
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3">
+                            <span className="text-[14px] font-bold tracking-tight text-zinc-900 leading-none">Student Forge</span>
+                            <div className="hidden sm:block h-3 w-[1px] bg-zinc-200" />
+                            <span className="hidden sm:block text-[11px] text-zinc-400 font-bold uppercase tracking-widest leading-none mt-0.5">Academy</span>
+                        </div>
                     </Link>
                     <div className="flex gap-8">
                         <Link href="/courses" className="text-[12px] text-black font-bold uppercase tracking-widest border-b border-black">Courses</Link>
@@ -50,31 +54,31 @@ export default function CoursesPage() {
 
             <main className="w-full">
                 {/* Header Section - Sharp Black */}
-                <div className="bg-black py-12 lg:py-16">
+                <div className="bg-[#0055FF] py-12 lg:py-16">
                     <div className="mx-auto max-w-7xl px-6 lg:px-10">
-                        <Breadcrumbs items={[{ label: "Academy", href: "/" }, { label: "Courses" }]} />
+                        <Breadcrumbs white items={[{ label: "Academy", href: "/" }, { label: "Courses" }]} />
 
                         <div className="mt-8 flex flex-col justify-between gap-10 lg:flex-row lg:items-end">
                             <div>
                                 <div className="flex items-center gap-2 mb-4">
-                                    <div className="h-1.5 w-1.5 bg-[#92E3A9]" />
-                                    <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Academy</span>
+                                    <div className="h-1.5 w-1.5 bg-[#0055FF]" />
+                                    <span className="text-[11px] font-bold text-white/50 uppercase tracking-widest">Academy</span>
                                 </div>
                                 <h1 className="mb-4 text-4xl tracking-tight text-white md:text-5xl">
                                     Our Courses
                                 </h1>
-                                <p className="max-w-md text-[14px] leading-relaxed text-zinc-400">
+                                <p className="max-w-md text-[14px] leading-relaxed text-white/70">
                                     Learn how to build better software with our expert-led courses and projects.
                                 </p>
                             </div>
 
                             {/* Sharp Dark Search Bar */}
                             <div className="relative w-full lg:w-96 group">
-                                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" strokeWidth={1.5} />
+                                <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-white/40" strokeWidth={1.5} />
                                 <input 
                                     type="text" 
                                     placeholder="Find a course or instructor..." 
-                                    className="h-11 w-full border border-zinc-800 bg-zinc-900 px-11 text-[13px] text-white outline-none transition-colors focus:border-[#92E3A9]"
+                                    className="h-11 w-full border border-white/10 bg-white/10 px-11 text-[13px] text-white outline-none transition-colors focus:bg-white/15 placeholder:text-white/30"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
                                 />
@@ -111,7 +115,7 @@ export default function CoursesPage() {
                                     <div className="p-8 flex flex-col flex-1">
                                         <div className="flex items-center gap-3 mb-4">
                                             <div className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
-                                                <Star className="w-3 h-3 text-[#92E3A9] fill-current" />
+                                                <Star className="w-3 h-3 text-[#0055FF] fill-current" />
                                                 <span className="text-zinc-900 font-bold">{course.rating || "5.0"}</span>
                                             </div>
                                             <div className="h-3 w-[1px] bg-zinc-100" />

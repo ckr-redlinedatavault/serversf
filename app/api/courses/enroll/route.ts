@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
+    let body: any = {};
     try {
-        const body = await req.json();
+        body = await req.json();
         const {
             courseId,
             name,
@@ -43,6 +44,24 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: true, enrollment });
     } catch (error: any) {
         console.error("Enrollment Error:", error);
+
+        try {
+            await prisma.failedTransaction.create({
+                data: {
+                    courseId: body?.courseId,
+                    name: body.name,
+                    email: body.email,
+                    phone: body.phone,
+                    amount: body.amount?.toString(),
+                    paymentMethod: "MANUAL_UPI",
+                    reason: `Enrollment Failed: ${error.message === "This Reference ID has already been used." ? "Duplicate reference ID" : error.message}`,
+                    errorDetails: { referenceId: body.referenceId, stack: error.stack }
+                }
+            });
+        } catch (logError) {
+            console.error("Failed to log failed transaction:", logError);
+        }
+
         if (error.code === 'P2002') {
             return NextResponse.json({ success: false, error: "This Reference ID has already been used." }, { status: 400 });
         }
