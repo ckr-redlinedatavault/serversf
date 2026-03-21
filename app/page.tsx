@@ -8,6 +8,8 @@ import Hero from "./components/home/Hero";
 import QuoteSection from "./components/home/QuoteSection";
 import Resources from "./components/home/Resources";
 import Impact from "./components/home/Impact";
+import Community from "./components/home/Community";
+import CTA from "./components/home/CTA";
 import Footer from "./components/home/Footer";
 
 export default function Home() {
@@ -24,9 +26,11 @@ export default function Home() {
 
       <main className="flex-1 w-full">
         <Hero />
-        <QuoteSection />
-        <Resources />
         <Impact />
+        <Resources />
+        <QuoteSection />
+        <Community />
+        <CTA />
       </main>
 
       <Footer />

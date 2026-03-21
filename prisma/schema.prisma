@@ -251,3 +251,14 @@ model FailedTransaction {
   razorpayPaymentId String? @unique
   createdAt       DateTime  @default(now())
 }
+
+model Idea {
+  id          String   @id @default(cuid())
+  name        String
+  subline     String
+  title       String
+  description String
+  likes       Int      @default(0)
+  shares      Int      @default(0)
+  createdAt   DateTime @default(now())
+}
