@@ -131,8 +131,8 @@ function InternDashboardContent() {
                              <FileBadge size={28} />
                           </div>
                           <div className="flex-1 text-center sm:text-left">
-                             <h3 className="text-lg font-bold uppercase tracking-tighter italic">Official Documentation Issued</h3>
-                             <p className="text-[11px] font-bold text-zinc-400 mt-1 uppercase tracking-widest leading-none">Your Internship Confirmation Letter is ready for download</p>
+                             <h3 className="text-[17px] font-bold text-white tracking-tight">Official Internship Letter Issued</h3>
+                             <p className="text-[13px] text-zinc-400 mt-1 leading-none font-medium">Your internship confirmation letter is ready for download.</p>
                           </div>
                           <a 
                             href={userStatus.letterUrl}
@@ -293,9 +293,9 @@ function InternDashboardContent() {
                             <FileBadge size={40} />
                          </div>
                          
-                         <h2 className="text-3xl font-bold tracking-tight mb-4 uppercase tracking-tighter">Credential Issued</h2>
+                         <h2 className="text-3xl font-bold tracking-tight mb-4">Credential Issued</h2>
                          <p className="text-zinc-500 text-[15px] leading-relaxed mb-10 font-medium">
-                            The administration has authorized and issued your official **Internship Confirmation Letter**. You can now download and view your credentials.
+                            The administration has authorized and issued your official internship confirmation letter. You can now download and view your credentials.
                          </p>
 
                          <div className="flex flex-col w-full gap-4">
@@ -307,7 +307,7 @@ function InternDashboardContent() {
                                  setShowLetterModal(false);
                                  localStorage.setItem(`letter_ack_${user.id}`, userStatus.letterUrl);
                               }}
-                              className="h-16 bg-black text-white text-[13px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all rounded-none shadow-xl shadow-black/10"
+                              className="h-16 bg-black text-white text-[12px] font-bold tracking-widest flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all rounded-none shadow-xl shadow-black/10"
                             >
                                Download Credentials <Download size={18} />
                             </a>
