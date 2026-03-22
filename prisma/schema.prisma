@@ -289,3 +289,14 @@ model Idea {
   shares      Int      @default(0)
   createdAt   DateTime @default(now())
 }
+
+model Mentorship {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  date        String
+  time        String
+  topic       String
+  status      String   @default("pending") // pending, scheduled, completed, rejected
+  createdAt   DateTime @default(now())
+}

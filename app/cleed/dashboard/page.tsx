@@ -53,10 +53,22 @@ interface Task {
   createdAt: string;
 }
 
+interface MentorshipSession {
+  id: string;
+  name: string;
+  email: string;
+  date: string;
+  time: string;
+  topic: string;
+  status: string;
+  createdAt: string;
+}
+
 export default function CleedDashboard() {
   const [activeTab, setActiveTab] = useState("interns");
   const [interns, setInterns] = useState<Intern[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [mentorshipSessions, setMentorshipSessions] = useState<MentorshipSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   
   // Selection
@@ -98,14 +110,17 @@ export default function CleedDashboard() {
 
   const fetchData = async () => {
     try {
-      const [internsRes, tasksRes] = await Promise.all([
+      const [internsRes, tasksRes, mentorshipRes] = await Promise.all([
         fetch("/api/cleed/interns"),
-        fetch("/api/cleed/tasks")
+        fetch("/api/cleed/tasks"),
+        fetch("/api/mentorship")
       ]);
       const internsData = await internsRes.json();
       const tasksData = await tasksRes.json();
+      const mentorshipData = await mentorshipRes.json();
       setInterns(internsData);
       setTasks(tasksData);
+      setMentorshipSessions(mentorshipData);
     } catch (err) {
       console.error("Failed to load dashboard data");
     } finally {
@@ -249,6 +264,7 @@ export default function CleedDashboard() {
                { id: "assign", icon: Send, label: "Dispatch Task" },
                { id: "certification", icon: FileBadge, label: "Issuance Hub" },
                { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
+               { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
                { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                { id: "history", icon: History, label: "Logbook" }
              ].map((item) => (
@@ -296,7 +312,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-sm">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300" />
                 <span className="text-zinc-900 font-bold text-sm">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "attendance" ? "Attendance" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "attendance" ? "Attendance" : "Logbook"}
                 </span>
              </div>
              
@@ -667,6 +683,74 @@ export default function CleedDashboard() {
                                 <td colSpan={3} className="px-8 py-20 text-center">
                                    <ShieldCheck size={48} className="mx-auto text-zinc-100 mb-4" />
                                    <p className="text-zinc-400 font-medium tracking-tight uppercase tracking-widest text-[11px]">System Clear: No Pending Requests</p>
+                                </td>
+                             </tr>
+                          )}
+                       </tbody>
+                    </table>
+                 </div>
+              </motion.div>
+           )}
+
+           {/* Mentorship Sessions Tab */}
+           {activeTab === "mentorship" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                 <div className="flex items-center justify-between">
+                    <div>
+                       <h2 className="text-2xl font-bold tracking-tight">Mentorship Registry</h2>
+                       <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Live session tracking and scheduling</p>
+                    </div>
+                 </div>
+
+                 <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5 rounded-none">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="bg-zinc-100 border-b border-zinc-200">
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Mentee Personnel</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Topic / Challenge</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Schedule Node</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500 text-right">Status State</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-zinc-100">
+                          {mentorshipSessions.map((session) => (
+                             <tr key={session.id} className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="px-8 py-5">
+                                   <div>
+                                      <p className="text-[14px] font-bold">{session.name}</p>
+                                      <p className="text-[10px] text-zinc-400 font-medium">{session.email}</p>
+                                   </div>
+                                </td>
+                                <td className="px-8 py-5 max-w-xs">
+                                   <p className="text-[13px] text-zinc-600 font-medium line-clamp-1" title={session.topic}>
+                                      {session.topic}
+                                   </p>
+                                </td>
+                                <td className="px-8 py-5">
+                                   <div className="flex items-center gap-2 text-zinc-900">
+                                      <Calendar size={12} className="text-[#0055FF]" />
+                                      <span className="text-[12px] font-bold">{session.date}</span>
+                                      <span className="text-[12px] text-zinc-400">|</span>
+                                      <Clock size={12} className="text-zinc-400" />
+                                      <span className="text-[12px] font-medium">{session.time}</span>
+                                   </div>
+                                </td>
+                                <td className="px-8 py-5 text-right">
+                                   <span className={`px-2 py-0.5 text-[9px] font-bold uppercase border ${
+                                      session.status === "completed" ? "bg-emerald-50 text-emerald-600 border-emerald-100" :
+                                      session.status === "pending" ? "bg-amber-50 text-amber-600 border-amber-100" :
+                                      "bg-zinc-50 text-zinc-400 border-zinc-100"
+                                   }`}>
+                                      {session.status}
+                                   </span>
+                                </td>
+                             </tr>
+                          ))}
+                          {mentorshipSessions.length === 0 && (
+                             <tr>
+                                <td colSpan={4} className="px-8 py-20 text-center">
+                                   <Users size={48} className="mx-auto text-zinc-100 mb-4" />
+                                   <p className="text-zinc-400 font-medium tracking-tight uppercase tracking-widest text-[11px]">No Mentorship Protocol Active</p>
                                 </td>
                              </tr>
                           )}

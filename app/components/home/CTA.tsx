@@ -43,7 +43,7 @@ export default function CTA() {
             className="mt-10 flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
           >
             <Link
-              href="/get-started"
+              href="/contact"
               className="h-16 px-12 bg-black text-white text-[16px] font-semibold flex items-center justify-center gap-3 transition-all hover:bg-zinc-900 active:scale-[0.98] rounded-none"
             >
               Join Now <ArrowRight className="w-5 h-5" />
