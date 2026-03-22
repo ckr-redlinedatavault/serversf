@@ -67,6 +67,15 @@ export default function Community() {
                 </svg>
                 Join Discord
               </Link>
+              <Link 
+                href="https://chat.whatsapp.com/YOUR_WHATSAPP_LINK" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="h-14 px-8 border border-zinc-200 text-black text-[14px] font-semibold hover:border-[#25D366] hover:text-[#25D366] transition-all rounded-none flex items-center justify-center gap-3"
+              >
+                <MessageCircle size={20} />
+                Join WhatsApp
+              </Link>
             </motion.div>
           </div>
 
