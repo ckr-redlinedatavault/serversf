@@ -43,3 +43,25 @@ body {
 .card-minimal {
   @apply border border-zinc-100 transition-all duration-300 hover:border-black;
 }
+
+/* Lenis Smooth Scroll Rules */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+.lenis.lenis-scrolling iframe {
+  pointer-events: none;
+}

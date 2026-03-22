@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   },
 };
 
+import SmoothScroll from "./components/home/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -36,7 +38,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-zinc-50 selection:text-black`}
       >
         <Script src="https://checkout.razorpay.com/v1/checkout.js" strategy="beforeInteractive" />
-        {children}
+        <SmoothScroll>
+          {children}
+        </SmoothScroll>
       </body>
     </html>
   );
