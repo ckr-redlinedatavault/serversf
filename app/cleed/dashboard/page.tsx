@@ -203,6 +203,35 @@ export default function CleedDashboard() {
     }
   };
 
+  const handleMarkAllAttendance = async (status: string) => {
+    const approvedInterns = interns.filter(i => i.isApproved);
+    if (approvedInterns.length === 0) return;
+    
+    setMarkingId("all");
+    try {
+      await Promise.all(
+        approvedInterns.map(intern => {
+          const record = currentAttendance.find(a => a.userId === intern.id);
+          return fetch("/api/cleed/attendance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ 
+              internId: intern.id, 
+              status, 
+              workSummary: record?.workSummary || "", 
+              date: selectedDate 
+            })
+          });
+        })
+      );
+      await fetchAttendance();
+    } catch (err) {
+      console.error("Batch protocol failure");
+    } finally {
+      setMarkingId(null);
+    }
+  };
+
   const raisedHandsCount = interns.filter(i => i.handRaised).length;
 
   return (
@@ -296,8 +325,8 @@ export default function CleedDashboard() {
                          <Hand size={24} className="animate-bounce" />
                       </div>
                       <div>
-                         <h3 className="text-lg font-bold uppercase tracking-tight leading-none">SOS: Signals Active</h3>
-                         <p className="text-[11px] font-bold uppercase tracking-[0.2em] opacity-70 mt-1">
+                         <h3 className="text-lg font-bold tracking-tight leading-none">Signals Active</h3>
+                         <p className="text-[11px] font-bold opacity-70 mt-1">
                             {raisedHandsCount} Registered Interns require immediate protocol intervention
                          </p>
                       </div>
@@ -317,31 +346,31 @@ export default function CleedDashboard() {
                    <div className="flex flex-col sm:flex-row gap-4">
                       <button 
                         onClick={() => setActiveTab("interns")}
-                        className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-900 transition-all rounded-none"
+                        className="h-12 px-8 bg-black text-white text-[11px] font-bold hover:bg-zinc-900 transition-all rounded-none"
                       >
                          Inspect Registry
                       </button>
                       
                       <button 
-                        onClick={async () => {
-                           if(confirm("Protocol Confirmation: Standardize all signal states? This will lower ALL raised hands across the registry.")) {
-                              try {
-                                 const res = await fetch("/api/cleed/interns/lower-all", { method: "POST" });
-                                 if(res.ok) fetchData();
-                              } catch(e) {}
-                           }
-                        }}
-                        className="h-12 px-8 bg-white border border-black/10 text-black text-[11px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all rounded-none"
-                      >
-                         Dismiss All Signals
-                      </button>
+                         onClick={async () => {
+                            if(confirm("Protocol Confirmation: Standardize all signal states? This will lower ALL raised hands across the registry.")) {
+                               try {
+                                  const res = await fetch("/api/cleed/interns/lower-all", { method: "POST" });
+                                  if(res.ok) fetchData();
+                               } catch(e) {}
+                            }
+                         }}
+                         className="h-12 px-8 bg-white border border-black/10 text-black text-[11px] font-bold hover:bg-black hover:text-white transition-all rounded-none"
+                       >
+                          Dismiss All Signals
+                       </button>
                    </div>
                 </motion.div>
              )}
 
              {/* Interns Tab */}
              {activeTab === "interns" && (
-                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                    <div className="flex items-center justify-between">
                       <div className="flex items-center gap-4">
                          <h2 className="text-2xl font-bold tracking-tight">Registered Interns</h2>
@@ -351,88 +380,97 @@ export default function CleedDashboard() {
                             </span>
                          )}
                       </div>
-                      <span className="px-4 py-1.5 bg-white border border-zinc-100 text-[11px] font-bold text-[#0055FF] uppercase tracking-widest flex items-center gap-2">
+                      <span className="px-4 py-1.5 bg-white border border-zinc-100 text-[11px] font-bold text-[#0055FF] flex items-center gap-2">
                          <div className="h-1.5 w-1.5 bg-[#0055FF] rounded-full animate-pulse" />
                          {interns.length} Direct Entities
                       </span>
                    </div>
 
-                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {interns.filter(i => i.isApproved).map((intern) => (
-                         <div key={intern.id} className={`bg-white border p-8 group transition-all relative overflow-hidden rounded-none ${
-                            intern.handRaised ? "border-amber-400 shadow-xl shadow-amber-500/10" : "border-zinc-100 hover:border-[#0055FF]/40 hover:shadow-2xl hover:shadow-black/[0.02]"
-                         }`}>
-                            {intern.handRaised && (
-                               <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 animate-pulse" />
-                            )}
-                            
-                            {intern.letterUrl && (
-                               <div className="absolute top-0 right-12 h-8 w-8 bg-emerald-500 text-white flex items-center justify-center">
-                                  <FileText size={14} />
-                               </div>
-                            )}
-
-                            <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
-                               <button onClick={() => { setSelectedIntern(intern); setActiveTab("assign"); }} className="h-8 w-8 bg-[#0055FF] text-white flex items-center justify-center">
-                                  <Send size={14} />
-                               </button>
-                               <button onClick={() => { setSelectedIntern(intern); setActiveTab("certification"); }} className="h-8 w-8 bg-emerald-500 text-white flex items-center justify-center">
-                                  <FileBadge size={14} />
-                               </button>
-                            </div>
-                            
-                            <div className="flex items-center gap-4 mb-6">
-                               <div className={`h-12 w-12 flex items-center justify-center text-sm font-bold transition-colors ${
-                                  intern.handRaised ? "bg-amber-500 text-black" : "bg-black text-white"
-                               }`}>
-                                  {intern.name[0]}
-                               </div>
-                               <div>
-                                  <div className="flex items-center gap-2">
-                                     <h3 className="font-bold text-[15px]">{intern.name}</h3>
-                                     {intern.handRaised && <Hand size={14} className="text-amber-500 animate-bounce" />}
-                                  </div>
-                                  <p className="text-[11px] text-zinc-400 font-medium uppercase tracking-widest">{intern.internForm?.branch || "Trainee"}</p>
-                               </div>
-                            </div>
-
-                            <div className="space-y-3 pt-6 border-t border-zinc-50">
-                               <div className="flex items-center gap-3 text-[12px] text-zinc-500">
-                                  <Mail size={14} className="text-zinc-300" />
-                                  <span>{intern.email}</span>
-                               </div>
-                               <div className="flex items-center gap-3 text-[12px] text-zinc-500">
-                                  <Briefcase size={14} className="text-zinc-300" />
-                                  <span>{intern.internForm?.college || "Global Forge"}</span>
-                               </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 mt-8">
-                               <Link href={intern.internForm?.githubLink || "#"} className="h-8 px-4 border border-zinc-100 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest hover:border-[#0055FF] hover:text-[#0055FF] transition-all">
-                                  <Github size={12} /> Git
-                                </Link>
-                                {intern.handRaised ? (
-                                   <div className="h-8 px-4 bg-amber-500 text-black text-[9px] font-bold uppercase tracking-[0.2em] flex items-center gap-2">
-                                      Signal Active
-                                   </div>
-                                ) : (
-                                   <button className="h-8 w-8 border border-zinc-100 flex items-center justify-center hover:border-[#0055FF] hover:text-[#0055FF] transition-all">
-                                      <History size={12} />
-                                   </button>
-                                )}
-                            </div>
-                         </div>
-                      ))}
-                   </div>
-                </motion.div>
+                    <div className="bg-white border border-zinc-100 overflow-hidden shadow-sm rounded-none">
+                       <table className="w-full text-left">
+                          <thead>
+                             <tr className="bg-zinc-50 border-b border-zinc-100">
+                                <th className="px-6 py-4 text-[11px] font-bold text-zinc-400">Intern Personnel</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-zinc-400">Academic Affiliation</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-zinc-400">Contact Logic</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-zinc-400">Protocol Status</th>
+                                <th className="px-6 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-wider text-right">Actions</th>
+                             </tr>
+                          </thead>
+                          <tbody className="divide-y divide-zinc-50">
+                             {interns.filter(i => i.isApproved).map((intern) => (
+                                <tr key={intern.id} className={`hover:bg-zinc-50/50 transition-colors ${intern.handRaised ? "bg-amber-50/20" : ""}`}>
+                                   <td className="px-6 py-4">
+                                      <div className="flex items-center gap-3">
+                                         <div className={`h-10 w-10 flex items-center justify-center text-xs font-bold ${
+                                            intern.handRaised ? "bg-amber-500 text-black" : "bg-black text-white"
+                                         }`}>
+                                            {intern.name[0]}
+                                         </div>
+                                         <div>
+                                            <div className="flex items-center gap-2">
+                                               <p className="text-[14px] font-bold leading-none">{intern.name}</p>
+                                               {intern.handRaised && <Hand size={12} className="text-amber-500 animate-bounce" />}
+                                            </div>
+                                            <p className="text-[10px] text-zinc-400 font-medium mt-1">{intern.internForm?.branch || "Trainee"}</p>
+                                         </div>
+                                      </div>
+                                   </td>
+                                   <td className="px-6 py-4 text-[13px] text-zinc-600 font-medium">
+                                      {intern.internForm?.college || "Global Forge"}
+                                   </td>
+                                   <td className="px-6 py-4 text-[13px] text-zinc-500">
+                                      {intern.email}
+                                   </td>
+                                   <td className="px-6 py-4">
+                                      <div className="flex items-center gap-2">
+                                         {intern.letterUrl ? (
+                                            <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 text-[9px] font-bold uppercase border border-emerald-100">Certified</span>
+                                         ) : (
+                                            <span className="px-2 py-0.5 bg-zinc-50 text-zinc-400 text-[9px] font-bold uppercase border border-zinc-100">Pending</span>
+                                         )}
+                                      </div>
+                                   </td>
+                                   <td className="px-6 py-4 text-right">
+                                      <div className="flex justify-end gap-2">
+                                         <button 
+                                           onClick={() => { setSelectedIntern(intern); setActiveTab("assign"); }}
+                                           className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-[#0055FF] hover:text-white flex items-center justify-center transition-all border border-zinc-100"
+                                           title="Assign Task"
+                                         >
+                                            <Send size={14} />
+                                         </button>
+                                         <button 
+                                           onClick={() => { setSelectedIntern(intern); setActiveTab("certification"); }}
+                                           className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all border border-zinc-100"
+                                           title="Issue Certificate"
+                                         >
+                                            <FileBadge size={14} />
+                                         </button>
+                                         <Link 
+                                           href={intern.internForm?.githubLink || "#"} 
+                                           target="_blank"
+                                           className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-black hover:text-white flex items-center justify-center transition-all border border-zinc-100"
+                                           title="Review GitHub"
+                                         >
+                                            <Github size={14} />
+                                         </Link>
+                                      </div>
+                                   </td>
+                                </tr>
+                             ))}
+                          </tbody>
+                       </table>
+                    </div>
+                 </motion.div>
              )}
 
              {/* Certification Hub Tab */}
              {activeTab === "certification" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
                    <div className="text-center mb-12">
-                      <h2 className="text-3xl font-bold tracking-tight mb-3 uppercase tracking-tighter">Issuance Protocol</h2>
-                      <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Grant official internship credentials</p>
+                      <h2 className="text-3xl font-bold tracking-tight mb-3">Issuance Protocol</h2>
+                      <p className="text-zinc-500 text-sm font-medium">Grant official internship credentials</p>
                    </div>
 
                    <form onSubmit={handleSendLetter} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5 rounded-none">
@@ -499,8 +537,8 @@ export default function CleedDashboard() {
              {activeTab === "assign" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
                    <div className="text-center mb-12">
-                      <h2 className="text-3xl font-bold tracking-tight mb-3 uppercase tracking-tighter">Dispatch Mission</h2>
-                      <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Allocate individual tasks to your registered assets</p>
+                      <h2 className="text-3xl font-bold tracking-tight mb-3">Dispatch Mission</h2>
+                      <p className="text-zinc-500 text-sm font-medium">Allocate individual tasks to your registered assets</p>
                    </div>
 
                    <form onSubmit={handlePostTask} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5 rounded-none">
@@ -600,18 +638,17 @@ export default function CleedDashboard() {
                        <tbody className="divide-y divide-zinc-100">
                           {interns.filter(i => !i.isApproved).map((intern) => (
                              <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
-                                <td className="px-8 py-6">
+                                <td className="px-6 py-3">
                                    <div className="flex items-center gap-3">
-                                      <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold">
+                                      <div className="h-8 w-8 bg-black text-white flex items-center justify-center font-bold text-[10px]">
                                          {intern.name[0]}
                                       </div>
                                       <div>
                                          <p className="text-[14px] font-bold">{intern.name}</p>
-                                         <p className="text-[11px] text-zinc-400 font-medium">New Node Registered</p>
                                       </div>
                                    </div>
                                 </td>
-                                <td className="px-8 py-6">
+                                <td className="px-6 py-3">
                                    <p className="text-[13px] text-zinc-600 font-medium">{intern.email}</p>
                                 </td>
                                 <td className="px-8 py-6 text-right">
@@ -641,62 +678,75 @@ export default function CleedDashboard() {
 
            {/* Attendance Protocol Tab */}
            {activeTab === "attendance" && (
-              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
                        <h2 className="text-2xl font-bold tracking-tight">Attendance Protocol</h2>
                        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Operational presence and work tracking</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                       <input 
-                         type="date" 
-                         value={selectedDate}
-                         onChange={(e) => setSelectedDate(e.target.value)}
-                         className="h-12 px-6 bg-white border border-zinc-100 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#0055FF] transition-all rounded-none"
-                       />
-                       <button 
-                         onClick={fetchAttendance}
-                         className="h-12 w-12 bg-white border border-zinc-100 flex items-center justify-center hover:bg-zinc-50 transition-all rounded-none"
-                       >
-                          <History size={16} />
-                       </button>
-                    </div>
+                    <div className="flex flex-wrap items-center gap-4">
+                        <div className="flex border border-zinc-100 bg-white p-1">
+                           <button 
+                             onClick={() => handleMarkAllAttendance("PRESENT")}
+                             disabled={markingId === "all"}
+                             className="h-10 px-4 text-[10px] font-bold text-emerald-600 hover:bg-emerald-50 transition-all rounded-none disabled:opacity-50"
+                           >
+                              {markingId === "all" ? "Syncing..." : "Mark All Present"}
+                           </button>
+                           <div className="w-[1px] bg-zinc-100" />
+                           <button 
+                             onClick={() => handleMarkAllAttendance("ABSENT")}
+                             disabled={markingId === "all"}
+                             className="h-10 px-4 text-[10px] font-bold text-rose-600 hover:bg-rose-50 transition-all rounded-none disabled:opacity-50"
+                           >
+                              Mark All Absent
+                           </button>
+                        </div>
+                        <input 
+                          type="date" 
+                          value={selectedDate}
+                          onChange={(e) => setSelectedDate(e.target.value)}
+                          className="h-12 px-6 bg-white border border-zinc-100 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#0055FF] transition-all rounded-none"
+                        />
+                        <button 
+                          onClick={fetchAttendance}
+                          className="h-12 w-12 bg-white border border-zinc-100 flex items-center justify-center hover:bg-zinc-50 transition-all rounded-none"
+                        >
+                           <History size={16} />
+                        </button>
+                     </div>
                  </div>
 
                  <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5 rounded-none">
                     <table className="w-full text-left">
                        <thead>
                           <tr className="bg-zinc-50 border-b border-zinc-100">
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Personnel</th>
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Presence State</th>
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Operational Summary</th>
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Synchronization</th>
-                          </tr>
-                       </thead>
+                              <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Personnel Node</th>
+                              <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Presence State</th>
+                              <th className="px-8 py-5 text-[10px] font-bold text-zinc-400 text-right">State Sync</th>
+                           </tr>
+                        </thead>
                        <tbody className="divide-y divide-zinc-50">
                           {interns.filter(i => i.isApproved).map((intern) => {
                              const record = currentAttendance.find(a => a.userId === intern.id);
                              return (
                                 <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
-                                   <td className="px-8 py-6">
+                                   <td className="px-8 py-5">
                                       <div className="flex items-center gap-3">
-                                         <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold">
+                                         <div className="h-8 w-8 bg-black text-white flex items-center justify-center font-bold text-[10px]">
                                             {intern.name[0]}
                                          </div>
-                                         <div>
-                                            <p className="text-[14px] font-bold">{intern.name}</p>
-                                            <p className="text-[10px] text-zinc-400 uppercase tracking-widest">{intern.internForm?.branch || "Trainee"}</p>
-                                         </div>
+                                         <p className="text-[14px] font-bold">{intern.name}</p>
                                       </div>
                                    </td>
-                                   <td className="px-8 py-6">
+                                   <td className="px-8 py-5">
                                       <select 
                                         defaultValue={record?.status || "PRESENT"}
                                         onChange={(e) => handleMarkAttendance(intern.id, e.target.value, record?.workSummary || "")}
-                                        className={`h-10 px-4 text-[10px] font-bold uppercase tracking-widest border outline-none transition-all rounded-none ${
-                                           record?.status === "ABSENT" ? "border-rose-200 bg-rose-50 text-rose-600" :
-                                           record?.status === "LATE" ? "border-amber-200 bg-amber-50 text-amber-600" :
-                                           "border-emerald-200 bg-emerald-50 text-emerald-600"
+                                        className={`h-9 px-4 text-[10px] font-bold border outline-none transition-all rounded-none ${
+                                           record?.status === "ABSENT" ? "text-rose-600" :
+                                           record?.status === "LATE" ? "text-amber-600" :
+                                           "text-emerald-600"
                                         }`}
                                       >
                                          <option value="PRESENT">Present</option>
@@ -705,26 +755,14 @@ export default function CleedDashboard() {
                                          <option value="VACATION">Vacation</option>
                                       </select>
                                    </td>
-                                   <td className="px-8 py-6">
-                                      <textarea 
-                                        defaultValue={record?.workSummary || ""}
-                                        placeholder="Sync operational objectives..."
-                                        onBlur={(e) => handleMarkAttendance(intern.id, record?.status || "PRESENT", e.target.value)}
-                                        className="w-full bg-zinc-50 border border-zinc-100 p-3 text-[12px] outline-none focus:border-[#0055FF] transition-all resize-none min-h-[60px] rounded-none"
-                                      />
-                                   </td>
-                                   <td className="px-8 py-6 text-right">
-                                      <div className="flex justify-end gap-2">
+                                   <td className="px-8 py-5 text-right">
+                                      <div className="flex justify-end">
                                          {markingId === intern.id ? (
-                                            <div className="h-8 w-8 border-2 border-[#0055FF] border-t-transparent animate-spin" />
+                                            <div className="h-6 w-6 border-2 border-[#0055FF] border-t-transparent animate-spin" />
                                          ) : record ? (
-                                            <div className="h-8 w-8 bg-emerald-500 text-white flex items-center justify-center" title="Synchronized">
-                                               <CheckCircle2 size={16} />
-                                            </div>
+                                            <CheckCircle2 size={16} className="text-emerald-500" />
                                          ) : (
-                                            <div className="h-8 w-8 bg-zinc-100 text-zinc-400 flex items-center justify-center" title="Pending Sync">
-                                               <Clock size={16} />
-                                            </div>
+                                            <Clock size={16} className="text-zinc-200" />
                                          )}
                                       </div>
                                    </td>
@@ -755,66 +793,64 @@ export default function CleedDashboard() {
                              <tr className="bg-zinc-50 border-b border-zinc-100">
                                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Assigned Asset</th>
                                 <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Task Protocol</th>
-                                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">System Status</th>
-                                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Timestamp</th>
-                                <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Action</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Assigned Asset</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Task Protocol</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">System Status</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Timestamp</th>
+                                <th className="px-8 py-5 text-[10px] font-bold text-zinc-400 text-right">Action</th>
                              </tr>
                           </thead>
                           <tbody className="divide-y divide-zinc-50">
-                             {tasks.map((task) => (
-                                <tr key={task.id} className="hover:bg-zinc-50/50 transition-colors">
-                                   <td className="px-8 py-6">
-                                      <div className="flex items-center gap-3">
-                                         <div className="h-8 w-8 bg-zinc-100 flex items-center justify-center text-[10px] font-bold">
-                                            {task.user?.name[0]}
-                                         </div>
-                                         <div>
-                                            <p className="text-[13px] font-bold">{task.user?.name}</p>
-                                            <p className="text-[10px] text-zinc-400">{task.user?.email}</p>
-                                         </div>
-                                      </div>
-                                   </td>
-                                   <td className="px-8 py-6">
-                                      <div className="flex items-center gap-2">
-                                         <p className="text-[13px] font-bold">{task.title}</p>
-                                         {task.attachmentUrl && (
-                                            <a href={task.attachmentUrl} target="_blank" rel="noopener noreferrer" className="text-[#0055FF] hover:scale-110 transition-transform">
-                                               <Paperclip size={14} />
-                                            </a>
-                                         )}
-                                      </div>
-                                      <p className="text-[11px] text-zinc-400 truncate max-w-[200px]">{task.description}</p>
-                                   </td>
-                                   <td className="px-8 py-6">
-                                      <div className="flex items-center gap-2">
-                                         {task.status === "pending" ? (
-                                            <Clock size={14} className="text-amber-500" />
-                                         ) : (
-                                            <CheckCircle2 size={14} className="text-emerald-500" />
-                                         )}
-                                         <span className={`text-[11px] font-bold uppercase tracking-widest ${
-                                            task.status === "pending" ? "text-amber-600" : "text-emerald-600"
-                                         }`}>
-                                            {task.status}
-                                         </span>
-                                      </div>
-                                   </td>
-                                   <td className="px-8 py-6 text-[12px] text-zinc-500">
-                                      {new Date(task.createdAt).toLocaleDateString()}
-                                   </td>
-                                   <td className="px-8 py-6 text-right">
-                                      <button className="h-8 w-8 text-zinc-300 hover:text-black transition-colors rounded-none">
-                                         <MoreVertical size={16} />
-                                      </button>
-                                   </td>
-                                </tr>
-                             ))}
+                              {tasks.map((task) => (
+                                 <tr key={task.id} className="hover:bg-zinc-50/50 transition-colors">
+                                    <td className="px-8 py-4">
+                                       <div className="flex items-center gap-3">
+                                          <div className="h-8 w-8 bg-zinc-100 flex items-center justify-center text-[10px] font-bold">
+                                             {task.user?.name[0]}
+                                          </div>
+                                          <p className="text-[13px] font-bold">{task.user?.name}</p>
+                                       </div>
+                                    </td>
+                                    <td className="px-8 py-4">
+                                       <div className="flex items-center gap-2">
+                                          <p className="text-[13px] font-bold">{task.title}</p>
+                                          {task.attachmentUrl && (
+                                             <a href={task.attachmentUrl} target="_blank" rel="noopener noreferrer" className="text-[#0055FF] hover:scale-110 transition-transform">
+                                                <Paperclip size={14} />
+                                             </a>
+                                          )}
+                                       </div>
+                                       <p className="text-[11px] text-zinc-400 truncate max-w-[200px]">{task.description}</p>
+                                    </td>
+                                    <td className="px-8 py-4">
+                                       <div className="flex items-center gap-2">
+                                          {task.status === "pending" ? (
+                                             <Clock size={12} className="text-amber-500" />
+                                          ) : (
+                                             <CheckCircle2 size={12} className="text-emerald-500" />
+                                          )}
+                                          <span className={`text-[11px] font-bold ${
+                                             task.status === "pending" ? "text-amber-600" : "text-emerald-600"
+                                          }`}>
+                                             {task.status}
+                                          </span>
+                                       </div>
+                                    </td>
+                                    <td className="px-8 py-4 text-[12px] text-zinc-500">
+                                       {new Date(task.createdAt).toLocaleDateString()}
+                                    </td>
+                                    <td className="px-8 py-4 text-right">
+                                       <button className="h-8 w-8 text-zinc-300 hover:text-black transition-colors rounded-none">
+                                          <MoreVertical size={16} />
+                                       </button>
+                                    </td>
+                                 </tr>
+                              ))}
                           </tbody>
                        </table>
                     </div>
                  </motion.div>
               )}
-
            </div>
         </main>
      </div>

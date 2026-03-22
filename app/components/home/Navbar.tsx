@@ -9,10 +9,10 @@ export default function Navbar() {
         {/* Left Side: Brand */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-2 group">
-            <img 
-                src="/sf-next-logo.png" 
-                alt="Student Forge Logo" 
-                className="h-8 w-8 object-contain transition-transform group-hover:scale-105 duration-300"
+            <img
+              src="/sf-next-logo.png"
+              alt="Student Forge Logo"
+              className="h-8 w-8 object-contain transition-transform group-hover:scale-105 duration-300"
             />
             <span className="text-[17px] font-bold tracking-tight text-black shrink-0">
               Student Forge

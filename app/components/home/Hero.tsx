@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-white py-12 lg:py-20">
+    <section className="relative overflow-hidden bg-white py-12 lg:py-16">
       {/* Increased 90-Degree Corner Alignment Decorative Circle - Bottom Left - Updated to Blue and solid */}
       <div className="absolute bottom-0 left-0 h-[250px] w-[250px] rounded-tr-full bg-[#0055FF] pointer-events-none" />
 
@@ -21,14 +21,14 @@ export default function Hero() {
             </div>
 
             {/* Main Heading - Clean & Normal Weight */}
-            <h1 className="mb-4 text-4xl tracking-tight text-zinc-900 md:text-5xl lg:text-6xl">
+            <h1 className="mb-2 text-4xl tracking-tight text-zinc-900 md:text-5xl lg:text-6xl">
               Student Forge
               <span className="mx-4 hidden text-zinc-200 lg:inline-block"></span>
               <span className="block text-zinc-400 lg:inline-block">Academy</span>
             </h1>
 
             {/* Description */}
-            <p className="mx-auto mb-10 max-w-lg text-[15px] leading-relaxed text-zinc-600 lg:mx-0">
+            <p className="mx-auto mb-6 max-w-lg text-[15px] leading-relaxed text-zinc-600 lg:mx-0">
               A simple platform for student engineers.
               Build projects, learn new skills, and get your certificate with easy tools made for the next generation of students.
             </p>
@@ -53,7 +53,7 @@ export default function Hero() {
 
           {/* Animation Section - Improved Mobile Alignment */}
           <div className="relative flex justify-center opacity-90 lg:justify-end z-20 mt-10 lg:mt-0">
-            <div className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[520px] aspect-square flex items-center justify-center">
+            <div className="relative w-full max-w-[320px] sm:max-w-[420px] lg:max-w-[450px] aspect-square flex items-center justify-center">
 
 
 

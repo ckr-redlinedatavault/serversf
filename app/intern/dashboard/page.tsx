@@ -145,15 +145,15 @@ function InternDashboardContent() {
                     </div>
 
                     <div className="space-y-4">
-                       <h1 className="text-4xl font-bold tracking-tight uppercase tracking-tighter">Registration Pending</h1>
+                       <h1 className="text-4xl font-bold tracking-tight text-zinc-900">Registration Pending</h1>
                        <p className="text-zinc-500 font-medium text-lg leading-relaxed">
                           Your credentials have been successfully transmitted to the **Cleed Administration Center**. Access to your objectives will be granted once your identity is verified.
                        </p>
                     </div>
 
                     <div className="p-8 border-l-4 border-amber-500 bg-amber-50/50 text-left space-y-2">
-                       <p className="text-[12px] font-bold text-amber-700 uppercase tracking-widest">Protocol Status</p>
-                       <p className="text-[14px] font-medium text-amber-900 italic">"Final identity verification in progress. Please stand by for portal activation."</p>
+                       <p className="text-[12px] font-bold text-amber-700">Protocol Status</p>
+                       <p className="text-[14px] font-medium text-amber-900">"Final identity verification in progress. Please stand by for portal activation."</p>
                     </div>
 
                     <button 
@@ -161,7 +161,7 @@ function InternDashboardContent() {
                         localStorage.removeItem("intern_user");
                         router.push("/intern/signin");
                       }}
-                      className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black transition-colors"
+                      className="text-[12px] font-bold text-zinc-400 hover:text-black transition-colors"
                     >
                        Relinquish Session
                     </button>
@@ -177,7 +177,7 @@ function InternDashboardContent() {
                  <div className="max-w-2xl">
                     <div className="inline-flex items-center gap-2 mb-6 text-emerald-500">
                        <div className="h-2 w-2 bg-emerald-500 rounded-none animate-pulse" />
-                       <span className="text-[12px] font-bold tracking-tight leading-none uppercase">System online</span>
+                       <span className="text-[12px] font-bold tracking-tight leading-none text-emerald-600">System online</span>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 mb-6 font-sans">
                        Hello, {user.name.split(' ')[0]}! <span className="text-zinc-300">Welcome back.</span>
@@ -199,7 +199,7 @@ function InternDashboardContent() {
                             href={userStatus.letterUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="h-14 px-8 bg-[#0055FF] text-white text-[12px] font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-emerald-600 transition-all rounded-none"
+                            className="h-14 px-8 bg-[#0055FF] text-white text-[12px] font-bold flex items-center gap-3 hover:bg-emerald-600 transition-all rounded-none"
                           >
                              Download Letter <Download size={16} />
                           </a>
@@ -208,7 +208,7 @@ function InternDashboardContent() {
                  </div>
 
                  <div className="space-y-6">
-                    <h2 className="text-xl font-bold tracking-tight px-1 flex items-center gap-2 uppercase text-[13px] text-zinc-400">
+                    <h2 className="text-xl font-bold tracking-tight px-1 flex items-center gap-2 text-[13px] text-zinc-400">
                        Allocated Tasks <div className="h-1 w-1 bg-[#0055FF] rounded-none" />
                     </h2>
                     <div className="grid grid-cols-1 gap-4">
@@ -216,7 +216,7 @@ function InternDashboardContent() {
                           <div key={task.id} className="group bg-white border border-zinc-100 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:border-[#0055FF] transition-all rounded-none shadow-sm">
                              <div className="space-y-2 max-w-xl">
                                 <div className="flex items-center gap-3 mb-2">
-                                   <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 border rounded-none ${
+                                   <span className={`text-[10px] font-bold px-3 py-1 border rounded-none ${
                                       task.status === "pending" ? "border-amber-200 text-amber-600 bg-amber-50" : "border-emerald-200 text-emerald-600 bg-emerald-50"
                                    }`}>
                                       {task.status}
@@ -336,59 +336,53 @@ function InternDashboardContent() {
                     <h1 className="text-4xl font-bold tracking-tight text-zinc-900 mb-4 font-sans">
                        Attendance <span className="text-zinc-300">Archive.</span>
                     </h1>
-                    <p className="text-zinc-500 text-lg font-medium leading-relaxed">
-                       Review your operational presence and verified work summaries across the last 30 sessions.
-                    </p>
+                     <p className="text-zinc-500 text-lg font-medium leading-relaxed">
+                        Review your operational presence across your tenure sessions.
+                     </p>
                  </div>
 
                  <div className="bg-white border border-zinc-100 overflow-hidden shadow-sm rounded-none">
                     <table className="w-full text-left">
                        <thead>
-                          <tr className="bg-zinc-50 border-b border-zinc-100">
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Date Log</th>
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Status</th>
-                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Work Verified</th>
-                          </tr>
+                           <tr className="bg-zinc-50 border-b border-zinc-100">
+                              <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Date Log</th>
+                              <th className="px-8 py-5 text-[10px] font-bold text-zinc-400">Status</th>
+                           </tr>
                        </thead>
                        <tbody className="divide-y divide-zinc-50">
-                          {attendanceHistory.map((log) => (
-                             <tr key={log.id} className="hover:bg-zinc-50/50 transition-colors">
-                                <td className="px-8 py-6 text-[14px] font-bold">
-                                   {new Date(log.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
-                                </td>
-                                <td className="px-8 py-6">
-                                   <div className="flex items-center gap-2">
-                                      {log.status === "PRESENT" ? (
-                                         <CheckCircle2 size={14} className="text-emerald-500" />
-                                      ) : log.status === "ABSENT" ? (
-                                         <XCircle size={14} className="text-rose-500" />
-                                      ) : (
-                                         <AlertCircle size={14} className="text-amber-500" />
-                                      )}
-                                      <span className={`text-[11px] font-bold uppercase tracking-widest ${
-                                         log.status === "PRESENT" ? "text-emerald-600" :
-                                         log.status === "ABSENT" ? "text-rose-600" :
-                                         "text-amber-600"
-                                      }`}>
-                                         {log.status.toLowerCase()}
-                                      </span>
-                                   </div>
-                                </td>
-                                <td className="px-8 py-6">
-                                   <p className="text-[13px] text-zinc-500 font-medium leading-relaxed italic">
-                                      {log.workSummary || "No operational summary provided for this session."}
-                                   </p>
-                                </td>
-                             </tr>
-                          ))}
-                          {attendanceHistory.length === 0 && (
-                             <tr>
-                                <td colSpan={3} className="px-8 py-20 text-center">
-                                   <Calendar size={48} className="mx-auto text-zinc-100 mb-4" />
-                                   <p className="text-zinc-400 font-medium uppercase tracking-widest text-[11px]">Archive Empty: No attendance logs recorded yet.</p>
-                                </td>
-                             </tr>
-                          )}
+                           {attendanceHistory.map((log) => (
+                              <tr key={log.id} className="hover:bg-zinc-50/50 transition-colors">
+                                 <td className="px-8 py-4 text-[14px] font-bold">
+                                    {new Date(log.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                                 </td>
+                                 <td className="px-8 py-4">
+                                    <div className="flex items-center gap-2">
+                                       {log.status === "PRESENT" ? (
+                                          <CheckCircle2 size={14} className="text-emerald-500" />
+                                       ) : log.status === "ABSENT" ? (
+                                          <XCircle size={14} className="text-rose-500" />
+                                       ) : (
+                                          <AlertCircle size={14} className="text-amber-500" />
+                                       )}
+                                       <span className={`text-[11px] font-bold ${
+                                          log.status === "PRESENT" ? "text-emerald-600" :
+                                          log.status === "ABSENT" ? "text-rose-600" :
+                                          "text-amber-600"
+                                       }`}>
+                                          {log.status.toLowerCase()}
+                                       </span>
+                                    </div>
+                                 </td>
+                              </tr>
+                           ))}
+                           {attendanceHistory.length === 0 && (
+                              <tr>
+                                 <td colSpan={2} className="px-8 py-20 text-center">
+                                    <Calendar size={48} className="mx-auto text-zinc-100 mb-4" />
+                                    <p className="text-zinc-400 font-medium tracking-widest text-[11px]">Archive Empty: No attendance logs recorded yet.</p>
+                                 </td>
+                              </tr>
+                           )}
                        </tbody>
                     </table>
                  </div>

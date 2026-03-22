@@ -6,11 +6,11 @@ import Link from "next/link";
 
 export default function Community() {
   return (
-    <section className="bg-white py-12 lg:py-16 relative overflow-hidden bg-[radial-gradient(ellipse_at_center,_transparent_0%,_#fafafa_100%)]" id="community">
+    <section className="bg-white py-12 lg:py-16 relative overflow-hidden" id="community">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 relative z-10">
-        <div className="flex flex-col lg:flex-row items-end justify-between gap-12 lg:gap-20">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
           
-          <div className="max-w-2xl">
+          <div className="max-w-lg"> {/* Reduced content size */}
             <motion.div 
                initial={{ opacity: 0, x: -20 }}
                whileInView={{ opacity: 1, x: 0 }}
@@ -18,7 +18,7 @@ export default function Community() {
                className="flex items-center gap-2 mb-6"
             >
               <div className="h-1.5 w-1.5 bg-[#0055FF] rounded-none" />
-              <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Global Ecosystem</span>
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">Global Ecosystem</span>
             </motion.div>
             
             <motion.h2 
@@ -26,9 +26,9 @@ export default function Community() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
               viewport={{ once: true }}
-              className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-zinc-900 leading-[1.1]"
+              className="text-4xl md:text-5xl lg:text-5xl font-semibold tracking-tight text-zinc-900 leading-[1.1]"
             >
-              Where student leaders meet <span className="text-zinc-400 italic font-normal">the future.</span>
+              Where student leaders meet <span className="text-zinc-400">the future.</span>
             </motion.h2>
             
             <motion.p 
@@ -36,7 +36,7 @@ export default function Community() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
               viewport={{ once: true }}
-              className="mt-8 text-[15px] leading-relaxed text-zinc-500 max-w-lg font-medium"
+              className="mt-8 text-[15px] leading-relaxed text-zinc-500 font-medium"
             >
               Don't just learn alone. Join a global network of ambitious builders, creators, and innovators. 
               From deep-tech discussions to career networking, the forge starts here.
@@ -49,48 +49,41 @@ export default function Community() {
               viewport={{ once: true }}
               className="mt-12 flex flex-wrap gap-4"
             >
-              <Link href="/community" className="group h-14 px-8 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center gap-3 hover:bg-[#0055FF] transition-all">
+              <Link href="/community" className="group h-14 px-8 bg-[#0055FF] text-white text-[14px] font-semibold flex items-center gap-3 hover:bg-blue-700 transition-all rounded-none">
                 Explore Community <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Link>
-              <button className="h-14 px-8 border border-zinc-200 text-black text-[12px] font-bold uppercase tracking-widest hover:border-black transition-all">
+              <Link 
+                href="https://discord.gg/9ZAnhkXD" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="h-14 px-8 border border-zinc-200 text-black text-[14px] font-semibold hover:border-black transition-all rounded-none flex items-center justify-center gap-3"
+              >
+                <svg 
+                  viewBox="0 0 24 24" 
+                  className="w-5 h-5 fill-current" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0775.0095c.1201.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.0683.0683 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/>
+                </svg>
                 Join Discord
-              </button>
+              </Link>
             </motion.div>
           </div>
 
+          {/* RIGHT SIDE: Illustration - Larger and Fully Visible */}
           <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
             viewport={{ once: true }}
-            className="w-full lg:max-w-md pb-2"
+            className="w-full lg:max-w-2xl flex justify-center lg:justify-end"
           >
-             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-               <div className="p-8 border border-zinc-100 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/40 transition-all group">
-                 <div className="h-10 w-10 bg-zinc-900 text-white flex items-center justify-center mb-6 transition-colors group-hover:bg-[#0055FF]">
-                    <Users className="w-4 h-4" />
-                 </div>
-                 <h3 className="text-[11px] font-bold uppercase tracking-widest mb-1">Chapters</h3>
-                 <p className="text-2xl font-medium tracking-tight">120+ Regions</p>
-               </div>
-               
-               <div className="p-8 border border-zinc-100 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/40 transition-all group">
-                 <div className="h-10 w-10 bg-zinc-900 text-white flex items-center justify-center mb-6 transition-colors group-hover:bg-[#0055FF]">
-                    <MessagesSquare className="w-4 h-4" />
-                 </div>
-                 <h3 className="text-[11px] font-bold uppercase tracking-widest mb-1">Weekly Events</h3>
-                 <p className="text-2xl font-medium tracking-tight">45+ Sessions</p>
-               </div>
-               
-               <div className="sm:col-span-2 p-8 border border-zinc-100 bg-zinc-50/50 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/40 transition-all group flex items-center justify-between">
-                 <div>
-                    <h3 className="text-[11px] font-bold uppercase tracking-widest mb-1">Active Forum</h3>
-                    <p className="text-2xl font-medium tracking-tight">10k+ Threads</p>
-                 </div>
-                 <div className="h-12 w-12 rounded-full border border-zinc-200 flex items-center justify-center group-hover:bg-zinc-900 group-hover:text-white transition-all">
-                    <MessageCircle className="w-4 h-4" />
-                 </div>
-               </div>
+             <div className="relative w-full aspect-[4/3] h-full flex items-center justify-center">
+                <img 
+                  src="https://ik.imagekit.io/dypkhqxip/Group%20discussion-rafiki.svg" 
+                  alt="Community Illustration" 
+                  className="w-full h-full object-contain scale-110 md:scale-125"
+                />
              </div>
           </motion.div>
 
