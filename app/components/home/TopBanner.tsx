@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function TopBanner() {
   const guidanceItems = [
-    { name: "Abroad Guidance", href: "/docs" },
+    { name: "Career Guidance", href: "/docs" },
     { name: "Startup Guidance", href: "/docs" },
     { name: "Business Guidance", href: "/docs" },
   ];

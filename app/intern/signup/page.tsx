@@ -69,12 +69,11 @@ export default function InternSignupPage() {
             <main className="flex-1 flex flex-col lg:flex-row">
                 {/* Left Side: Visual Illustration Area */}
                 <div className="hidden lg:flex lg:w-1/2 bg-zinc-50 items-center justify-center p-12 lg:p-24 border-r border-zinc-100 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-64 h-64 bg-[#0055FF]/10 rounded-full blur-[100px] -ml-32 -mt-32" />
                     <div className="relative z-10 w-full max-w-xl">
                         <img 
-                            src="https://ik.imagekit.io/dypkhqxip/Coding-bro.svg" 
+                            src="https://ik.imagekit.io/dypkhqxip/Pair%20programming-cuate.svg" 
                             alt="Intern Registration Illustration" 
-                            className="w-full h-auto"
+                            className="w-full h-auto drop-shadow-2xl"
                         />
                     </div>
                 </div>
