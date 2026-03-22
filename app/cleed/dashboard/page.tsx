@@ -211,7 +211,7 @@ export default function CleedDashboard() {
        <aside className="fixed left-0 top-0 h-full w-20 lg:w-64 bg-black border-r border-zinc-900 z-50 flex flex-col">
           <div className="p-8 flex items-center gap-3">
              <div className="h-4 w-4 bg-[#0055FF]" />
-             <span className="hidden lg:block text-white font-bold text-[14px] uppercase tracking-widest">Cleed Panel</span>
+             <span className="hidden lg:block text-white font-bold text-[16px] tracking-tight">Cleed Hub</span>
           </div>
 
           <nav className="flex-1 mt-10 space-y-2 px-4">
@@ -233,7 +233,7 @@ export default function CleedDashboard() {
                    }`}
                 >
                    <item.icon size={18} />
-                   <span className="hidden lg:block text-[11px] font-bold uppercase tracking-[0.2em]">{item.label}</span>
+                   <span className="hidden lg:block text-[14px] font-medium">{item.label}</span>
                 </button>
              ))}
           </nav>
@@ -242,9 +242,9 @@ export default function CleedDashboard() {
              <div className="p-4 mx-4 mb-4 bg-amber-500/10 border border-amber-500/20 rounded-none animate-pulse">
                 <div className="flex items-center gap-2 text-amber-500">
                    <Hand size={16} />
-                   <span className="text-[10px] font-bold uppercase tracking-widest leading-none">
-                      {raisedHandsCount} Signals Active
-                   </span>
+                    <span className="text-[12px] font-semibold leading-none">
+                       {raisedHandsCount} Signals Active
+                    </span>
                 </div>
              </div>
           )}
@@ -253,8 +253,8 @@ export default function CleedDashboard() {
              <div className="flex items-center gap-3">
                 <div className="h-8 w-8 rounded bg-zinc-800" />
                 <div className="hidden lg:block">
-                   <p className="text-[11px] text-white font-bold">Admin Cleed</p>
-                   <p className="text-[10px] text-zinc-500 uppercase">Executive Manager</p>
+                   <p className="text-[13px] text-white font-bold">Admin Cleed</p>
+                   <p className="text-[10px] text-zinc-500">Executive Manager</p>
                 </div>
              </div>
           </div>
@@ -266,8 +266,8 @@ export default function CleedDashboard() {
              <div className="flex items-center gap-2">
                 <span className="text-zinc-400 text-sm">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300" />
-                <span className="text-zinc-900 font-bold text-sm uppercase tracking-widest">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : "Logbook"}
+                <span className="text-zinc-900 font-bold text-sm">
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "attendance" ? "Attendance" : "Logbook"}
                 </span>
              </div>
              
