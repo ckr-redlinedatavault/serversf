@@ -85,6 +85,7 @@ model User {
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   internForm InternForm? @relation("InternUserForm")
+  attendances Attendance[] @relation("UserAttendances")
 }
 
 enum Role {
@@ -92,6 +93,26 @@ enum Role {
   CTO
   CEO
   INTERN
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
+  VACATION
+}
+
+model Attendance {
+  id           String           @id @default(cuid())
+  userId       String
+  user         User             @relation("UserAttendances", fields: [userId], references: [id], onDelete: Cascade)
+  date         DateTime         @default(now())
+  status       AttendanceStatus @default(PRESENT)
+  workSummary  String?
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@unique([userId, date])
 }
 
 model Task {

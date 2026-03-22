@@ -23,7 +23,8 @@ import {
   Bell,
   FileText,
   FileBadge,
-  ShieldCheck
+  ShieldCheck,
+  CalendarCheck
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -62,6 +63,11 @@ export default function CleedDashboard() {
   const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null);
   const [isAuthorizing, setIsAuthorizing] = useState<string | null>(null);
   
+  // Attendance Protocol States
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentAttendance, setCurrentAttendance] = useState<any[]>([]);
+  const [markingId, setMarkingId] = useState<string | null>(null);
+  
   // Forms
   const [taskData, setTaskData] = useState({ title: "", description: "", attachmentUrl: "" });
   const [letterUrl, setLetterUrl] = useState("");
@@ -75,6 +81,20 @@ export default function CleedDashboard() {
     const interval = setInterval(fetchData, 10000); 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    fetchAttendance();
+  }, [selectedDate]);
+
+  const fetchAttendance = async () => {
+    try {
+      const res = await fetch(`/api/cleed/attendance?date=${selectedDate}`);
+      const data = await res.json();
+      setCurrentAttendance(data);
+    } catch (err) {
+      console.error("Attendance synchronization failure");
+    }
+  };
 
   const fetchData = async () => {
     try {
@@ -165,6 +185,24 @@ export default function CleedDashboard() {
     }
   };
 
+  const handleMarkAttendance = async (internId: string, status: string, workSummary: string) => {
+    setMarkingId(internId);
+    try {
+      const res = await fetch("/api/cleed/attendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ internId, status, workSummary, date: selectedDate })
+      });
+      if (res.ok) {
+        fetchAttendance();
+      }
+    } catch (err) {
+      console.error("Attendance synchronization failed");
+    } finally {
+      setMarkingId(null);
+    }
+  };
+
   const raisedHandsCount = interns.filter(i => i.handRaised).length;
 
   return (
@@ -182,6 +220,7 @@ export default function CleedDashboard() {
                { id: "assign", icon: Send, label: "Dispatch Task" },
                { id: "certification", icon: FileBadge, label: "Issuance Hub" },
                { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
+               { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                { id: "history", icon: History, label: "Logbook" }
              ].map((item) => (
                 <button 
@@ -594,6 +633,104 @@ export default function CleedDashboard() {
                                 </td>
                              </tr>
                           )}
+                       </tbody>
+                    </table>
+                 </div>
+              </motion.div>
+           )}
+
+           {/* Attendance Protocol Tab */}
+           {activeTab === "attendance" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div>
+                       <h2 className="text-2xl font-bold tracking-tight">Attendance Protocol</h2>
+                       <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Operational presence and work tracking</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                       <input 
+                         type="date" 
+                         value={selectedDate}
+                         onChange={(e) => setSelectedDate(e.target.value)}
+                         className="h-12 px-6 bg-white border border-zinc-100 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-[#0055FF] transition-all rounded-none"
+                       />
+                       <button 
+                         onClick={fetchAttendance}
+                         className="h-12 w-12 bg-white border border-zinc-100 flex items-center justify-center hover:bg-zinc-50 transition-all rounded-none"
+                       >
+                          <History size={16} />
+                       </button>
+                    </div>
+                 </div>
+
+                 <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5 rounded-none">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="bg-zinc-50 border-b border-zinc-100">
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Personnel</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Presence State</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Operational Summary</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Synchronization</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-zinc-50">
+                          {interns.filter(i => i.isApproved).map((intern) => {
+                             const record = currentAttendance.find(a => a.userId === intern.id);
+                             return (
+                                <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
+                                   <td className="px-8 py-6">
+                                      <div className="flex items-center gap-3">
+                                         <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold">
+                                            {intern.name[0]}
+                                         </div>
+                                         <div>
+                                            <p className="text-[14px] font-bold">{intern.name}</p>
+                                            <p className="text-[10px] text-zinc-400 uppercase tracking-widest">{intern.internForm?.branch || "Trainee"}</p>
+                                         </div>
+                                      </div>
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      <select 
+                                        defaultValue={record?.status || "PRESENT"}
+                                        onChange={(e) => handleMarkAttendance(intern.id, e.target.value, record?.workSummary || "")}
+                                        className={`h-10 px-4 text-[10px] font-bold uppercase tracking-widest border outline-none transition-all rounded-none ${
+                                           record?.status === "ABSENT" ? "border-rose-200 bg-rose-50 text-rose-600" :
+                                           record?.status === "LATE" ? "border-amber-200 bg-amber-50 text-amber-600" :
+                                           "border-emerald-200 bg-emerald-50 text-emerald-600"
+                                        }`}
+                                      >
+                                         <option value="PRESENT">Present</option>
+                                         <option value="ABSENT">Absent</option>
+                                         <option value="LATE">Late</option>
+                                         <option value="VACATION">Vacation</option>
+                                      </select>
+                                   </td>
+                                   <td className="px-8 py-6">
+                                      <textarea 
+                                        defaultValue={record?.workSummary || ""}
+                                        placeholder="Sync operational objectives..."
+                                        onBlur={(e) => handleMarkAttendance(intern.id, record?.status || "PRESENT", e.target.value)}
+                                        className="w-full bg-zinc-50 border border-zinc-100 p-3 text-[12px] outline-none focus:border-[#0055FF] transition-all resize-none min-h-[60px] rounded-none"
+                                      />
+                                   </td>
+                                   <td className="px-8 py-6 text-right">
+                                      <div className="flex justify-end gap-2">
+                                         {markingId === intern.id ? (
+                                            <div className="h-8 w-8 border-2 border-[#0055FF] border-t-transparent animate-spin" />
+                                         ) : record ? (
+                                            <div className="h-8 w-8 bg-emerald-500 text-white flex items-center justify-center" title="Synchronized">
+                                               <CheckCircle2 size={16} />
+                                            </div>
+                                         ) : (
+                                            <div className="h-8 w-8 bg-zinc-100 text-zinc-400 flex items-center justify-center" title="Pending Sync">
+                                               <Clock size={16} />
+                                            </div>
+                                         )}
+                                      </div>
+                                   </td>
+                                </tr>
+                             );
+                          })}
                        </tbody>
                     </table>
                  </div>
