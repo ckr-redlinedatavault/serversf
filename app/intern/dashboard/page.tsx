@@ -1,78 +1,188 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { 
     LayoutDashboard, 
-    LogOut, 
-    ShieldCheck, 
-    Calendar,
-    Settings,
-    User,
-    Clock,
-    Sparkles,
-    ArrowRight
+    Briefcase,
+    Paperclip,
+    Download,
+    CheckCircle2,
+    ChevronRight,
+    Search
 } from "lucide-react";
+import { motion } from "framer-motion";
 
-export default function InternDashboard() {
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+  attachmentUrl?: string;
+  status: string;
+  createdAt: string;
+}
+
+function InternDashboardContent() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const activeTab = searchParams.get("view") || "overview";
+    
     const [user, setUser] = useState<any>(null);
-    const [mounted, setMounted] = useState(false);
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        setMounted(true);
         const storedUser = localStorage.getItem("intern_user");
         if (!storedUser) {
             router.push("/intern/signin");
             return;
         }
-        setUser(JSON.parse(storedUser));
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        fetchTasks(userData.id);
     }, [router]);
 
-    const handleLogout = () => {
-        localStorage.removeItem("intern_user");
-        router.push("/intern/signin");
+    const fetchTasks = async (id: string) => {
+       try {
+          const res = await fetch(`/api/intern/tasks?internId=${id}`);
+          const data = await res.json();
+          setTasks(data);
+       } catch (error) {
+          console.error("Failed to load tasks");
+       } finally {
+          setIsLoading(false);
+       }
     };
 
-    if (!mounted || !user) return null;
+    if (!user) return null;
 
     return (
-        <div className="p-12 md:p-24 relative overflow-hidden flex flex-col justify-center max-w-5xl mx-auto">
-            <div className="space-y-12 relative z-10 w-full">
-                <div className="space-y-6">
-                    <div className="inline-flex items-center gap-2">
-                        <div className="h-1.5 w-1.5 bg-[#92E3A9]" />
-                        <span className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Onboarding Complete</span>
+        <div className="p-8 lg:p-12 max-w-6xl w-full mx-auto">
+           {activeTab === "overview" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                 <div className="max-w-2xl">
+                    <div className="inline-flex items-center gap-2 mb-6 text-emerald-500">
+                       <div className="h-2 w-2 bg-emerald-500 rounded-full animate-pulse" />
+                       <span className="text-[12px] font-bold tracking-tight leading-none">System online</span>
                     </div>
-                    
-                    <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-black leading-[1.1]">
-                        Welcome to the Forge, <span className="text-zinc-300">{user.name?.split(' ')[0] || 'Intern'}</span>.
+                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 mb-6 font-sans">
+                       Hello, {user.name.split(' ')[0]}! <span className="text-zinc-300">Welcome back.</span>
                     </h1>
-                    
-                    <p className="text-zinc-400 text-lg md:text-xl font-medium max-w-xl leading-relaxed">
-                        Thank you for joining our ecosystem. Access to all professional training modules and dashboards will be deployed shortly.
+                    <p className="text-zinc-500 text-lg font-medium leading-relaxed">
+                       It's great to see you again. You currently have {tasks.filter(t => t.status === 'pending').length} assignments waiting for your action. Let's make an impact today.
                     </p>
-                </div>
+                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t border-zinc-100 mt-12">
-                    <div className="space-y-4">
-                        <div className="flex flex-col gap-1">
-                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Access Deployment</p>
-                            <p className="text-[18px] font-bold text-black tracking-tight">22 March, 2026</p>
-                        </div>
+                 <div className="space-y-6">
+                    <h2 className="text-xl font-bold tracking-tight px-1 flex items-center gap-2">
+                       Allocated Tasks <div className="h-1 w-1 bg-[#0055FF] rounded-full" />
+                    </h2>
+                    <div className="grid grid-cols-1 gap-4">
+                       {tasks.map((task) => (
+                          <div key={task.id} className="group bg-white border border-zinc-100 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:border-[#0055FF]/40 transition-all rounded-3xl hover:shadow-2xl hover:shadow-black/[0.02]">
+                             <div className="space-y-2 max-w-xl">
+                                <div className="flex items-center gap-3 mb-2">
+                                   <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 border rounded-full ${
+                                      task.status === "pending" ? "border-amber-200 text-amber-600 bg-amber-50" : "border-emerald-200 text-emerald-600 bg-emerald-50"
+                                   }`}>
+                                      {task.status}
+                                   </span>
+                                   <span className="text-[10px] text-zinc-400 font-medium">Deployed {new Date(task.createdAt).toLocaleDateString()}</span>
+                                </div>
+                                <h3 className="text-xl font-bold">{task.title}</h3>
+                                <p className="text-[14px] text-zinc-500 leading-relaxed font-medium">
+                                   {task.description}
+                                </p>
+                             </div>
+
+                             <div className="flex items-center gap-4">
+                                {task.attachmentUrl && (
+                                   <a 
+                                      href={task.attachmentUrl} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="h-12 w-12 bg-zinc-50 text-[#0055FF] flex items-center justify-center hover:bg-[#0055FF] hover:text-white transition-all border border-zinc-100 rounded-xl"
+                                      title="Download Protocol"
+                                   >
+                                      <Download size={18} />
+                                   </a>
+                                )}
+                                <button className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-[#0055FF] transition-all flex items-center gap-2 rounded-xl shadow-lg shadow-black/5">
+                                   Complete Task <CheckCircle2 size={16} />
+                                </button>
+                             </div>
+                          </div>
+                       ))}
+                       {tasks.length === 0 && !isLoading && (
+                          <div className="py-20 text-center border-2 border-dashed border-zinc-100 rounded-3xl">
+                             <Briefcase size={40} className="mx-auto text-zinc-100 mb-4" />
+                             <p className="text-zinc-400 font-medium tracking-tight">No system objectives deployed to your node.</p>
+                          </div>
+                       )}
                     </div>
+                 </div>
+              </motion.div>
+           )}
 
-                    <div className="space-y-2">
-                        <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Support Line</p>
-                        <p className="text-[15px] font-bold text-black">internship@studentforge.in</p>
-                    </div>
-                </div>
+           {activeTab === "tasks" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                 <div className="flex items-center justify-between">
+                    <h2 className="text-2xl font-bold tracking-tight">Active Assignments</h2>
+                 </div>
 
-                <div className="flex items-center gap-4 pt-10">
-                    <p className="text-[11px] font-bold text-[#92E3A9] uppercase tracking-[0.2em] px-4 py-2 border border-[#92E3A9]/20 bg-[#92E3A9]/5">System Deployment Pending</p>
-                </div>
-            </div>
+                 <div className="grid grid-cols-1 gap-4">
+                    {tasks.map((task) => (
+                       <div key={task.id} className="group bg-white border border-zinc-100 p-8 flex flex-col md:flex-row md:items-center justify-between gap-8 hover:border-black transition-all">
+                          <div className="space-y-2 max-w-xl">
+                             <div className="flex items-center gap-3 mb-2">
+                                <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 border ${
+                                   task.status === "pending" ? "border-amber-200 text-amber-600 bg-amber-50" : "border-emerald-200 text-emerald-600 bg-emerald-50"
+                                }`}>
+                                   {task.status}
+                                </span>
+                                <span className="text-[10px] text-zinc-400 font-medium">Deployed {new Date(task.createdAt).toLocaleDateString()}</span>
+                             </div>
+                             <h3 className="text-xl font-bold">{task.title}</h3>
+                             <p className="text-[14px] text-zinc-500 leading-relaxed font-medium">
+                                {task.description}
+                             </p>
+                          </div>
+
+                          <div className="flex items-center gap-4">
+                             {task.attachmentUrl && (
+                                <a 
+                                   href={task.attachmentUrl} 
+                                   target="_blank" 
+                                   rel="noopener noreferrer" 
+                                   className="h-12 w-12 bg-zinc-50 text-black flex items-center justify-center hover:bg-black hover:text-white transition-all border border-zinc-100"
+                                   title="Download Protocol"
+                                >
+                                   <Download size={18} />
+                                </a>
+                             )}
+                             <button className="h-12 px-6 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-[#0055FF] transition-all flex items-center gap-2">
+                                Mark Complete <CheckCircle2 size={16} />
+                             </button>
+                          </div>
+                       </div>
+                    ))}
+                    {tasks.length === 0 && !isLoading && (
+                       <div className="py-20 text-center border-2 border-dashed border-zinc-100 rounded-xl">
+                          <Briefcase className="mx-auto h-12 w-12 text-zinc-100 mb-4" />
+                          <p className="text-zinc-400 font-medium">No system objectives deployed to your node.</p>
+                       </div>
+                    )}
+                 </div>
+              </motion.div>
+           )}
         </div>
     );
+}
+
+export default function InternDashboard() {
+  return (
+    <Suspense fallback={<div className="p-12 text-zinc-400 text-[11px] font-bold uppercase tracking-[0.2em] animate-pulse">Initializing Portal Node...</div>}>
+      <InternDashboardContent />
+    </Suspense>
+  );
 }

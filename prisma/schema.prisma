@@ -79,6 +79,7 @@ model User {
   password   String
   role       Role     @default(MEDIA_TEAM)
   isApproved Boolean  @default(false)
+  tasks      Task[]   @relation("UserTasks")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   internForm InternForm? @relation("InternUserForm")
@@ -92,13 +93,16 @@ enum Role {
 }
 
 model Task {
-  id          String   @id @default(cuid())
-  title       String
-  description String
-  assignedTo  Role     @default(MEDIA_TEAM)
-  status      String   @default("pending") // pending, in_progress, completed
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  attachmentUrl   String?  // PDF Link or other resource
+  assignedRole    Role     @default(INTERN)
+  assignedToId    String?  
+  user            User?    @relation("UserTasks", fields: [assignedToId], references: [id])
+  status          String   @default("pending")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Script {
