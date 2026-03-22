@@ -13,7 +13,11 @@ import {
     Search,
     RefreshCw,
     FileBadge,
-    X
+    X,
+    Settings,
+    Calendar,
+    XCircle,
+    AlertCircle
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -33,6 +37,7 @@ function InternDashboardContent() {
     
     const [user, setUser] = useState<any>(null);
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [attendanceHistory, setAttendanceHistory] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isUpdating, setIsUpdating] = useState<string | null>(null);
     const [userStatus, setUserStatus] = useState<any>(null);
@@ -48,11 +53,13 @@ function InternDashboardContent() {
         setUser(userData);
         fetchTasks(userData.id);
         fetchStatus(userData.id);
+        fetchAttendance(userData.id);
 
         // Auto-refresh data every 20 seconds
         const syncInterval = setInterval(() => {
             fetchTasks(userData.id);
             fetchStatus(userData.id);
+            fetchAttendance(userData.id);
         }, 20000);
 
         return () => clearInterval(syncInterval);
@@ -84,6 +91,18 @@ function InternDashboardContent() {
        } finally {
           setIsLoading(false);
        }
+    };
+
+    const fetchAttendance = async (id: string) => {
+        try {
+            const res = await fetch(`/api/intern/attendance?internId=${id}`);
+            if (res.ok) {
+                const data = await res.json();
+                setAttendanceHistory(data);
+            }
+        } catch (error) {
+            console.error("Attendance retrieval offline");
+        }
     };
 
     const updateTaskStatus = async (taskId: string, currentStatus: string) => {
@@ -309,6 +328,71 @@ function InternDashboardContent() {
                    )}
                 </div>
              </motion.div>
+           )}
+
+           {activeTab === "attendance" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                 <div className="max-w-2xl">
+                    <h1 className="text-4xl font-bold tracking-tight text-zinc-900 mb-4 font-sans">
+                       Attendance <span className="text-zinc-300">Archive.</span>
+                    </h1>
+                    <p className="text-zinc-500 text-lg font-medium leading-relaxed">
+                       Review your operational presence and verified work summaries across the last 30 sessions.
+                    </p>
+                 </div>
+
+                 <div className="bg-white border border-zinc-100 overflow-hidden shadow-sm rounded-none">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="bg-zinc-50 border-b border-zinc-100">
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Date Log</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Status</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Work Verified</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-zinc-50">
+                          {attendanceHistory.map((log) => (
+                             <tr key={log.id} className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="px-8 py-6 text-[14px] font-bold">
+                                   {new Date(log.date).toLocaleDateString(undefined, { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' })}
+                                </td>
+                                <td className="px-8 py-6">
+                                   <div className="flex items-center gap-2">
+                                      {log.status === "PRESENT" ? (
+                                         <CheckCircle2 size={14} className="text-emerald-500" />
+                                      ) : log.status === "ABSENT" ? (
+                                         <XCircle size={14} className="text-rose-500" />
+                                      ) : (
+                                         <AlertCircle size={14} className="text-amber-500" />
+                                      )}
+                                      <span className={`text-[11px] font-bold uppercase tracking-widest ${
+                                         log.status === "PRESENT" ? "text-emerald-600" :
+                                         log.status === "ABSENT" ? "text-rose-600" :
+                                         "text-amber-600"
+                                      }`}>
+                                         {log.status.toLowerCase()}
+                                      </span>
+                                   </div>
+                                </td>
+                                <td className="px-8 py-6">
+                                   <p className="text-[13px] text-zinc-500 font-medium leading-relaxed italic">
+                                      {log.workSummary || "No operational summary provided for this session."}
+                                   </p>
+                                </td>
+                             </tr>
+                          ))}
+                          {attendanceHistory.length === 0 && (
+                             <tr>
+                                <td colSpan={3} className="px-8 py-20 text-center">
+                                   <Calendar size={48} className="mx-auto text-zinc-100 mb-4" />
+                                   <p className="text-zinc-400 font-medium uppercase tracking-widest text-[11px]">Archive Empty: No attendance logs recorded yet.</p>
+                                </td>
+                             </tr>
+                          )}
+                       </tbody>
+                    </table>
+                 </div>
+              </motion.div>
            )}
 
            <AnimatePresence>
