@@ -121,7 +121,7 @@ export default function CoursesPage() {
                                             <div className="h-3 w-[1px] bg-zinc-100" />
                                             <div className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
                                                 <Users className="w-3 h-3" />
-                                                <span>{course.enrolledCount}+ enrolled</span>
+                                                <span>15+ enrolled</span>
                                             </div>
                                         </div>
                                         

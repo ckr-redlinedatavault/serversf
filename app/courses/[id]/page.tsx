@@ -28,6 +28,15 @@ export default function CourseDetailPage() {
     const [course, setCourse] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [openModule, setOpenModule] = useState<number | null>(0); // Default open first module
+    const [realTimeEnrolled, setRealTimeEnrolled] = useState(15);
+
+    useEffect(() => {
+        // Real-time counter simulation
+        const interval = setInterval(() => {
+            setRealTimeEnrolled(prev => prev + Math.floor(Math.random() * 2) + 1);
+        }, 15000); // Increment every 15 seconds
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -95,7 +104,7 @@ export default function CourseDetailPage() {
                                     <div className="h-3 w-[1px] bg-white/10" />
                                     <div className="flex items-center gap-1.5 text-white/50 text-[12px]">
                                         <Users className="w-4 h-4" />
-                                        <span className="text-white font-medium">{course.enrolledCount}+</span>
+                                        <span className="text-white font-medium">{realTimeEnrolled}+</span>
                                         <span>Students Enrolled</span>
                                     </div>
                                     <div className="h-3 w-[1px] bg-white/10" />

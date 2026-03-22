@@ -10,7 +10,8 @@ import {
     Settings,
     ChevronRight,
     Briefcase,
-    ShieldCheck
+    ShieldCheck,
+    Hand
 } from "lucide-react";
 
 export default function InternDashboardLayout({
@@ -22,6 +23,8 @@ export default function InternDashboardLayout({
     const pathname = usePathname();
     const [user, setUser] = useState<any>(null);
     const [mounted, setMounted] = useState(false);
+    const [handRaised, setHandRaised] = useState(false);
+    const [isTogglingHand, setIsTogglingHand] = useState(false);
 
     useEffect(() => {
         setMounted(true);
@@ -30,12 +33,38 @@ export default function InternDashboardLayout({
             router.push("/intern/signin");
             return;
         }
-        setUser(JSON.parse(storedUser));
+        const userData = JSON.parse(storedUser);
+        setUser(userData);
+        setHandRaised(userData.handRaised || false);
     }, [router]);
 
     const handleLogout = () => {
         localStorage.removeItem("intern_user");
         router.push("/intern/signin");
+    };
+
+    const toggleHand = async () => {
+        if (!user) return;
+        setIsTogglingHand(true);
+        try {
+            const res = await fetch("/api/intern/hand", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ internId: user.id, raised: !handRaised }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setHandRaised(data.handRaised);
+                // Update local storage too
+                const updatedUser = { ...user, handRaised: data.handRaised };
+                localStorage.setItem("intern_user", JSON.stringify(updatedUser));
+                setUser(updatedUser);
+            }
+        } catch (error) {
+            console.error("Failed to toggle hand");
+        } finally {
+            setIsTogglingHand(false);
+        }
     };
 
     if (!mounted || !user) return null;
@@ -48,8 +77,8 @@ export default function InternDashboardLayout({
 
     return (
         <div className="min-h-screen bg-white text-zinc-900 flex font-sans">
-            {/* Blue Sidebar with Normal Font Case */}
-            <aside className="w-20 lg:w-64 flex flex-col bg-[#0055FF] h-screen sticky top-0 z-50 text-white shadow-2xl">
+            {/* Sharp Blue Sidebar */}
+            <aside className="w-20 lg:w-64 flex flex-col bg-[#0055FF] h-screen sticky top-0 z-50 text-white shadow-2xl rounded-none">
                 <div className="p-8 pb-10 flex items-center gap-3">
                     <img 
                         src="/sf-next-logo.png" 
@@ -66,9 +95,9 @@ export default function InternDashboardLayout({
                             <Link 
                                 key={item.name}
                                 href={item.slug} 
-                                className={`flex items-center justify-center lg:justify-start h-12 px-4 gap-4 rounded-xl transition-all ${
+                                className={`flex items-center justify-center lg:justify-start h-12 px-4 gap-4 rounded-none transition-all ${
                                     isActive 
-                                    ? "bg-white text-[#0055FF] shadow-lg shadow-black/10 font-semibold" 
+                                    ? "bg-white text-[#0055FF] font-bold shadow-lg shadow-black/10" 
                                     : "text-white/70 hover:text-white hover:bg-white/10"
                                 }`}
                             >
@@ -79,13 +108,32 @@ export default function InternDashboardLayout({
                     })}
                 </nav>
 
-                <div className="p-6 mt-auto border-t border-white/10">
+                <div className="p-6 mt-auto border-t border-white/10 space-y-3">
+                    <button 
+                        onClick={toggleHand}
+                        disabled={isTogglingHand}
+                        className={`w-full h-12 flex items-center justify-center lg:justify-start px-4 gap-4 rounded-none font-bold transition-all shadow-lg ${
+                            handRaised 
+                            ? "bg-amber-500 text-black hover:bg-amber-600" 
+                            : "bg-white/10 text-white hover:bg-white/20"
+                        }`}
+                    >
+                        {isTogglingHand ? (
+                            <div className="h-5 w-5 border-2 border-white/30 border-t-white animate-spin rounded-full mx-auto lg:mx-0" />
+                        ) : (
+                            <Hand size={20} className={handRaised ? "animate-bounce" : ""} />
+                        )}
+                        <span className="hidden lg:block text-[14px]">
+                            {handRaised ? "Lower Hand" : "Raise Hand"}
+                        </span>
+                    </button>
+
                     <button 
                         onClick={handleLogout}
-                        className="w-full h-12 flex items-center justify-center lg:justify-start px-4 gap-4 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600 transition-all shadow-lg shadow-black/10"
+                        className="w-full h-12 flex items-center justify-center lg:justify-start px-4 gap-4 bg-red-600 text-white rounded-none font-bold hover:bg-red-700 transition-all shadow-lg shadow-black/10"
                     >
                         <LogOut size={20} />
-                        <span className="hidden lg:block text-[14px]">Terminate session</span>
+                        <span className="hidden lg:block text-[14px]">Terminate Session</span>
                     </button>
                 </div>
             </aside>
@@ -105,9 +153,9 @@ export default function InternDashboardLayout({
                         <div className="hidden md:flex items-center gap-3 pr-4 border-r border-zinc-100">
                             <div className="text-right">
                                <p className="text-sm font-bold text-black leading-none">{user.name}</p>
-                               <p className="text-[10px] text-zinc-400 font-medium mt-1">Global node active</p>
+                               <p className="text-[10px] text-zinc-400 font-medium mt-1 uppercase">Global session</p>
                             </div>
-                            <div className="h-9 w-9 bg-[#0055FF] rounded-xl flex items-center justify-center text-white text-xs font-bold">
+                            <div className="h-9 w-9 bg-[#0055FF] rounded-none flex items-center justify-center text-white text-xs font-bold">
                                 {user.name[0]}
                             </div>
                         </div>
