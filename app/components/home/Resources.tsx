@@ -1,54 +1,66 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react"; // Added for button icon
+import { ArrowRight, Star, Users, ChevronRight, BookOpen } from "lucide-react";
 
 export default function Resources() {
   const cards = [
     {
-      title: "Courses",
-      desc: "Industry-standard engineering tracks designed for students.",
+      title: "Core Engineering",
+      subtitle: "Industry-standard engineering tracks designed for students.",
       href: "/courses",
-      image: "https://ik.imagekit.io/dypkhqxip/Course%20app-rafiki.svg"
+      image: "https://ik.imagekit.io/dypkhqxip/Course%20app-rafiki.svg",
+      tag: "Academy",
+      rating: "5.0",
+      enrolled: "1.2k+",
+      instructor: "Staff"
     },
     {
-      title: "Abroad Guidance", // Renamed for clarity
-      desc: "Global pathways for higher education and career development.",
-      href: "/aboard",
-      image: "https://ik.imagekit.io/dypkhqxip/Study%20abroad-rafiki.svg" // Added a placeholder image
+      title: "Career Guidance",
+      subtitle: "Global pathways for higher education and career development.",
+      href: "/contact",
+      image: "https://ik.imagekit.io/dypkhqxip/Study%20abroad-rafiki.svg",
+      tag: "Support",
+      rating: "4.9",
+      enrolled: "800+",
+      instructor: "Mentor"
     },
     {
       title: "Internships",
-      desc: "Practical experience within our corporate ecosystem.",
-      href: "/internships",
-      image: "https://ik.imagekit.io/dypkhqxip/Job%20hunt-rafiki.svg" // Added a placeholder image
+      subtitle: "Practical experience within our corporate ecosystem.",
+      href: "/intern-form",
+      image: "https://ik.imagekit.io/dypkhqxip/Job%20hunt-rafiki.svg",
+      tag: "Professional",
+      rating: "5.0",
+      enrolled: "450+",
+      instructor: "Staff"
     },
     {
-      title: "Startup Ecosystem", // Renamed for clarity
-      desc: "Strategic network of mentors, startups, and innovation.",
+      title: "Startup Lifecycle",
+      subtitle: "Strategic network of mentors, startups, and innovation.",
       href: "/ecosystem",
-      image: "https://ik.imagekit.io/dypkhqxip/Startup%20life-rafiki.svg" // Added a placeholder image
+      image: "https://ik.imagekit.io/dypkhqxip/Startup%20life-rafiki.svg",
+      tag: "Ecosystem",
+      rating: "4.8",
+      enrolled: "120+",
+      instructor: "Founder"
     }
   ];
 
   return (
-    <section className="relative overflow-hidden py-16 bg-gray-50"> {/* Reduced padding */}
-      {/* Slanted Separator - This creates the visual break *below* the section */}
-      <div
-        className="absolute bottom-0 left-0 w-full h-32 bg-white transform -skew-y-2 origin-bottom-left"
-        style={{ clipPath: 'polygon(0 0, 100% 100%, 0 100%)', zIndex: 0 }}
-      ></div>
-      <div
-        className="absolute bottom-0 right-0 w-full h-32 bg-white transform skew-y-2 origin-bottom-right"
-        style={{ clipPath: 'polygon(100% 0, 0 100%, 100% 100%)', zIndex: 0 }}
-      ></div>
-
+    <section className="relative overflow-hidden py-20 bg-white" id="resources">
       <div className="mx-auto max-w-7xl px-6 lg:px-10 relative z-10">
-        <div className="mb-12 text-center"> {/* Reduced margin */}
-          <h2 className="text-3xl font-semibold tracking-tight text-gray-900 md:text-4xl mb-4 leading-tight">
-            Explore Our <span className="text-[#0055FF]">Resources</span>
-          </h2>
-          <p className="text-base text-gray-600 font-medium max-w-xl mx-auto">
-            Navigate through our core offerings and accelerate your learning journey.
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-10 mb-16">
+          <div className="max-w-xl">
+            <div className="flex items-center gap-2 mb-6">
+              <div className="h-1.5 w-1.5 bg-[#0055FF] rounded-none" />
+              <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest">Digital Assets</span>
+            </div>
+            <h2 className="text-4xl md:text-5xl font-semibold tracking-tight text-zinc-900 leading-[1.1]">
+              Explore Our <span className="text-[#0055FF]">Resources</span>
+            </h2>
+          </div>
+          <p className="text-[15px] text-zinc-500 font-medium max-w-xs leading-relaxed">
+            Navigate through our core offerings and accelerate your learning journey with precision.
           </p>
         </div>
 
@@ -56,43 +68,64 @@ export default function Resources() {
           {cards.map((card, index) => (
             <motion.div
               key={card.title}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1, duration: 0.6 }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
               viewport={{ once: true }}
             >
-              <div
-                className="group relative overflow-hidden flex flex-col h-full bg-white border border-gray-200 rounded-none p-8 hover:shadow-xl hover:shadow-blue-100/40 transition-all duration-300"
+              <Link 
+                  href={card.href} 
+                  className="group flex flex-col bg-white border border-zinc-100 transition-all hover:border-black active:scale-[0.99] h-full"
               >
-                {/* Illustration Container - Sharp Edged */}
-                <div className={`h-48 w-full bg-gray-100 rounded-none mb-8 flex items-center justify-center overflow-hidden relative`}>
-                  {card.image ? (
-                    <img src={card.image} alt={card.title} className="h-full w-full object-contain p-4 group-hover:scale-105 transition-transform duration-700" />
-                  ) : (
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="h-2 w-12 bg-gray-300 rounded-full animate-pulse" />
-                      <p className="text-xs font-semibold text-gray-400 capitalize tracking-widest relative z-10">Coming Soon</p>
-                    </div>
-                  )}
-                </div>
+                  <div className="aspect-[16/10] relative bg-zinc-50 flex items-center justify-center overflow-hidden border-b border-zinc-100">
+                      <img src={card.image} alt={card.title} className="w-full h-full object-contain p-6 group-hover:scale-[1.02] transition-transform duration-500" />
+                      <div className="absolute top-4 left-4 border border-zinc-800 bg-black/80 backdrop-blur-sm px-2.5 py-1 text-[9px] font-bold text-white uppercase tracking-widest">
+                          {card.tag}
+                      </div>
+                  </div>
+                  
+                  <div className="p-8 flex flex-col flex-1">
+                      <div className="flex items-center gap-3 mb-4">
+                          <div className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
+                              <Star className="w-3 h-3 text-[#0055FF] fill-current" />
+                              <span className="text-zinc-900 font-bold">{card.rating}</span>
+                          </div>
+                          <div className="h-3 w-[1px] bg-zinc-100" />
+                          <div className="flex items-center gap-1.5 text-zinc-400 text-[11px]">
+                              <Users className="w-3 h-3" />
+                              <span>{card.enrolled} enrolled</span>
+                          </div>
+                      </div>
+                      
+                      <h3 className="text-[18px] font-bold tracking-tight text-zinc-900 group-hover:text-black transition-colors mb-2 leading-tight">
+                          {card.title}
+                      </h3>
+                      <p className="text-[13px] text-zinc-500 line-clamp-2 leading-relaxed mb-8">
+                          {card.subtitle}
+                      </p>
+                      
+                      <div className="mt-auto flex items-center justify-between pt-6 border-t border-zinc-100">
+                          <div className="flex items-center gap-2.5">
+                              <div className="w-8 h-8 bg-zinc-50 border border-zinc-100 flex items-center justify-center text-[11px] font-bold text-zinc-400 uppercase">
+                                  {card.instructor[0]}
+                              </div>
+                              <div>
+                                  <p className="text-[11px] font-bold text-zinc-900 leading-none">{card.instructor}</p>
+                                  <p className="text-[8px] text-zinc-400 uppercase tracking-widest font-bold mt-1">Personnel</p>
+                              </div>
+                          </div>
+                          <div className="text-[12px] font-bold text-zinc-900">
+                              Access
+                          </div>
+                      </div>
+                  </div>
 
-                <div className="flex-1 flex flex-col">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">{card.title}</h3>
-                  <p className="text-[15px] text-gray-600 leading-relaxed font-medium mb-8">
-                    {card.desc}
-                  </p>
-                </div>
-
-                {/* Sharp Edged Blue Button */}
-                <Link
-                  href={card.href}
-                  className="w-full h-12 bg-[#0055FF] text-white text-base font-semibold flex items-center justify-center rounded-none transition-all hover:bg-blue-700 active:scale-[0.98]"
-                >
-                  <span className="relative z-10 flex items-center gap-2">
-                    View Details <ArrowRight size={18} />
-                  </span>
-                </Link>
-              </div>
+                  {/* Enrollment Banner */}
+                  <div className="h-12 w-full bg-black flex items-center justify-between px-8 text-[11px] font-bold uppercase tracking-widest text-white transition-opacity group-hover:bg-[#0055FF]">
+                      <span>Check Details</span>
+                      <ChevronRight size={14} strokeWidth={2} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+              </Link>
             </motion.div>
           ))}
         </div>
