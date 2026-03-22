@@ -253,12 +253,28 @@ export default function CleedDashboard() {
                          </div>
                       )}
                    </div>
-                   <button 
-                     onClick={() => setActiveTab("interns")}
-                     className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-900 transition-all rounded-none"
-                   >
-                      Inspect Registry
-                   </button>
+                   <div className="flex flex-col sm:flex-row gap-4">
+                      <button 
+                        onClick={() => setActiveTab("interns")}
+                        className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-900 transition-all rounded-none"
+                      >
+                         Inspect Registry
+                      </button>
+                      
+                      <button 
+                        onClick={async () => {
+                           if(confirm("Protocol Confirmation: Standardize all signal states? This will lower ALL raised hands across the registry.")) {
+                              try {
+                                 const res = await fetch("/api/cleed/interns/lower-all", { method: "POST" });
+                                 if(res.ok) fetchData();
+                              } catch(e) {}
+                           }
+                        }}
+                        className="h-12 px-8 bg-white border border-black/10 text-black text-[11px] font-bold uppercase tracking-widest hover:bg-black hover:text-white transition-all rounded-none"
+                      >
+                         Dismiss All Signals
+                      </button>
+                   </div>
                 </motion.div>
              )}
 
