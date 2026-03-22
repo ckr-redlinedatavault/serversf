@@ -80,6 +80,7 @@ model User {
   role       Role     @default(MEDIA_TEAM)
   isApproved Boolean  @default(false)
   handRaised Boolean  @default(false)
+  letterUrl  String?
   tasks      Task[]   @relation("UserTasks")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt

@@ -20,7 +20,9 @@ import {
   Globe,
   Paperclip,
   Hand,
-  Bell
+  Bell,
+  FileText,
+  FileBadge
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,6 +32,7 @@ interface Intern {
   name: string;
   email: string;
   handRaised: boolean;
+  letterUrl?: string;
   internForm?: {
     college: string;
     branch: string;
@@ -56,14 +59,16 @@ export default function CleedDashboard() {
   // Selection
   const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null);
   
-  // New Task Form
+  // Forms
   const [taskData, setTaskData] = useState({ title: "", description: "", attachmentUrl: "" });
+  const [letterUrl, setLetterUrl] = useState("");
   const [sendingTask, setSendingTask] = useState(false);
+  const [sendingLetter, setSendingLetter] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [letterSuccess, setLetterSuccess] = useState(false);
 
   useEffect(() => {
     fetchData();
-    // High-frequency polling for administrative oversight
     const interval = setInterval(fetchData, 10000); 
     return () => clearInterval(interval);
   }, []);
@@ -115,6 +120,30 @@ export default function CleedDashboard() {
     }
   };
 
+  const handleSendLetter = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedIntern || !letterUrl) return;
+    setSendingLetter(true);
+    try {
+      const res = await fetch("/api/cleed/letter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ internId: selectedIntern.id, letterUrl }),
+      });
+
+      if (res.ok) {
+        setLetterSuccess(true);
+        setLetterUrl("");
+        setTimeout(() => setLetterSuccess(false), 3000);
+        fetchData();
+      }
+    } catch (err) {
+      console.error("Letter transmission failed");
+    } finally {
+      setSendingLetter(false);
+    }
+  };
+
   const raisedHandsCount = interns.filter(i => i.handRaised).length;
 
   return (
@@ -130,19 +159,20 @@ export default function CleedDashboard() {
              {[
                { id: "interns", icon: Users, label: "Intern Registry" },
                { id: "assign", icon: Send, label: "Dispatch Task" },
-               { id: "history", icon: History, label: "Transmission Log" }
+               { id: "certification", icon: FileBadge, label: "Issuance Hub" },
+               { id: "history", icon: History, label: "Logbook" }
              ].map((item) => (
                 <button 
                    key={item.id}
                    onClick={() => setActiveTab(item.id)}
                    className={`w-full h-12 flex items-center px-4 gap-4 transition-all ${
                       activeTab === item.id 
-                      ? "bg-[#0055FF] text-white" 
+                      ? "bg-[#0055FF] text-white font-bold shadow-lg" 
                       : "text-zinc-500 hover:text-white"
                    }`}
                 >
                    <item.icon size={18} />
-                   <span className="hidden lg:block text-[12px] font-bold uppercase tracking-widest">{item.label}</span>
+                   <span className="hidden lg:block text-[11px] font-bold uppercase tracking-[0.2em]">{item.label}</span>
                 </button>
              ))}
           </nav>
@@ -176,7 +206,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-sm">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300" />
                 <span className="text-zinc-900 font-bold text-sm uppercase tracking-widest">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : "Logbook"}
                 </span>
              </div>
              
@@ -186,20 +216,21 @@ export default function CleedDashboard() {
                    <input className="h-9 w-64 bg-zinc-50 border border-zinc-100 pl-9 pr-4 text-[12px] outline-none focus:border-[#0055FF] transition-all" placeholder="Audit registry..." />
                 </div>
                 <div className="h-5 w-[1px] bg-zinc-200" />
-                <button className="h-9 w-9 bg-[#0055FF] text-white flex items-center justify-center hover:shadow-xl hover:shadow-[#0055FF]/20 transition-all">
+                <button className="h-9 w-9 bg-[#0055FF] text-white flex items-center justify-center hover:shadow-xl hover:shadow-[#0055FF]/20 transition-all shadow-none rounded-none">
                    <Plus size={16} />
                 </button>
              </div>
           </header>
 
           <div className="p-8 md:p-12 max-w-7xl mx-auto space-y-8">
+             
              {raisedHandsCount > 0 && (
                 <motion.div 
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="bg-amber-500 p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-amber-500/20"
+                  className="bg-amber-500 p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-2xl shadow-amber-500/20 rounded-none"
                 >
-                   <div className="flex items-center gap-4 text-black">
+                   <div className="flex items-center gap-4 text-black text-left">
                       <div className="h-12 w-12 bg-black text-amber-500 flex items-center justify-center">
                          <Hand size={24} className="animate-bounce" />
                       </div>
@@ -224,13 +255,13 @@ export default function CleedDashboard() {
                    </div>
                    <button 
                      onClick={() => setActiveTab("interns")}
-                     className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-900 transition-all"
+                     className="h-12 px-8 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:bg-zinc-900 transition-all rounded-none"
                    >
                       Inspect Registry
                    </button>
                 </motion.div>
              )}
-             
+
              {/* Interns Tab */}
              {activeTab === "interns" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
@@ -251,16 +282,25 @@ export default function CleedDashboard() {
 
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {interns.map((intern) => (
-                         <div key={intern.id} className={`bg-white border p-8 group transition-all relative overflow-hidden ${
+                         <div key={intern.id} className={`bg-white border p-8 group transition-all relative overflow-hidden rounded-none ${
                             intern.handRaised ? "border-amber-400 shadow-xl shadow-amber-500/10" : "border-zinc-100 hover:border-[#0055FF]/40 hover:shadow-2xl hover:shadow-black/[0.02]"
                          }`}>
                             {intern.handRaised && (
                                <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400 animate-pulse" />
                             )}
+                            
+                            {intern.letterUrl && (
+                               <div className="absolute top-0 right-12 h-8 w-8 bg-emerald-500 text-white flex items-center justify-center">
+                                  <FileText size={14} />
+                               </div>
+                            )}
 
                             <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col gap-2">
                                <button onClick={() => { setSelectedIntern(intern); setActiveTab("assign"); }} className="h-8 w-8 bg-[#0055FF] text-white flex items-center justify-center">
                                   <Send size={14} />
+                               </button>
+                               <button onClick={() => { setSelectedIntern(intern); setActiveTab("certification"); }} className="h-8 w-8 bg-emerald-500 text-white flex items-center justify-center">
+                                  <FileBadge size={14} />
                                </button>
                             </div>
                             
@@ -310,15 +350,15 @@ export default function CleedDashboard() {
                 </motion.div>
              )}
 
-             {/* Assign Task Tab */}
-             {activeTab === "assign" && (
+             {/* Certification Hub Tab */}
+             {activeTab === "certification" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
                    <div className="text-center mb-12">
-                      <h2 className="text-3xl font-bold tracking-tight mb-3">Dispatch Mission</h2>
-                      <p className="text-zinc-500 text-sm">Allocate individual tasks to your registered assets</p>
+                      <h2 className="text-3xl font-bold tracking-tight mb-3 uppercase tracking-tighter">Issuance Protocol</h2>
+                      <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Grant official internship credentials</p>
                    </div>
 
-                   <form onSubmit={handlePostTask} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5">
+                   <form onSubmit={handleSendLetter} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5 rounded-none">
                       <div className="space-y-4">
                          <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Target Asset</label>
                          <div className="relative">
@@ -330,7 +370,75 @@ export default function CleedDashboard() {
                                  const found = interns.find(i => i.id === e.target.value);
                                  setSelectedIntern(found || null);
                               }}
-                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-sm outline-none focus:border-[#0055FF] transition-all appearance-none"
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none"
+                            >
+                               <option value="">Select an intern...</option>
+                               {interns.map((i) => (
+                                  <option key={i.id} value={i.id}>{i.name} ({i.email}) {i.letterUrl ? "✓" : ""}</option>
+                               ))}
+                            </select>
+                         </div>
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Internship Letter URL (PDF)</label>
+                         <div className="relative">
+                            <FileBadge className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                            <input 
+                              required 
+                              value={letterUrl}
+                              onChange={(e) => setLetterUrl(e.target.value)}
+                              placeholder="Paste official documentation link..."
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                            />
+                         </div>
+                      </div>
+
+                      {letterSuccess && (
+                         <div className="p-4 bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-600 rounded-none animate-in fade-in zoom-in duration-300">
+                            <CheckCircle2 size={16} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Protocol Executed: Letter Issued</span>
+                         </div>
+                      )}
+
+                      <button 
+                        disabled={sendingLetter || !selectedIntern}
+                        type="submit"
+                        className="w-full h-16 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-emerald-600 transition-all disabled:opacity-50 rounded-none shadow-xl shadow-black/10"
+                      >
+                         {sendingLetter ? "Encoding..." : <>Finalize Issuance <FileBadge size={16} /></>}
+                      </button>
+                      
+                      {selectedIntern?.letterUrl && (
+                        <p className="text-center text-[10px] text-emerald-600 font-bold uppercase tracking-[0.2em] animate-pulse">
+                           Note: This asset already holds an issued letter. Replacement will be immediate.
+                        </p>
+                      )}
+                   </form>
+                </motion.div>
+             )}
+
+             {/* Assign Task Tab */}
+             {activeTab === "assign" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
+                   <div className="text-center mb-12">
+                      <h2 className="text-3xl font-bold tracking-tight mb-3 uppercase tracking-tighter">Dispatch Mission</h2>
+                      <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest opacity-60">Allocate individual tasks to your registered assets</p>
+                   </div>
+
+                   <form onSubmit={handlePostTask} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5 rounded-none">
+                      <div className="space-y-4">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Target Asset</label>
+                         <div className="relative">
+                            <Users className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+                            <select 
+                              required
+                              value={selectedIntern?.id || ""}
+                              onChange={(e) => {
+                                 const found = interns.find(i => i.id === e.target.value);
+                                 setSelectedIntern(found || null);
+                              }}
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none"
                             >
                                <option value="">Select an intern...</option>
                                {interns.map((i) => (
@@ -347,7 +455,7 @@ export default function CleedDashboard() {
                            value={taskData.title}
                            onChange={(e) => setTaskData({...taskData, title: e.target.value})}
                            placeholder="Enter project/task title"
-                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold" 
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
                          />
                       </div>
 
@@ -357,7 +465,7 @@ export default function CleedDashboard() {
                            value={taskData.attachmentUrl}
                            onChange={(e) => setTaskData({...taskData, attachmentUrl: e.target.value})}
                            placeholder="Paste document link (optional)"
-                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all" 
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
                          />
                       </div>
 
@@ -369,21 +477,21 @@ export default function CleedDashboard() {
                            value={taskData.description}
                            onChange={(e) => setTaskData({...taskData, description: e.target.value})}
                            placeholder="Describe the mission requirements and expected outcomes..."
-                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed" 
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
                          />
                       </div>
 
                       {formSuccess && (
-                         <div className="p-4 bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-600">
+                         <div className="p-4 bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-600 rounded-none">
                             <CheckCircle2 size={16} />
-                            <span className="text-[12px] font-bold uppercase tracking-widest">Transmission Successful</span>
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Transmission Successful</span>
                          </div>
                       )}
 
                       <button 
                         disabled={sendingTask || !selectedIntern}
                         type="submit"
-                        className="w-full h-16 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#0055FF] transition-all disabled:opacity-50"
+                        className="w-full h-16 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#0055FF] transition-all disabled:opacity-50 rounded-none shadow-xl shadow-black/10"
                       >
                          {sendingTask ? "Processing..." : <>Initiate Dispatch <ChevronRight size={16} /></>}
                       </button>
@@ -391,19 +499,19 @@ export default function CleedDashboard() {
                  </motion.div>
               )}
 
-              {/* History Tab */}
+              {/* Logbook Tab */}
               {activeTab === "history" && (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                     <div className="flex items-center justify-between">
                        <h2 className="text-2xl font-bold tracking-tight">Transmission Logbook</h2>
                        <div className="flex items-center gap-4">
-                          <button className="h-10 px-6 bg-white border border-zinc-100 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
+                          <button className="h-10 px-6 bg-white border border-zinc-100 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2 rounded-none">
                              <Filter size={14} /> Filter Logs
                           </button>
                        </div>
                     </div>
 
-                    <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5">
+                    <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5 rounded-none">
                        <table className="w-full text-left">
                           <thead>
                              <tr className="bg-zinc-50 border-b border-zinc-100">
@@ -457,7 +565,7 @@ export default function CleedDashboard() {
                                       {new Date(task.createdAt).toLocaleDateString()}
                                    </td>
                                    <td className="px-8 py-6 text-right">
-                                      <button className="h-8 w-8 text-zinc-300 hover:text-black transition-colors">
+                                      <button className="h-8 w-8 text-zinc-300 hover:text-black transition-colors rounded-none">
                                          <MoreVertical size={16} />
                                       </button>
                                    </td>
