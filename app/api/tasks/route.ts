@@ -3,13 +3,13 @@ import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
     try {
-        const { title, description, assignedTo } = await req.json();
+        const { title, description, assignedRole } = await req.json();
 
         const task = await prisma.task.create({
             data: {
                 title,
                 description,
-                assignedTo: assignedTo || "MEDIA_TEAM"
+                assignedRole: assignedRole || "MEDIA_TEAM"
             }
         });
 
