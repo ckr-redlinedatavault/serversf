@@ -30,7 +30,7 @@ export async function POST(req: Request) {
                 email,
                 password: hashedPassword,
                 role: Role.INTERN,
-                isApproved: true, // Auto approve for interns
+                isApproved: false, // Manual approval required
             },
         });
 

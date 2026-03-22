@@ -109,6 +109,48 @@ function InternDashboardContent() {
 
     if (!user) return null;
 
+    // Gatekeeper: Approval Protocol Check
+    if (userStatus && userStatus.isApproved === false) {
+        return (
+            <div className="min-h-[80vh] flex items-center justify-center p-8">
+                <motion.div 
+                   initial={{ opacity: 0, scale: 0.98 }} 
+                   animate={{ opacity: 1, scale: 1 }} 
+                   className="max-w-xl w-full text-center space-y-10"
+                >
+                    <div className="flex justify-center">
+                       <div className="h-24 w-24 bg-amber-500 text-white flex items-center justify-center rounded-none shadow-2xl shadow-amber-500/20 relative">
+                          <Clock size={48} className="animate-pulse" />
+                          <div className="absolute -bottom-2 -right-2 h-8 w-8 bg-black text-[10px] font-bold flex items-center justify-center">SOS</div>
+                       </div>
+                    </div>
+
+                    <div className="space-y-4">
+                       <h1 className="text-4xl font-bold tracking-tight uppercase tracking-tighter">Registration Pending</h1>
+                       <p className="text-zinc-500 font-medium text-lg leading-relaxed">
+                          Your credentials have been successfully transmitted to the **Cleed Administration Center**. Access to your objectives will be granted once your identity is verified.
+                       </p>
+                    </div>
+
+                    <div className="p-8 border-l-4 border-amber-500 bg-amber-50/50 text-left space-y-2">
+                       <p className="text-[12px] font-bold text-amber-700 uppercase tracking-widest">Protocol Status</p>
+                       <p className="text-[14px] font-medium text-amber-900 italic">"Final identity verification in progress. Please stand by for portal activation."</p>
+                    </div>
+
+                    <button 
+                      onClick={() => {
+                        localStorage.removeItem("intern_user");
+                        router.push("/intern/signin");
+                      }}
+                      className="text-[12px] font-bold uppercase tracking-widest text-zinc-400 hover:text-black transition-colors"
+                    >
+                       Relinquish Session
+                    </button>
+                </motion.div>
+            </div>
+        );
+    }
+
     return (
         <div className="p-8 lg:p-12 max-w-6xl w-full mx-auto">
            {activeTab === "overview" && (

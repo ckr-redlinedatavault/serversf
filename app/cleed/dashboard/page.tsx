@@ -22,7 +22,8 @@ import {
   Hand,
   Bell,
   FileText,
-  FileBadge
+  FileBadge,
+  ShieldCheck
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -31,6 +32,7 @@ interface Intern {
   id: string;
   name: string;
   email: string;
+  isApproved: boolean;
   handRaised: boolean;
   letterUrl?: string;
   internForm?: {
@@ -58,6 +60,7 @@ export default function CleedDashboard() {
   
   // Selection
   const [selectedIntern, setSelectedIntern] = useState<Intern | null>(null);
+  const [isAuthorizing, setIsAuthorizing] = useState<string | null>(null);
   
   // Forms
   const [taskData, setTaskData] = useState({ title: "", description: "", attachmentUrl: "" });
@@ -144,6 +147,24 @@ export default function CleedDashboard() {
     }
   };
 
+  const handleApprove = async (internId: string) => {
+    setIsAuthorizing(internId);
+    try {
+      const res = await fetch("/api/cleed/interns/approve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ internId })
+      });
+      if (res.ok) {
+        fetchData();
+      }
+    } catch (err) {
+      console.error("Authorization protocol failure");
+    } finally {
+      setIsAuthorizing(null);
+    }
+  };
+
   const raisedHandsCount = interns.filter(i => i.handRaised).length;
 
   return (
@@ -160,6 +181,7 @@ export default function CleedDashboard() {
                { id: "interns", icon: Users, label: "Intern Registry" },
                { id: "assign", icon: Send, label: "Dispatch Task" },
                { id: "certification", icon: FileBadge, label: "Issuance Hub" },
+               { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                { id: "history", icon: History, label: "Logbook" }
              ].map((item) => (
                 <button 
@@ -206,7 +228,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-sm">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300" />
                 <span className="text-zinc-900 font-bold text-sm uppercase tracking-widest">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : "Logbook"}
                 </span>
              </div>
              
@@ -297,7 +319,7 @@ export default function CleedDashboard() {
                    </div>
 
                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {interns.map((intern) => (
+                      {interns.filter(i => i.isApproved).map((intern) => (
                          <div key={intern.id} className={`bg-white border p-8 group transition-all relative overflow-hidden rounded-none ${
                             intern.handRaised ? "border-amber-400 shadow-xl shadow-amber-500/10" : "border-zinc-100 hover:border-[#0055FF]/40 hover:shadow-2xl hover:shadow-black/[0.02]"
                          }`}>
@@ -515,7 +537,70 @@ export default function CleedDashboard() {
                  </motion.div>
               )}
 
-              {/* Logbook Tab */}
+           {/* Authorizations Tab */}
+           {activeTab === "authorizations" && (
+              <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                 <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                       <h2 className="text-2xl font-bold tracking-tight">Pending Registration Requests</h2>
+                       <span className="px-3 py-1 bg-[#0055FF]/10 text-[#0055FF] text-[10px] font-bold uppercase tracking-widest border border-[#0055FF]/20">
+                          {interns.filter(i => !i.isApproved).length} Awaiting Validation
+                       </span>
+                    </div>
+                 </div>
+
+                 <div className="bg-white border border-zinc-100 overflow-hidden shadow-2xl shadow-black/5 rounded-none">
+                    <table className="w-full text-left">
+                       <thead>
+                          <tr className="bg-zinc-100 border-b border-zinc-200">
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Applicant Node</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Connectivity Path</th>
+                             <th className="px-8 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-500 text-right">Approval Protocol</th>
+                          </tr>
+                       </thead>
+                       <tbody className="divide-y divide-zinc-100">
+                          {interns.filter(i => !i.isApproved).map((intern) => (
+                             <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
+                                <td className="px-8 py-6">
+                                   <div className="flex items-center gap-3">
+                                      <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold">
+                                         {intern.name[0]}
+                                      </div>
+                                      <div>
+                                         <p className="text-[14px] font-bold">{intern.name}</p>
+                                         <p className="text-[11px] text-zinc-400 font-medium">New Node Registered</p>
+                                      </div>
+                                   </div>
+                                </td>
+                                <td className="px-8 py-6">
+                                   <p className="text-[13px] text-zinc-600 font-medium">{intern.email}</p>
+                                </td>
+                                <td className="px-8 py-6 text-right">
+                                   <button 
+                                     disabled={isAuthorizing === intern.id}
+                                     onClick={() => handleApprove(intern.id)}
+                                     className="h-10 px-6 bg-[#0055FF] text-white text-[11px] font-bold uppercase tracking-widest hover:bg-black transition-all disabled:opacity-50 rounded-none shadow-lg shadow-[#0055FF]/10"
+                                   >
+                                      {isAuthorizing === intern.id ? "Authorizing..." : "Approve Protocol"}
+                                   </button>
+                                </td>
+                             </tr>
+                          ))}
+                          {interns.filter(i => !i.isApproved).length === 0 && (
+                             <tr>
+                                <td colSpan={3} className="px-8 py-20 text-center">
+                                   <ShieldCheck size={48} className="mx-auto text-zinc-100 mb-4" />
+                                   <p className="text-zinc-400 font-medium tracking-tight uppercase tracking-widest text-[11px]">System Clear: No Pending Requests</p>
+                                </td>
+                             </tr>
+                          )}
+                       </tbody>
+                    </table>
+                 </div>
+              </motion.div>
+           )}
+
+           {/* Logbook Tab */}
               {activeTab === "history" && (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                     <div className="flex items-center justify-between">
