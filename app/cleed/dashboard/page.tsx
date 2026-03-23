@@ -339,7 +339,7 @@ export default function CleedDashboard() {
   return (
     <div className="min-h-screen bg-[#F5F7FA] font-sans text-zinc-900 pb-20 md:pb-0">
        {/* Mobile Nav Top Bar */}
-       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-black z-[60] flex items-center justify-between px-6 pt-[env(safe-area-inset-top)] box-content">
+       <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-black z-[60] flex items-center justify-between px-6 pt-[env(safe-area-inset-top)] box-content shadow-xl group">
           <div className="flex items-center gap-3">
              <div className="h-4 w-4 bg-[#0055FF]" />
              <span className="text-white font-bold text-sm tracking-tight pt-[1px]">Cleed Hub</span>
@@ -450,8 +450,8 @@ export default function CleedDashboard() {
        </aside>
 
        {/* Main Content */}
-       <main className="md:pl-20 lg:pl-64 min-h-screen pt-16 md:pt-0">
-          <header className="h-20 bg-white border-b border-zinc-100 flex items-center justify-between px-6 md:px-8 sticky top-16 md:top-0 z-40 backdrop-blur-md bg-white/80">
+       <main className="md:pl-20 lg:pl-64 min-h-screen pt-[calc(4rem+env(safe-area-inset-top))] md:pt-0">
+          <header className="h-20 bg-white border-b border-zinc-100 flex items-center justify-between px-6 md:px-8 sticky top-[calc(4rem+env(safe-area-inset-top))] md:top-0 z-40 backdrop-blur-md bg-white/80">
              <div className="flex items-center gap-2 overflow-hidden">
                 <span className="text-zinc-400 text-xs md:text-sm whitespace-nowrap">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300 flex-shrink-0" />
@@ -704,7 +704,7 @@ export default function CleedDashboard() {
                                  const found = interns.find(i => i.id === e.target.value);
                                  setSelectedIntern(found || null);
                               }}
-                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none font-bold"
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-base md:text-base md:text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none font-bold"
                             >
                                <option value="">Select an intern entity...</option>
                                {interns.filter(i => i.isApproved).map((i) => (
@@ -723,7 +723,7 @@ export default function CleedDashboard() {
                               value={letterUrl}
                               onChange={(e) => setLetterUrl(e.target.value)}
                               placeholder="Paste cryptographic link..."
-                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
                             />
                          </div>
                       </div>
@@ -762,7 +762,7 @@ export default function CleedDashboard() {
                                  const found = interns.find(i => i.id === e.target.value);
                                  setSelectedIntern(found || null);
                               }}
-                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none font-bold"
+                              className="w-full h-14 bg-zinc-50 border border-zinc-100 pl-12 pr-4 text-base md:text-base md:text-sm outline-none focus:border-[#0055FF] transition-all appearance-none rounded-none font-bold"
                             >
                                <option value="">Select an intern entity...</option>
                                {interns.filter(i => i.isApproved).map((i) => (
@@ -774,12 +774,12 @@ export default function CleedDashboard() {
 
                       <div className="space-y-4 text-left">
                          <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Task Objective Header</label>
-                         <input required value={taskData.title} onChange={(e) => setTaskData({...taskData, title: e.target.value})} placeholder="Project title..." className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" />
+                         <input required value={taskData.title} onChange={(e) => setTaskData({...taskData, title: e.target.value})} placeholder="Project title..." className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" />
                       </div>
 
                       <div className="space-y-4 text-left">
                          <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Mission Narrative</label>
-                         <textarea required rows={5} value={taskData.description} onChange={(e) => setTaskData({...taskData, description: e.target.value})} placeholder="Describe the mission parameters..." className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" />
+                         <textarea required rows={5} value={taskData.description} onChange={(e) => setTaskData({...taskData, description: e.target.value})} placeholder="Describe the mission parameters..." className="w-full bg-zinc-50 border border-zinc-100 p-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" />
                       </div>
 
                       {formSuccess && (
@@ -1075,7 +1075,7 @@ export default function CleedDashboard() {
                              value={scheduleData.week}
                              onChange={(e) => setScheduleData({...scheduleData, week: e.target.value})}
                              placeholder="e.g. Week 1"
-                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
                            />
                         </div>
                         <div className="space-y-4 text-left">
@@ -1085,7 +1085,7 @@ export default function CleedDashboard() {
                              type="date"
                              value={scheduleData.deadline}
                              onChange={(e) => setScheduleData({...scheduleData, deadline: e.target.value})}
-                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none font-bold" 
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all rounded-none font-bold" 
                            />
                         </div>
                       </div>
@@ -1097,7 +1097,7 @@ export default function CleedDashboard() {
                            value={scheduleData.typeOfWork}
                            onChange={(e) => setScheduleData({...scheduleData, typeOfWork: e.target.value})}
                            placeholder="e.g. Full Stack Integration"
-                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
                          />
                       </div>
 
@@ -1108,7 +1108,7 @@ export default function CleedDashboard() {
                            value={scheduleData.toolsUsed}
                            onChange={(e) => setScheduleData({...scheduleData, toolsUsed: e.target.value})}
                            placeholder="e.g. Next.js, Prisma, Tailwind"
-                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
                          />
                       </div>
 
@@ -1119,7 +1119,7 @@ export default function CleedDashboard() {
                            value={scheduleData.deploymentTools}
                            onChange={(e) => setScheduleData({...scheduleData, deploymentTools: e.target.value})}
                            placeholder="e.g. Vercel, Railway, Supabase"
-                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
                          />
                       </div>
 
@@ -1131,7 +1131,7 @@ export default function CleedDashboard() {
                            value={scheduleData.requirements}
                            onChange={(e) => setScheduleData({...scheduleData, requirements: e.target.value})}
                            placeholder="List specific requirements..."
-                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
                          />
                       </div>
 
@@ -1143,7 +1143,7 @@ export default function CleedDashboard() {
                            value={scheduleData.description}
                            onChange={(e) => setScheduleData({...scheduleData, description: e.target.value})}
                            placeholder="Describe the primary objectives..."
-                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
                          />
                       </div>
 
@@ -1155,7 +1155,7 @@ export default function CleedDashboard() {
                            value={scheduleData.outcomes}
                            onChange={(e) => setScheduleData({...scheduleData, outcomes: e.target.value})}
                            placeholder="Describe success metrics..."
-                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-base md:text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
                          />
                       </div>
 
