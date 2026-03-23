@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { PWAInstallButton } from "@/app/components/PWAInstallButton";
 
 interface Intern {
   id: string;
@@ -1288,6 +1289,7 @@ export default function CleedDashboard() {
               )}
            </div>
         </main>
+        <PWAInstallButton />
      </div>
   );
 }

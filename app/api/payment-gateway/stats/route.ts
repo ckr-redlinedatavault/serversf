@@ -27,7 +27,7 @@ export async function GET() {
 
     // Count occurrences of each razorpayOrderId / referenceId
     const orderCounts: Record<string, number> = {};
-    enrollments.forEach(e => {
+    enrollments.forEach((e: any) => {
       const orderId = e.razorpayOrderId || e.referenceId || "none";
       if (orderId !== "none") {
         orderCounts[orderId] = (orderCounts[orderId] || 0) + 1;

@@ -13,13 +13,15 @@ export default function Resources() {
     const fetchCourses = async () => {
       try {
         const res = await fetch("/api/courses");
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         if (data.success) {
-          // Prioritize real courses if they exist
           setCourses(data.courses.slice(0, 4));
+        } else {
+          console.warn("API returned failure:", data.error);
         }
       } catch (err) {
-        console.error("Failed to load courses");
+        console.error("Failed to load courses:", err);
       } finally {
         setLoading(false);
       }

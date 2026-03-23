@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Shield, Lock, Mail, ArrowRight, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { PWAInstallButton } from "@/app/components/PWAInstallButton";
 
 export default function CleedLoginPage() {
   const [email, setEmail] = useState("");
@@ -120,6 +121,7 @@ export default function CleedLoginPage() {
           </p>
         </div>
       </motion.div>
+      <PWAInstallButton />
     </div>
   );
 }

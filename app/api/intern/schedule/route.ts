@@ -17,7 +17,7 @@ export async function GET(req: Request) {
             }
         });
 
-        const mappedSchedules = schedules.map(s => ({
+        const mappedSchedules = schedules.map((s: any) => ({
             ...s,
             isCompleted: s.submissions && s.submissions.length > 0,
             githubLink: s.submissions?.[0]?.githubLink || null,

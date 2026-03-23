@@ -14,14 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Forge | Academy",
+  title: "Dashboard",
   description: "Learn to build modern software with our expert-led courses and projects.",
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/sf-next-logo.png", type: "image/png" }
     ],
     shortcut: "/sf-next-logo.png",
-    apple: "/sf-next-logo.png",
+    apple: "/icons/icon-192.png",
   },
 };
 
@@ -33,7 +34,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="theme-color" content="#000000" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="apple-mobile-web-app-title" content="Dashboard" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased selection:bg-zinc-50 selection:text-black`}
       >
