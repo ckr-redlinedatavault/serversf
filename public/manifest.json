@@ -1,7 +1,7 @@
 {
   "name": "Dashboard App",
   "short_name": "Dashboard",
-  "start_url": "/cleed/dashboard",
+  "start_url": "/cleed/login",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",

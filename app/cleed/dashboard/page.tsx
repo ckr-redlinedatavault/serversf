@@ -112,6 +112,17 @@ export default function CleedDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'auto';
+    }
+    return () => {
+      document.body.style.overflow = 'auto';
+    };
+  }, [isMobileMenuOpen]);
+
+  useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 10000); 
     return () => clearInterval(interval);

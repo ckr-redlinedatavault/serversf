@@ -71,7 +71,7 @@ export default function CleedLoginPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Enter administrator email"
-                  className="w-full h-14 bg-black/40 border border-zinc-800 pl-12 pr-4 text-sm text-white outline-none focus:border-[#0055FF] transition-all"
+                  className="w-full h-14 bg-black/40 border border-zinc-800 pl-12 pr-4 text-base md:text-sm text-white outline-none focus:border-[#0055FF] transition-all"
                 />
               </div>
             </div>
@@ -86,7 +86,7 @@ export default function CleedLoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter secure password"
-                  className="w-full h-14 bg-black/40 border border-zinc-800 pl-12 pr-4 text-sm text-white outline-none focus:border-[#0055FF] transition-all"
+                  className="w-full h-14 bg-black/40 border border-zinc-800 pl-12 pr-4 text-base md:text-sm text-white outline-none focus:border-[#0055FF] transition-all"
                 />
               </div>
             </div>
