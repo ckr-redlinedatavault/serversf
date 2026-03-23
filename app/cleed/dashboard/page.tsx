@@ -38,6 +38,7 @@ interface Intern {
   isApproved: boolean;
   handRaised: boolean;
   letterUrl?: string;
+  lastActive?: string;
   internForm?: {
     college: string;
     branch: string;
@@ -67,7 +68,7 @@ interface MentorshipSession {
 }
 
 export default function CleedDashboard() {
-  const [activeTab, setActiveTab] = useState("interns");
+  const [activeTab, setActiveTab] = useState("overview");
   const [interns, setInterns] = useState<Intern[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [mentorshipSessions, setMentorshipSessions] = useState<MentorshipSession[]>([]);
@@ -164,6 +165,13 @@ export default function CleedDashboard() {
       setIsLoading(false);
     }
   };
+
+  const onlineInternsCount = interns.filter(intern => {
+    if (!intern.lastActive) return false;
+    const lastActive = new Date(intern.lastActive).getTime();
+    const now = new Date().getTime();
+    return (now - lastActive) < (5 * 60 * 1000); // 5 minutes
+  }).length;
 
   const handlePostTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -333,6 +341,7 @@ export default function CleedDashboard() {
 
           <nav className="flex-1 mt-10 space-y-2 px-4">
              {[
+               { id: "overview", icon: LayoutDashboard, label: "Overview" },
                { id: "interns", icon: Users, label: "Intern Registry" },
                { id: "assign", icon: Send, label: "Dispatch Task" },
                { id: "certification", icon: FileBadge, label: "Issuance Hub" },
@@ -460,6 +469,75 @@ export default function CleedDashboard() {
              )}
 
              {/* Interns Tab */}
+             {activeTab === "overview" && (
+                <div className="space-y-12">
+                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                      <div className="bg-white border border-zinc-100 p-8 shadow-sm group hover:border-[#0055FF] transition-all">
+                         <div className="flex items-center justify-between mb-4">
+                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Total Registered</p>
+                            <Users size={16} className="text-zinc-300 group-hover:text-[#0055FF] transition-all" />
+                         </div>
+                         <div className="flex items-baseline gap-2">
+                           <h3 className="text-4xl font-bold tracking-tight">{interns.length}</h3>
+                           <span className="text-xs text-zinc-400 font-medium pb-1.5 flex items-center gap-1">
+                              Authorized
+                           </span>
+                         </div>
+                      </div>
+
+                      <div className="bg-white border border-zinc-100 p-8 shadow-sm group hover:border-[#0055FF] transition-all">
+                         <div className="flex items-center justify-between mb-4">
+                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Live Presence</p>
+                            <div className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                         </div>
+                         <div className="flex items-baseline gap-2">
+                           <h3 className="text-4xl font-bold tracking-tight text-emerald-600">{onlineInternsCount}</h3>
+                           <span className="text-xs text-zinc-400 font-medium pb-1.5 flex items-center gap-1">
+                              Online Now
+                           </span>
+                         </div>
+                      </div>
+
+                      <div className="bg-white border border-zinc-100 p-8 shadow-sm group hover:border-[#0055FF] transition-all">
+                         <div className="flex items-center justify-between mb-4">
+                            <p className="text-[11px] font-bold text-zinc-400 uppercase tracking-widest leading-none">Engagement Monitoring</p>
+                            <Hand size={16} className="text-amber-500" />
+                         </div>
+                         <div className="flex items-baseline gap-2">
+                           <h3 className="text-4xl font-bold tracking-tight">{raisedHandsCount}</h3>
+                           <span className="text-xs text-zinc-400 font-medium pb-1.5 flex items-center gap-1">
+                              Pending Signals
+                           </span>
+                         </div>
+                      </div>
+                   </div>
+
+                   <div className="grid md:grid-cols-2 gap-12">
+                      <div className="space-y-6">
+                         <h2 className="text-xl font-bold border-l-4 border-blue-600 pl-4 uppercase tracking-tighter">Quick Actions</h2>
+                         <div className="grid grid-cols-2 gap-4">
+                            <button onClick={() => setActiveTab("interns")} className="h-20 border border-zinc-100 hover:border-blue-600 p-6 text-left transition-all bg-white group shadow-sm">
+                               <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Manage</p>
+                               <span className="text-sm font-bold group-hover:text-blue-600">Interns</span>
+                            </button>
+                            <button onClick={() => setActiveTab("schedule")} className="h-20 border border-zinc-100 hover:border-blue-600 p-6 text-left transition-all bg-white group shadow-sm">
+                               <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Dispatch</p>
+                               <span className="text-sm font-bold group-hover:text-blue-600">Schedule</span>
+                            </button>
+                         </div>
+                      </div>
+                      <div className="space-y-6">
+                         <h2 className="text-xl font-bold border-l-4 border-blue-600 pl-4 uppercase tracking-tighter">System Health</h2>
+                         <div className="p-6 bg-black text-emerald-500 font-mono text-[10px] space-y-2 uppercase tracking-widest border border-zinc-900">
+                             <p>&gt; CLEED_PROTOCOL: ACTIVE</p>
+                             <p>&gt; DATABASE_SYNC: STABLE</p>
+                             <p>&gt; PRESENCE_TRACKING: LIVE</p>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+              )}
+
              {activeTab === "interns" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                    <div className="flex items-center justify-between">

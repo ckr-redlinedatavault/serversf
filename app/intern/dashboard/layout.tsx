@@ -39,6 +39,24 @@ export default function InternDashboardLayout({
         setHandRaised(userData.handRaised || false);
     }, [router]);
 
+    useEffect(() => {
+        if (!user) return;
+        const sendPulse = async () => {
+            try {
+                await fetch("/api/intern/pulse", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ userId: user.id })
+                });
+            } catch (err) {
+                // Ignore silent errors
+            }
+        };
+        sendPulse(); // Initial
+        const interval = setInterval(sendPulse, 30000); // Every 30s
+        return () => clearInterval(interval);
+    }, [user]);
+
     const handleLogout = () => {
         localStorage.removeItem("intern_user");
         router.push("/intern/signin");
