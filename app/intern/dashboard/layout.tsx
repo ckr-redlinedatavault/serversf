@@ -73,6 +73,7 @@ export default function InternDashboardLayout({
     const navItems = [
         { name: "Overview", icon: LayoutDashboard, slug: "/intern/dashboard" },
         { name: "Assignments", icon: Briefcase, slug: "/intern/dashboard?view=tasks" },
+        { name: "Schedule", icon: Calendar, slug: "/intern/dashboard/schedule" },
         { name: "Attendance Hist.", icon: Calendar, slug: "/intern/dashboard?view=attendance" },
         { name: "Settings", icon: Settings, slug: "/intern/dashboard/settings" },
     ];

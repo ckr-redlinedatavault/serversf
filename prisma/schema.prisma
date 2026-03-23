@@ -86,6 +86,7 @@ model User {
   updatedAt  DateTime @updatedAt
   internForm InternForm? @relation("InternUserForm")
   attendances Attendance[] @relation("UserAttendances")
+  scheduleSubmissions ScheduleSubmission[] @relation("InternSubmissions")
 }
 
 enum Role {
@@ -299,4 +300,35 @@ model Mentorship {
   topic       String
   status      String   @default("pending") // pending, scheduled, completed, rejected
   createdAt   DateTime @default(now())
+}
+
+model Schedule {
+  id              String   @id @default(cuid())
+  week            String   // e.g., "Week 1"
+  typeOfWork      String   // e.g., "Frontend Development"
+  toolsUsed       String[] // Array of strings
+  deploymentTools String[] // New field
+  requirements    String[] // New field
+  description     String
+  outcomes        String[] // Array of strings
+  deadline        DateTime
+  submissionLink  String?  // Link for interns to submit their work
+  githubLink      String?  // Final GitHub link submission
+  isCompleted     Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  submissions     ScheduleSubmission[]
+}
+
+model ScheduleSubmission {
+  id              String   @id @default(cuid())
+  schedule        Schedule @relation(fields: [scheduleId], references: [id])
+  scheduleId      String
+  intern          User     @relation("InternSubmissions", fields: [internId], references: [id])
+  internId        String
+  githubLink      String
+  submissionLink  String
+  createdAt       DateTime @default(now())
+
+  @@unique([scheduleId, internId])
 }

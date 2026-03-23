@@ -25,7 +25,8 @@ import {
   FileBadge,
   ShieldCheck,
   CalendarCheck,
-  Calendar
+  Calendar,
+  ExternalLink
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -88,12 +89,47 @@ export default function CleedDashboard() {
   const [sendingLetter, setSendingLetter] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [letterSuccess, setLetterSuccess] = useState(false);
+  const [scheduleData, setScheduleData] = useState({ 
+    week: "", 
+    typeOfWork: "", 
+    toolsUsed: "", 
+    deploymentTools: "", 
+    requirements: "", 
+    description: "", 
+    outcomes: "", 
+    deadline: "" 
+  });
+  const [sendingSchedule, setSendingSchedule] = useState(false);
+  const [scheduleSuccess, setScheduleSuccess] = useState(false);
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [loadingSubmissions, setLoadingSubmissions] = useState(false);
 
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 10000); 
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "submissions") {
+      fetchSubmissions();
+    }
+  }, [activeTab]);
+
+  const fetchSubmissions = async () => {
+    setLoadingSubmissions(true);
+    try {
+      const res = await fetch("/api/cleed/submissions");
+      const data = await res.json();
+      if (data.success) {
+        setSubmissions(data.submissions);
+      }
+    } catch (err) {
+      console.error("Submissions fetch failure");
+    } finally {
+      setLoadingSubmissions(false);
+    }
+  };
 
   useEffect(() => {
     fetchAttendance();
@@ -248,6 +284,42 @@ export default function CleedDashboard() {
     }
   };
 
+  const handlePostSchedule = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSendingSchedule(true);
+    try {
+      const res = await fetch("/api/intern/schedule", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ 
+          ...scheduleData,
+          toolsUsed: scheduleData.toolsUsed.split(",").map(s => s.trim()).filter(s => s !== ""),
+          deploymentTools: scheduleData.deploymentTools.split(",").map(s => s.trim()).filter(s => s !== ""),
+          requirements: scheduleData.requirements.split("\n").map(s => s.trim()).filter(s => s !== ""),
+          outcomes: scheduleData.outcomes.split("\n").map(s => s.trim()).filter(s => s !== "")
+        }),
+      });
+      if (res.ok) {
+        setScheduleSuccess(true);
+        setScheduleData({ 
+          week: "", 
+          typeOfWork: "", 
+          toolsUsed: "", 
+          deploymentTools: "", 
+          requirements: "", 
+          description: "", 
+          outcomes: "", 
+          deadline: "" 
+        });
+        setTimeout(() => setScheduleSuccess(false), 3000);
+      }
+    } catch (err) {
+      console.error("Schedule dispatch failed");
+    } finally {
+      setSendingSchedule(false);
+    }
+  };
+
   const raisedHandsCount = interns.filter(i => i.handRaised).length;
 
   return (
@@ -266,6 +338,8 @@ export default function CleedDashboard() {
                { id: "certification", icon: FileBadge, label: "Issuance Hub" },
                { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
+               { id: "schedule", icon: Calendar, label: "Schedule Dispatch" },
+               { id: "submissions", icon: ExternalLink, label: "Intern Submissions" },
                { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                { id: "history", icon: History, label: "Logbook" }
              ].map((item) => (
@@ -313,7 +387,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-sm">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300" />
                 <span className="text-zinc-900 font-bold text-sm">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "attendance" ? "Attendance" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "schedule" ? "Schedule" : activeTab === "submissions" ? "Submissions" : activeTab === "attendance" ? "Attendance" : "Logbook"}
                 </span>
              </div>
              
@@ -760,6 +834,204 @@ export default function CleedDashboard() {
                  </div>
               </motion.div>
            )}
+
+             {/* Intern Submissions Tab */}
+             {activeTab === "submissions" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+                   <div className="flex items-center justify-between mb-8">
+                       <div>
+                           <h2 className="text-2xl font-bold tracking-tight">Intern Submissions</h2>
+                           <p className="text-zinc-500 text-sm">Review submitted work and repositories from all interns.</p>
+                       </div>
+                       <button onClick={fetchSubmissions} className="text-sm px-4 py-2 border border-zinc-200 hover:bg-zinc-50 text-zinc-600 transition-all font-medium">
+                           Refresh List
+                       </button>
+                   </div>
+
+                   <div className="bg-white border border-zinc-100 overflow-hidden shadow-sm">
+                      <table className="w-full text-left">
+                         <thead>
+                            <tr className="border-b border-zinc-100 bg-zinc-50/50">
+                               <th className="px-8 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Intern</th>
+                               <th className="px-8 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Module / Week</th>
+                               <th className="px-8 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Links</th>
+                               <th className="px-8 py-4 text-[11px] font-bold text-zinc-400 uppercase tracking-widest">Date Submitted</th>
+                            </tr>
+                         </thead>
+                         <tbody className="divide-y divide-zinc-100">
+                            {submissions.map((sub) => (
+                               <tr key={sub.id} className="hover:bg-zinc-50/50 transition-colors">
+                                  <td className="px-8 py-5">
+                                     <p className="text-sm font-bold text-zinc-900">{sub.intern.name}</p>
+                                     <p className="text-xs text-zinc-400 font-medium">{sub.intern.email}</p>
+                                  </td>
+                                  <td className="px-8 py-5">
+                                     <p className="text-sm font-medium text-zinc-700">{sub.schedule.typeOfWork}</p>
+                                     <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded border border-blue-100">{sub.schedule.week}</span>
+                                  </td>
+                                  <td className="px-8 py-5">
+                                     <div className="flex items-center gap-4">
+                                        <a href={sub.githubLink} target="_blank" className="flex items-center gap-2 text-xs font-medium text-zinc-600 hover:text-blue-600 transition-colors">
+                                           <Github size={14} /> GitHub
+                                        </a>
+                                        <a href={sub.submissionLink} target="_blank" className="flex items-center gap-2 text-xs font-medium text-zinc-600 hover:text-blue-600 transition-colors">
+                                           <ExternalLink size={14} /> Deploy
+                                        </a>
+                                     </div>
+                                  </td>
+                                  <td className="px-8 py-5">
+                                     <span className="text-xs font-medium text-zinc-500">
+                                        {new Date(sub.createdAt).toLocaleDateString('en-IN', {
+                                           day: 'numeric',
+                                           month: 'short',
+                                           year: 'numeric'
+                                        })}
+                                     </span>
+                                  </td>
+                               </tr>
+                            ))}
+                            {loadingSubmissions && (
+                               <tr>
+                                  <td colSpan={4} className="px-8 py-10 text-center">
+                                     <div className="flex items-center justify-center gap-2 text-zinc-400 text-sm">
+                                        <div className="h-4 w-4 border-2 border-zinc-200 border-t-zinc-500 rounded-full animate-spin" />
+                                        Fetching data...
+                                     </div>
+                                  </td>
+                               </tr>
+                            )}
+                            {!loadingSubmissions && submissions.length === 0 && (
+                               <tr>
+                                  <td colSpan={4} className="px-8 py-20 text-center">
+                                     <ExternalLink size={40} className="mx-auto text-zinc-200 mb-4" />
+                                     <p className="text-zinc-400 text-sm font-medium">No submissions recorded yet.</p>
+                                  </td>
+                               </tr>
+                            )}
+                         </tbody>
+                      </table>
+                   </div>
+                </motion.div>
+             )}
+
+             {/* Curriculum Dispatcher Tab */}
+             {activeTab === "schedule" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
+                   <div className="text-center mb-12">
+                      <h2 className="text-3xl font-bold tracking-tight mb-3">Schedule Dispatcher</h2>
+                      <p className="text-zinc-500 text-sm font-medium">Create weekly updates and tasks for interns.</p>
+                   </div>
+
+                   <form onSubmit={handlePostSchedule} className="bg-white border border-zinc-100 p-10 md:p-12 space-y-8 shadow-2xl shadow-black/5 rounded-none">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-4">
+                           <label className="text-[12px] font-medium text-zinc-500">Week</label>
+                           <input 
+                             required 
+                             value={scheduleData.week}
+                             onChange={(e) => setScheduleData({...scheduleData, week: e.target.value})}
+                             placeholder="e.g. Week 1"
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-blue-500 transition-all font-medium rounded-none" 
+                           />
+                        </div>
+                        <div className="space-y-4">
+                           <label className="text-[12px] font-medium text-zinc-500">Deadline</label>
+                           <input 
+                             required 
+                             type="date"
+                             value={scheduleData.deadline}
+                             onChange={(e) => setScheduleData({...scheduleData, deadline: e.target.value})}
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-blue-500 transition-all rounded-none" 
+                           />
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Type of work</label>
+                         <input 
+                           required 
+                           value={scheduleData.typeOfWork}
+                           onChange={(e) => setScheduleData({...scheduleData, typeOfWork: e.target.value})}
+                           placeholder="e.g. Full Stack Integration"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-blue-500 transition-all font-medium rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Tools to be used (Comma separated)</label>
+                         <input 
+                           required 
+                           value={scheduleData.toolsUsed}
+                           onChange={(e) => setScheduleData({...scheduleData, toolsUsed: e.target.value})}
+                           placeholder="e.g. Next.js, Prisma, Tailwind"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-blue-500 transition-all rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Deployment tools (Comma separated)</label>
+                         <input 
+                           required 
+                           value={scheduleData.deploymentTools}
+                           onChange={(e) => setScheduleData({...scheduleData, deploymentTools: e.target.value})}
+                           placeholder="e.g. Vercel, Railway, Supabase"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-blue-500 transition-all rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Requirements (One per line)</label>
+                         <textarea 
+                           required 
+                           rows={3}
+                           value={scheduleData.requirements}
+                           onChange={(e) => setScheduleData({...scheduleData, requirements: e.target.value})}
+                           placeholder="List specific requirements..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-blue-500 transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Description</label>
+                         <textarea 
+                           required 
+                           rows={4}
+                           value={scheduleData.description}
+                           onChange={(e) => setScheduleData({...scheduleData, description: e.target.value})}
+                           placeholder="Describe the week's primary objectives..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4">
+                         <label className="text-[12px] font-medium text-zinc-500">Outcomes (One per line)</label>
+                         <textarea 
+                           required 
+                           rows={4}
+                           value={scheduleData.outcomes}
+                           onChange={(e) => setScheduleData({...scheduleData, outcomes: e.target.value})}
+                           placeholder="Describe success metrics..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      {scheduleSuccess && (
+                         <div className="p-4 bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-600 rounded-none animate-in fade-in zoom-in duration-300">
+                            <CheckCircle2 size={16} />
+                            <span className="text-[12px] font-medium">Schedule released successfully</span>
+                         </div>
+                      )}
+
+                      <button 
+                        disabled={sendingSchedule}
+                        type="submit"
+                        className="w-full h-16 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#0055FF] transition-all disabled:opacity-50 rounded-none shadow-xl shadow-black/10"
+                      >
+                         {sendingSchedule ? "Sending..." : <>Post Schedule <Calendar size={16} /></>}
+                      </button>
+                   </form>
+                </motion.div>
+             )}
 
            {/* Attendance Protocol Tab */}
            {activeTab === "attendance" && (
