@@ -1058,6 +1058,125 @@ export default function CleedDashboard() {
                 </motion.div>
              )}
 
+            {/* Curriculum Dispatcher Tab */}
+            {activeTab === "schedule" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto space-y-8">
+                   <div className="text-center mb-8 md:mb-12">
+                      <h2 className="text-2xl md:text-3xl font-bold tracking-tight mb-2 md:mb-3 uppercase tracking-tighter">Schedule Dispatcher</h2>
+                      <p className="text-zinc-500 text-[11px] md:text-sm font-bold uppercase tracking-widest opacity-60">Create weekly updates and tasks for interns</p>
+                   </div>
+
+                   <form onSubmit={handlePostSchedule} className="bg-white border border-zinc-100 p-6 md:p-12 space-y-6 md:space-y-8 shadow-2xl shadow-black/5 rounded-none">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-4 text-left">
+                           <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Course Week</label>
+                           <input 
+                             required 
+                             value={scheduleData.week}
+                             onChange={(e) => setScheduleData({...scheduleData, week: e.target.value})}
+                             placeholder="e.g. Week 1"
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
+                           />
+                        </div>
+                        <div className="space-y-4 text-left">
+                           <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Protocol Deadline</label>
+                           <input 
+                             required 
+                             type="date"
+                             value={scheduleData.deadline}
+                             onChange={(e) => setScheduleData({...scheduleData, deadline: e.target.value})}
+                             className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none font-bold" 
+                           />
+                        </div>
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Type of Operation</label>
+                         <input 
+                           required 
+                           value={scheduleData.typeOfWork}
+                           onChange={(e) => setScheduleData({...scheduleData, typeOfWork: e.target.value})}
+                           placeholder="e.g. Full Stack Integration"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all font-bold rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Tech Stack (Comma Separated)</label>
+                         <input 
+                           required 
+                           value={scheduleData.toolsUsed}
+                           onChange={(e) => setScheduleData({...scheduleData, toolsUsed: e.target.value})}
+                           placeholder="e.g. Next.js, Prisma, Tailwind"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Deployment Logic</label>
+                         <input 
+                           required 
+                           value={scheduleData.deploymentTools}
+                           onChange={(e) => setScheduleData({...scheduleData, deploymentTools: e.target.value})}
+                           placeholder="e.g. Vercel, Railway, Supabase"
+                           className="w-full h-14 bg-zinc-50 border border-zinc-100 px-6 text-sm outline-none focus:border-[#0055FF] transition-all rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Operational Requirements (One per line)</label>
+                         <textarea 
+                           required 
+                           rows={3}
+                           value={scheduleData.requirements}
+                           onChange={(e) => setScheduleData({...scheduleData, requirements: e.target.value})}
+                           placeholder="List specific requirements..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Mission Description</label>
+                         <textarea 
+                           required 
+                           rows={4}
+                           value={scheduleData.description}
+                           onChange={(e) => setScheduleData({...scheduleData, description: e.target.value})}
+                           placeholder="Describe the primary objectives..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      <div className="space-y-4 text-left">
+                         <label className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 ml-1 block">Expected Outcomes (One per line)</label>
+                         <textarea 
+                           required 
+                           rows={4}
+                           value={scheduleData.outcomes}
+                           onChange={(e) => setScheduleData({...scheduleData, outcomes: e.target.value})}
+                           placeholder="Describe success metrics..."
+                           className="w-full bg-zinc-50 border border-zinc-100 p-6 text-sm outline-none focus:border-[#0055FF] transition-all resize-none leading-relaxed rounded-none" 
+                         />
+                      </div>
+
+                      {scheduleSuccess && (
+                         <div className="p-4 bg-emerald-50 border border-emerald-100 flex items-center gap-3 text-emerald-600 rounded-none">
+                            <CheckCircle2 size={16} />
+                            <span className="text-[10px] font-bold uppercase tracking-widest">Protocol Released Successfully</span>
+                         </div>
+                      )}
+
+                      <button 
+                        disabled={sendingSchedule}
+                        type="submit"
+                        className="w-full h-16 bg-black text-white text-[12px] font-bold uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-[#0055FF] transition-all disabled:opacity-50 rounded-none shadow-xl shadow-black/10"
+                      >
+                         {sendingSchedule ? "Syncing..." : <>Post Protocol <Calendar size={16} /></>}
+                      </button>
+                   </form>
+                </motion.div>
+             )}
+
             {/* Logbook Tab */}
               {activeTab === "history" && (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
