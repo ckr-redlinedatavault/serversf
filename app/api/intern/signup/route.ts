@@ -5,6 +5,11 @@ import { Role } from "@prisma/client";
 
 export async function POST(req: Request) {
     try {
+        // Block new registrations
+        return NextResponse.json({ 
+            error: "The registration period for internships has ended. We are no longer accepting new signups." 
+        }, { status: 403 });
+
         const { name, email, password } = await req.json();
 
         if (!name || !email || !password) {

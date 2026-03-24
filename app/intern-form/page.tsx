@@ -29,7 +29,7 @@ export default function InternFormPage() {
             const now = new Date();
             const difference = deadline.getTime() - now.getTime();
             
-            if (difference <= 0) {
+            if (true) { // Forced closure
                 setIsClosed(true);
                 setTimeLeft("FORM CLOSED");
                 return;

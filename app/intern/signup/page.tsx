@@ -124,66 +124,23 @@ export default function InternSignupPage() {
                             </div> */}
                         </div>
 
-                        <form onSubmit={handleSignup} className="space-y-4">
-                            <div className="space-y-1.5">
-                                <label className="text-[12px] font-semibold text-zinc-700">Full Name</label>
-                                <div className="relative">
-                                    <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300" strokeWidth={1.5} />
-                                    <input
-                                        required
-                                        type="text"
-                                        value={name}
-                                        onChange={(e) => setName(e.target.value)}
-                                        className="w-full border border-zinc-100 bg-zinc-50 h-11 pl-12 pr-4 text-sm outline-none transition-all focus:border-black"
-                                        placeholder="Full Name"
-                                    />
-                                </div>
+                        <div className="bg-red-50 border border-red-100 p-8 text-center space-y-6">
+                            <div className="h-16 w-16 bg-white rounded-full flex items-center justify-center mx-auto border border-red-100 shadow-sm">
+                                <ShieldAlert className="w-8 h-8 text-red-500" />
                             </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[12px] font-semibold text-zinc-700">Email Address</label>
-                                <div className="relative">
-                                    <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300" strokeWidth={1.5} />
-                                    <input
-                                        required
-                                        type="email"
-                                        value={email}
-                                        onChange={(e) => setEmail(e.target.value)}
-                                        className="w-full border border-zinc-100 bg-zinc-50 h-11 pl-12 pr-4 text-sm outline-none transition-all focus:border-black"
-                                        placeholder="your@email.com"
-                                    />
-                                </div>
+                            <div className="space-y-2">
+                                <h2 className="text-xl font-bold tracking-tight text-red-900 uppercase">Registration Closed</h2>
+                                <p className="text-red-700/70 text-[13px] leading-relaxed">
+                                    The application and registration period for the current internship intake has officially ended. 
+                                </p>
                             </div>
-
-                            <div className="space-y-1.5">
-                                <label className="text-[12px] font-semibold text-zinc-700">Create Password</label>
-                                <div className="relative">
-                                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-300" strokeWidth={1.5} />
-                                    <input
-                                        required
-                                        type="password"
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                        className="w-full border border-zinc-100 bg-zinc-50 h-11 pl-12 pr-4 text-sm outline-none transition-all focus:border-black"
-                                        placeholder="Min 8 characters"
-                                    />
-                                </div>
+                            <div className="pt-4 border-t border-red-100/50">
+                                <Link href="/" className="inline-flex h-10 items-center justify-center px-6 bg-black text-white text-[11px] font-bold uppercase tracking-widest hover:opacity-90 transition-all">
+                                    Back to Home
+                                </Link>
                             </div>
+                        </div>
 
-                            <button
-                                disabled={loading}
-                                type="submit"
-                                className="w-full bg-black text-white h-12 flex items-center justify-center gap-3 text-[14px] font-bold transition-opacity hover:opacity-90 disabled:opacity-50 mt-2"
-                            >
-                                {loading ? (
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                ) : (
-                                    <>
-                                        Get Started <ArrowRight size={16} />
-                                    </>
-                                )}
-                            </button>
-                        </form>
 
                         <div className="mt-8 text-center pt-6 border-t border-zinc-100">
                             <p className="text-[13px] text-zinc-500 font-medium tracking-tight">

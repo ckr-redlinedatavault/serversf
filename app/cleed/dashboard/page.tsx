@@ -600,9 +600,9 @@ export default function CleedDashboard() {
                       <div className="space-y-6">
                          <h2 className="text-xl font-bold border-l-4 border-[#0055FF] pl-4 uppercase tracking-tighter text-left">System Pulse</h2>
                          <div className="p-6 bg-black text-emerald-500 font-mono text-[10px] space-y-2 uppercase tracking-widest border border-zinc-900 text-left">
-                             <p className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; CLEED_PROTOCOL: ACTIVE</p>
-                             <p className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; DATABASE_SYNC: STABLE</p>
-                             <p className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; PRESENCE_TRACKING: LIVE</p>
+                             <div className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; CLEED_PROTOCOL: ACTIVE</div>
+                             <div className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; DATABASE_SYNC: STABLE</div>
+                             <div className="flex items-center gap-2"><div className="h-1 w-1 bg-emerald-500 rounded-full" /> &gt; PRESENCE_TRACKING: LIVE</div>
                          </div>
                       </div>
                    </div>
