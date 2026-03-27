@@ -28,6 +28,7 @@ import {
   Calendar,
   ExternalLink,
   Menu,
+  Download,
   X as CloseIcon
 } from "lucide-react";
 import Link from "next/link";
@@ -174,6 +175,39 @@ export default function CleedDashboard() {
     } catch (err) {
       console.error("KITS fetch failure");
     }
+  };
+
+  const downloadKitsCsv = () => {
+    if (kitsInterns.length === 0) return;
+    
+    const headers = ["ID", "Name", "Year", "Branch", "Interested Area", "Email", "Phone", "Portfolio", "Recent Project", "Status", "Created At"];
+    const rows = kitsInterns.map(i => [
+      i.id,
+      i.name,
+      i.year,
+      i.branch,
+      i.interestedArea,
+      i.email,
+      i.phone,
+      i.portfolioLink || "",
+      i.recentProjectLink || "",
+      i.status,
+      new Date(i.createdAt).toLocaleString()
+    ]);
+    
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+    
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `kits_interns_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   useEffect(() => {
@@ -1231,9 +1265,14 @@ export default function CleedDashboard() {
                             {kitsInterns.length} Applicants
                          </span>
                       </div>
-                      <button onClick={fetchKitsInterns} className="px-4 py-2 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all">
-                        Refresh Records
-                      </button>
+                      <div className="flex items-center gap-2">
+                         <button onClick={fetchKitsInterns} className="px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center gap-2">
+                           <History size={14} /> Refresh
+                         </button>
+                         <button onClick={downloadKitsCsv} className="px-4 h-10 bg-[#92E3A9] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#7ED195] transition-all flex items-center gap-2">
+                           <Download size={14} /> Download CSV
+                         </button>
+                      </div>
                    </div>
 
                     <div className="bg-white border border-zinc-100 overflow-x-auto shadow-2xl shadow-black/5 rounded-none">
