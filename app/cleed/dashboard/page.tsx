@@ -1341,13 +1341,12 @@ export default function CleedDashboard() {
                        {kitsInterns.map((intern) => (
                           <div key={intern.id} className="bg-white border border-zinc-100 p-6 space-y-6 shadow-sm">
                              <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-3">
-                                   <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold text-[12px]">
-                                      {intern.name[0]}
-                                   </div>
-                                   <div>
-                                      <p className="text-sm font-bold">{intern.name}</p>
-                                      <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{intern.branch}</p>
+                                <div className="flex flex-col gap-1">
+                                   <p className="text-sm font-bold leading-tight">{intern.name}</p>
+                                   <div className="flex">
+                                      <span className="px-2 py-0.5 bg-red-50 text-red-600 text-[10px] font-bold border border-red-100">
+                                         {intern.branch}
+                                      </span>
                                    </div>
                                 </div>
                                 <div className="flex gap-2">
