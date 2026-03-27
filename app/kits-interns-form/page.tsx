@@ -134,8 +134,8 @@ export default function KitsInternFormPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                            <FormField label="Portfolio Link" name="portfolioLink" value={formData.portfolioLink} onChange={handleChange} placeholder="https://..." required />
-                            <FormField label="Recent Project Link" name="recentProjectLink" value={formData.recentProjectLink} onChange={handleChange} placeholder="GitHub link" required />
+                            <FormField label="Portfolio Link" name="portfolioLink" value={formData.portfolioLink} onChange={handleChange} placeholder="https://..." />
+                            <FormField label="Recent Project Link" name="recentProjectLink" value={formData.recentProjectLink} onChange={handleChange} placeholder="GitHub link" />
                         </div>
 
                         <div className="pt-6">
