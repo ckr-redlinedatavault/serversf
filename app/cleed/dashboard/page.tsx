@@ -1258,25 +1258,26 @@ export default function CleedDashboard() {
             {/* KITS Registry Tab */}
             {activeTab === "kits" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                      <div className="flex items-center gap-4">
-                         <h2 className="text-2xl font-bold tracking-tight">KITS Intern Registry</h2>
-                         <span className="px-3 py-1 bg-[#92E3A9]/10 text-[#2D5A3A] text-[10px] font-bold uppercase tracking-widest border border-[#92E3A9]/20">
-                            {kitsInterns.length} Applicants
-                         </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                         <button onClick={fetchKitsInterns} className="px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center gap-2">
-                           <History size={14} /> Refresh
-                         </button>
-                         <button onClick={downloadKitsCsv} className="px-4 h-10 bg-[#92E3A9] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#7ED195] transition-all flex items-center gap-2">
-                           <Download size={14} /> Download CSV
-                         </button>
-                      </div>
-                   </div>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                       <div className="flex items-center gap-4">
+                          <h2 className="text-2xl font-bold tracking-tight">KITS Intern Registry</h2>
+                          <span className="px-3 py-1 bg-[#92E3A9]/10 text-[#2D5A3A] text-[10px] font-bold uppercase tracking-widest border border-[#92E3A9]/20">
+                             {kitsInterns.length} Applicants
+                          </span>
+                       </div>
+                       <div className="flex items-center gap-2 w-full sm:w-auto">
+                          <button onClick={fetchKitsInterns} className="flex-1 sm:flex-none px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-2">
+                             <History size={14} /> Refresh
+                          </button>
+                          <button onClick={downloadKitsCsv} className="flex-1 sm:flex-none px-4 h-10 bg-[#92E3A9] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#7ED195] transition-all flex items-center justify-center gap-2">
+                             <Download size={14} /> CSV
+                          </button>
+                       </div>
+                    </div>
 
-                    <div className="bg-white border border-zinc-100 overflow-x-auto shadow-2xl shadow-black/5 rounded-none">
-                       <div className="min-w-[1000px]">
+                    {/* Desktop Table View */}
+                    <div className="hidden md:block bg-white border border-zinc-100 shadow-2xl shadow-black/5 rounded-none overflow-hidden">
+                       <div className="overflow-x-auto">
                           <table className="w-full text-left font-sans">
                              <thead>
                                 <tr className="bg-zinc-50 border-b border-zinc-100 text-left">
@@ -1330,17 +1331,71 @@ export default function CleedDashboard() {
                                       </td>
                                    </tr>
                                 ))}
-                                {kitsInterns.length === 0 && (
-                                   <tr>
-                                      <td colSpan={5} className="px-8 py-24 text-center">
-                                         <p className="text-zinc-300 font-bold uppercase tracking-widest text-[11px]">No Applicant Signals Synchronized</p>
-                                      </td>
-                                   </tr>
-                                )}
                              </tbody>
                           </table>
                        </div>
                     </div>
+
+                    {/* Mobile Card View */}
+                    <div className="md:hidden space-y-4">
+                       {kitsInterns.map((intern) => (
+                          <div key={intern.id} className="bg-white border border-zinc-100 p-6 space-y-6 shadow-sm">
+                             <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                   <div className="h-10 w-10 bg-black text-white flex items-center justify-center font-bold text-[12px]">
+                                      {intern.name[0]}
+                                   </div>
+                                   <div>
+                                      <p className="text-sm font-bold">{intern.name}</p>
+                                      <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest">{intern.branch}</p>
+                                   </div>
+                                </div>
+                                <div className="flex gap-2">
+                                   {intern.portfolioLink && (
+                                      <a href={intern.portfolioLink} target="_blank" className="h-8 w-8 bg-zinc-50 flex items-center justify-center text-zinc-400 rounded-lg">
+                                         <Globe size={14} />
+                                      </a>
+                                   )}
+                                   {intern.recentProjectLink && (
+                                      <a href={intern.recentProjectLink} target="_blank" className="h-8 w-8 bg-zinc-50 flex items-center justify-center text-zinc-400 rounded-lg">
+                                         <ExternalLink size={14} />
+                                      </a>
+                                   )}
+                                </div>
+                             </div>
+
+                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-50">
+                                <div className="text-left">
+                                   <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Year</p>
+                                   <p className="text-xs font-medium text-zinc-700">{intern.year}</p>
+                                </div>
+                                <div className="text-left">
+                                   <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Interest</p>
+                                   <span className="text-[9px] font-bold text-[#0055FF] border border-blue-100 bg-blue-50 px-2 py-0.5 uppercase inline-block">
+                                      {intern.interestedArea}
+                                   </span>
+                                </div>
+                             </div>
+
+                             <div className="space-y-2 pt-4 border-t border-zinc-50 text-left">
+                                <div className="flex items-center gap-2 text-zinc-500">
+                                   <Mail size={12} />
+                                   <span className="text-xs font-medium">{intern.email}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-zinc-500">
+                                   <ShieldCheck size={12} />
+                                   <span className="text-xs font-medium">{intern.phone}</span>
+                                </div>
+                             </div>
+                          </div>
+                       ))}
+                    </div>
+
+                    {kitsInterns.length === 0 && (
+                       <div className="bg-white border border-zinc-100 py-24 text-center">
+                          <p className="text-zinc-300 font-bold uppercase tracking-widest text-[11px]">No Applicant Signals Synchronized</p>
+                       </div>
+                    )}
                 </motion.div>
             )}
 
