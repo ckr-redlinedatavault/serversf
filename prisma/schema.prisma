@@ -333,3 +333,17 @@ model ScheduleSubmission {
 
   @@unique([scheduleId, internId])
 }
+
+model KitsInternForm {
+  id                String   @id @default(cuid())
+  name              String
+  year              String
+  branch            String
+  interestedArea    String
+  email             String
+  phone             String
+  portfolioLink     String?
+  recentProjectLink String?
+  status            String   @default("pending")
+  createdAt         DateTime @default(now())
+}

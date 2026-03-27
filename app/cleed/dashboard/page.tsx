@@ -49,6 +49,20 @@ interface Intern {
   };
 }
 
+interface KitsIntern {
+  id: string;
+  name: string;
+  year: string;
+  branch: string;
+  interestedArea: string;
+  email: string;
+  phone: string;
+  portfolioLink?: string;
+  recentProjectLink?: string;
+  status: string;
+  createdAt: string;
+}
+
 interface Task {
   id: string;
   title: string;
@@ -73,6 +87,7 @@ interface MentorshipSession {
 export default function CleedDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [interns, setInterns] = useState<Intern[]>([]);
+  const [kitsInterns, setKitsInterns] = useState<KitsIntern[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [mentorshipSessions, setMentorshipSessions] = useState<MentorshipSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -149,6 +164,18 @@ export default function CleedDashboard() {
     }
   };
 
+  const fetchKitsInterns = async () => {
+    try {
+      const res = await fetch("/api/forms/kits-intern");
+      const data = await res.json();
+      if (data.success) {
+        setKitsInterns(data.data);
+      }
+    } catch (err) {
+      console.error("KITS fetch failure");
+    }
+  };
+
   useEffect(() => {
     fetchAttendance();
   }, [selectedDate]);
@@ -165,17 +192,21 @@ export default function CleedDashboard() {
 
   const fetchData = async () => {
     try {
-      const [internsRes, tasksRes, mentorshipRes] = await Promise.all([
+      const [internsRes, tasksRes, mentorshipRes, kitsRes] = await Promise.all([
         fetch("/api/cleed/interns"),
         fetch("/api/cleed/tasks"),
-        fetch("/api/mentorship")
+        fetch("/api/mentorship"),
+        fetch("/api/forms/kits-intern")
       ]);
       const internsData = await internsRes.json();
       const tasksData = await tasksRes.json();
       const mentorshipData = await mentorshipRes.json();
+      const kitsData = await kitsRes.json();
+      
       setInterns(internsData);
       setTasks(tasksData);
       setMentorshipSessions(mentorshipData);
+      if (kitsData.success) setKitsInterns(kitsData.data);
     } catch (err) {
       console.error("Failed to load dashboard data");
     } finally {
@@ -381,6 +412,7 @@ export default function CleedDashboard() {
                     { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                     { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
                     { id: "schedule", icon: Calendar, label: "Schedule Dispatch" },
+                    { id: "kits", icon: FileText, label: "KITS Registry" },
                     { id: "submissions", icon: ExternalLink, label: "Intern Submissions" },
                     { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                     { id: "history", icon: History, label: "Logbook" }
@@ -419,6 +451,7 @@ export default function CleedDashboard() {
                { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
                { id: "schedule", icon: Calendar, label: "Schedule Dispatch" },
+               { id: "kits", icon: FileText, label: "KITS Registry" },
                { id: "submissions", icon: ExternalLink, label: "Intern Submissions" },
                { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                { id: "history", icon: History, label: "Logbook" }
@@ -467,7 +500,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-xs md:text-sm whitespace-nowrap">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300 flex-shrink-0" />
                 <span className="text-zinc-900 font-bold text-xs md:text-sm truncate uppercase tracking-tighter">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "schedule" ? "Schedule" : activeTab === "submissions" ? "Submissions" : activeTab === "attendance" ? "Attendance" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "schedule" ? "Schedule" : activeTab === "kits" ? "KITS Registry" : activeTab === "submissions" ? "Submissions" : activeTab === "attendance" ? "Attendance" : "Logbook"}
                 </span>
              </div>
              
@@ -1188,8 +1221,92 @@ export default function CleedDashboard() {
                 </motion.div>
              )}
 
+            {/* KITS Registry Tab */}
+            {activeTab === "kits" && (
+                <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
+                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                      <div className="flex items-center gap-4">
+                         <h2 className="text-2xl font-bold tracking-tight">KITS Intern Registry</h2>
+                         <span className="px-3 py-1 bg-[#92E3A9]/10 text-[#2D5A3A] text-[10px] font-bold uppercase tracking-widest border border-[#92E3A9]/20">
+                            {kitsInterns.length} Applicants
+                         </span>
+                      </div>
+                      <button onClick={fetchKitsInterns} className="px-4 py-2 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all">
+                        Refresh Records
+                      </button>
+                   </div>
+
+                    <div className="bg-white border border-zinc-100 overflow-x-auto shadow-2xl shadow-black/5 rounded-none">
+                       <div className="min-w-[1000px]">
+                          <table className="w-full text-left font-sans">
+                             <thead>
+                                <tr className="bg-zinc-50 border-b border-zinc-100 text-left">
+                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Applicant Node</th>
+                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Academic Status</th>
+                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Interest Vector</th>
+                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Contact Path</th>
+                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Artifacts</th>
+                                </tr>
+                             </thead>
+                             <tbody className="divide-y divide-zinc-50 text-left">
+                                {kitsInterns.map((intern) => (
+                                   <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
+                                      <td className="px-6 py-4">
+                                         <div className="flex items-center gap-3">
+                                            <div className="h-9 w-9 bg-black text-white flex items-center justify-center font-bold text-[11px] border border-black">
+                                               {intern.name[0]}
+                                            </div>
+                                            <div>
+                                               <p className="text-[14px] font-bold tracking-tight leading-none">{intern.name}</p>
+                                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">KITS Entity</p>
+                                            </div>
+                                         </div>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <p className="text-[14px] font-bold text-zinc-800">{intern.branch}</p>
+                                         <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest mt-0.5">{intern.year}</p>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <span className="px-3 py-1 bg-blue-50 text-[#0055FF] text-[10px] font-bold uppercase border border-blue-100">
+                                            {intern.interestedArea}
+                                         </span>
+                                      </td>
+                                      <td className="px-6 py-4">
+                                         <p className="text-[13px] font-bold text-zinc-600">{intern.email}</p>
+                                         <p className="text-[11px] text-zinc-400 font-medium mt-0.5">{intern.phone}</p>
+                                      </td>
+                                      <td className="px-6 py-4 text-right">
+                                         <div className="flex justify-end gap-3 text-zinc-300">
+                                            {intern.portfolioLink && (
+                                              <a href={intern.portfolioLink} target="_blank" className="hover:text-[#0055FF] transition-colors" title="Portfolio Repository">
+                                                <Globe size={18} />
+                                              </a>
+                                            )}
+                                            {intern.recentProjectLink && (
+                                              <a href={intern.recentProjectLink} target="_blank" className="hover:text-black transition-colors" title="Artifact Link">
+                                                <ExternalLink size={18} />
+                                              </a>
+                                            )}
+                                         </div>
+                                      </td>
+                                   </tr>
+                                ))}
+                                {kitsInterns.length === 0 && (
+                                   <tr>
+                                      <td colSpan={5} className="px-8 py-24 text-center">
+                                         <p className="text-zinc-300 font-bold uppercase tracking-widest text-[11px]">No Applicant Signals Synchronized</p>
+                                      </td>
+                                   </tr>
+                                )}
+                             </tbody>
+                          </table>
+                       </div>
+                    </div>
+                </motion.div>
+            )}
+
             {/* Logbook Tab */}
-              {activeTab === "history" && (
+            {activeTab === "history" && (
                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                        <h2 className="text-2xl font-bold tracking-tight">System Logbook</h2>
