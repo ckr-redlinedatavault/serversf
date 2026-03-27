@@ -1,18 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
     Send, 
     CheckCircle2,
     Loader2,
     Info,
-    Timer
+    Timer,
+    Clock
 } from "lucide-react";
 import Link from "next/link";
 
 export default function KitsInternFormPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const [isClosed, setIsClosed] = useState(false);
+    
+    useEffect(() => {
+        const DEADLINE = new Date("2026-03-27T19:00:00+05:30").getTime();
+        const checkDeadline = () => {
+            if (Date.now() > DEADLINE) {
+                setIsClosed(true);
+            }
+        };
+        checkDeadline();
+        const interval = setInterval(checkDeadline, 1000 * 60); // Check every minute
+        return () => clearInterval(interval);
+    }, []);
     
     const [formData, setFormData] = useState({
         name: "",
@@ -51,6 +65,23 @@ export default function KitsInternFormPage() {
             setIsSubmitting(false);
         }
     };
+
+    if (isClosed) {
+        return (
+            <div className="min-h-screen bg-white text-zinc-900 flex items-center justify-center p-6">
+                <div className="max-w-md w-full border border-zinc-200 p-10 bg-white text-center space-y-6">
+                    <div className="h-20 w-20 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-100">
+                        <Clock className="w-10 h-10 text-red-500" />
+                    </div>
+                    <h1 className="text-2xl font-semibold text-zinc-900 tracking-tight">Registration Closed</h1>
+                    <p className="text-zinc-600 text-[15px] leading-relaxed">The application deadline was March 27, 2026 at 7:00 PM IST. We are no longer accepting new submissions.</p>
+                    <Link href="/" className="inline-block px-10 h-12 bg-black text-white text-[14px] font-medium hover:opacity-90 transition-all rounded-lg flex items-center justify-center">
+                        Back to Home
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     if (isSubmitted) {
         return (
