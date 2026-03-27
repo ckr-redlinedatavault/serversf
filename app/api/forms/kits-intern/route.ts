@@ -5,12 +5,12 @@ export async function POST(req: Request) {
     try {
         const body = await req.json();
         
-        // Deadline Check: 7:00 PM IST on March 27, 2026
-        const DEADLINE = new Date("2026-03-27T19:00:00+05:30").getTime();
+        // Deadline Check: 12:00 AM IST on March 28, 2026 (Extended)
+        const DEADLINE = new Date("2026-03-28T00:00:00+05:30").getTime();
         if (Date.now() > DEADLINE) {
             return NextResponse.json({ 
                 success: false, 
-                error: "Registration closed. The deadline was March 27, 2026 at 7:00 PM IST." 
+                error: "Registration closed. The extended deadline was March 28, 2026 at 12:00 AM IST." 
             }, { status: 403 });
         }
 

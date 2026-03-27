@@ -17,7 +17,7 @@ export default function KitsInternFormPage() {
     const [isClosed, setIsClosed] = useState(false);
     
     useEffect(() => {
-        const DEADLINE = new Date("2026-03-27T19:00:00+05:30").getTime();
+        const DEADLINE = new Date("2026-03-28T00:00:00+05:30").getTime();
         const checkDeadline = () => {
             if (Date.now() > DEADLINE) {
                 setIsClosed(true);
@@ -74,7 +74,7 @@ export default function KitsInternFormPage() {
                         <Clock className="w-10 h-10 text-red-500" />
                     </div>
                     <h1 className="text-2xl font-semibold text-zinc-900 tracking-tight">Registration Closed</h1>
-                    <p className="text-zinc-600 text-[15px] leading-relaxed">The application deadline was March 27, 2026 at 7:00 PM IST. We are no longer accepting new submissions.</p>
+                    <p className="text-zinc-600 text-[15px] leading-relaxed">The extended application deadline was March 28, 2026 at 12:00 AM IST. We are no longer accepting new submissions.</p>
                     <Link href="/" className="inline-block px-10 h-12 bg-black text-white text-[14px] font-medium hover:opacity-90 transition-all rounded-lg flex items-center justify-center">
                         Back to Home
                     </Link>
