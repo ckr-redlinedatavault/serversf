@@ -85,7 +85,6 @@ model User {
   tasks      Task[]   @relation("UserTasks")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  internForm InternForm? @relation("InternUserForm")
   attendances Attendance[] @relation("UserAttendances")
   scheduleSubmissions ScheduleSubmission[] @relation("InternSubmissions")
 }
@@ -243,20 +242,17 @@ model Project {
   hackathonName   String   @default("HACK FORGE Hackathon 2026")
 }
 
-model InternForm {
-  id            String   @id @default(cuid())
-  userId        String?  @unique
-  user          User?    @relation("InternUserForm", fields: [userId], references: [id])
-  name          String
-  year          String
-  branch        String
-  college       String
-  phoneNumber   String
-  githubLink    String
-  portfolioLink String?
-  status        String   @default("pending") // pending, active, completed, rejected
-  createdAt     DateTime @default(now())
+model JavaWorkshop {
+  id        String   @id @default(cuid())
+  name      String
+  branch    String
+  year      String
+  email     String
+  phone     String
+  status    String   @default("pending")
+  createdAt DateTime @default(now())
 }
+
 
 model ResetToken {
   id        String   @id @default(cuid())
@@ -334,16 +330,4 @@ model ScheduleSubmission {
   @@unique([scheduleId, internId])
 }
 
-model KitsInternForm {
-  id                String   @id @default(cuid())
-  name              String
-  year              String
-  branch            String
-  interestedArea    String
-  email             String
-  phone             String
-  portfolioLink     String?
-  recentProjectLink String?
-  status            String   @default("pending")
-  createdAt         DateTime @default(now())
-}
+

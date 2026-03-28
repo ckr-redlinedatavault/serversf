@@ -50,16 +50,13 @@ interface Intern {
   };
 }
 
-interface KitsIntern {
+interface WorkshopEntry {
   id: string;
   name: string;
-  year: string;
   branch: string;
-  interestedArea: string;
+  year: string;
   email: string;
   phone: string;
-  portfolioLink?: string;
-  recentProjectLink?: string;
   status: string;
   createdAt: string;
 }
@@ -88,7 +85,7 @@ interface MentorshipSession {
 export default function CleedDashboard() {
   const [activeTab, setActiveTab] = useState("overview");
   const [interns, setInterns] = useState<Intern[]>([]);
-  const [kitsInterns, setKitsInterns] = useState<KitsIntern[]>([]);
+  const [workshopEntries, setWorkshopEntries] = useState<WorkshopEntry[]>([]);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [mentorshipSessions, setMentorshipSessions] = useState<MentorshipSession[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -165,32 +162,29 @@ export default function CleedDashboard() {
     }
   };
 
-  const fetchKitsInterns = async () => {
+  const fetchWorkshopEntries = async () => {
     try {
-      const res = await fetch("/api/forms/kits-intern");
+      const res = await fetch("/api/forms/workshop");
       const data = await res.json();
       if (data.success) {
-        setKitsInterns(data.data);
+        setWorkshopEntries(data.data);
       }
     } catch (err) {
-      console.error("KITS fetch failure");
+      console.error("Workshop fetch failure");
     }
   };
 
-  const downloadKitsCsv = () => {
-    if (kitsInterns.length === 0) return;
+  const downloadWorkshopCsv = () => {
+    if (workshopEntries.length === 0) return;
     
-    const headers = ["ID", "Name", "Year", "Branch", "Interested Area", "Email", "Phone", "Portfolio", "Recent Project", "Status", "Created At"];
-    const rows = kitsInterns.map(i => [
+    const headers = ["ID", "Name", "Branch", "Year", "Email", "Phone", "Status", "Created At"];
+    const rows = workshopEntries.map(i => [
       i.id,
       i.name,
-      i.year,
       i.branch,
-      i.interestedArea,
+      i.year,
       i.email,
       i.phone,
-      i.portfolioLink || "",
-      i.recentProjectLink || "",
       i.status,
       new Date(i.createdAt).toLocaleString()
     ]);
@@ -204,7 +198,7 @@ export default function CleedDashboard() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.setAttribute("download", `kits_interns_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute("download", `workshop_entries_${new Date().toISOString().split('T')[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -226,21 +220,21 @@ export default function CleedDashboard() {
 
   const fetchData = async () => {
     try {
-      const [internsRes, tasksRes, mentorshipRes, kitsRes] = await Promise.all([
+      const [internsRes, tasksRes, mentorshipRes, workshopRes] = await Promise.all([
         fetch("/api/cleed/interns"),
         fetch("/api/cleed/tasks"),
         fetch("/api/mentorship"),
-        fetch("/api/forms/kits-intern")
+        fetch("/api/forms/workshop")
       ]);
       const internsData = await internsRes.json();
       const tasksData = await tasksRes.json();
       const mentorshipData = await mentorshipRes.json();
-      const kitsData = await kitsRes.json();
+      const workshopData = await workshopRes.json();
       
       setInterns(internsData);
       setTasks(tasksData);
       setMentorshipSessions(mentorshipData);
-      if (kitsData.success) setKitsInterns(kitsData.data);
+      if (workshopData.success) setWorkshopEntries(workshopData.data);
     } catch (err) {
       console.error("Failed to load dashboard data");
     } finally {
@@ -437,7 +431,7 @@ export default function CleedDashboard() {
                exit={{ opacity: 0, x: -100 }}
                className="md:hidden fixed inset-0 bg-black z-[55] pt-24 px-6 overflow-y-auto pb-20"
              >
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {[
                     { id: "overview", icon: LayoutDashboard, label: "Overview" },
                     { id: "interns", icon: Users, label: "Intern Registry" },
@@ -446,7 +440,7 @@ export default function CleedDashboard() {
                     { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                     { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
                     { id: "schedule", icon: Calendar, label: "Schedule Dispatch" },
-                    { id: "kits", icon: FileText, label: "KITS Registry" },
+                    { id: "workshop", icon: FileText, label: "Workshop Registry" },
                     { id: "submissions", icon: ExternalLink, label: "Intern Submissions" },
                     { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                     { id: "history", icon: History, label: "Logbook" }
@@ -485,7 +479,7 @@ export default function CleedDashboard() {
                { id: "authorizations", icon: ShieldCheck, label: "Authorizations" },
                { id: "mentorship", icon: Users, label: "Mentorship Sessions" },
                { id: "schedule", icon: Calendar, label: "Schedule Dispatch" },
-               { id: "kits", icon: FileText, label: "KITS Registry" },
+               { id: "workshop", icon: FileText, label: "Workshop Registry" },
                { id: "submissions", icon: ExternalLink, label: "Intern Submissions" },
                { id: "attendance", icon: CalendarCheck, label: "Attendance Protocol" },
                { id: "history", icon: History, label: "Logbook" }
@@ -534,7 +528,7 @@ export default function CleedDashboard() {
                 <span className="text-zinc-400 text-xs md:text-sm whitespace-nowrap">Dashboard</span>
                 <ChevronRight size={14} className="text-zinc-300 flex-shrink-0" />
                 <span className="text-zinc-900 font-bold text-xs md:text-sm truncate uppercase tracking-tighter">
-                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "schedule" ? "Schedule" : activeTab === "kits" ? "KITS Registry" : activeTab === "submissions" ? "Submissions" : activeTab === "attendance" ? "Attendance" : "Logbook"}
+                   {activeTab === "interns" ? "Interns" : activeTab === "assign" ? "Allocations" : activeTab === "certification" ? "Certifications" : activeTab === "authorizations" ? "Authorizations" : activeTab === "mentorship" ? "Mentorship" : activeTab === "schedule" ? "Schedule" : activeTab === "workshop" ? "Workshop Registry" : activeTab === "submissions" ? "Submissions" : activeTab === "attendance" ? "Attendance" : "Logbook"}
                 </span>
              </div>
              
@@ -653,7 +647,7 @@ export default function CleedDashboard() {
                    <div className="grid md:grid-cols-2 gap-12">
                       <div className="space-y-6">
                          <h2 className="text-xl font-bold border-l-4 border-[#0055FF] pl-4 uppercase tracking-tighter text-left">Quick Actions</h2>
-                         <div className="grid grid-cols-2 gap-4">
+                         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                             <button onClick={() => setActiveTab("interns")} className="h-24 border border-zinc-100 hover:border-[#0055FF] p-6 text-left transition-all bg-white group shadow-sm">
                                <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Manage</p>
                                <span className="text-sm font-bold group-hover:text-[#0055FF]">Intern Registry</span>
@@ -661,6 +655,10 @@ export default function CleedDashboard() {
                             <button onClick={() => setActiveTab("schedule")} className="h-24 border border-zinc-100 hover:border-[#0055FF] p-6 text-left transition-all bg-white group shadow-sm">
                                <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Dispatch</p>
                                <span className="text-sm font-bold group-hover:text-[#0055FF]">Schedule Hub</span>
+                             </button>
+                             <button onClick={() => setActiveTab("workshop")} className="h-24 border border-zinc-100 hover:border-orange-500 p-6 text-left transition-all bg-white group shadow-sm">
+                                <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Audit</p>
+                                <span className="text-sm font-bold group-hover:text-orange-500">Workshop Registry</span>
                             </button>
                          </div>
                       </div>
@@ -1255,21 +1253,21 @@ export default function CleedDashboard() {
                 </motion.div>
              )}
 
-            {/* KITS Registry Tab */}
-            {activeTab === "kits" && (
+            {/* Workshop Registry Tab */}
+            {activeTab === "workshop" && (
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                        <div className="flex items-center gap-4">
-                          <h2 className="text-2xl font-bold tracking-tight">KITS Intern Registry</h2>
-                          <span className="px-3 py-1 bg-[#92E3A9]/10 text-[#2D5A3A] text-[10px] font-bold uppercase tracking-widest border border-[#92E3A9]/20">
-                             {kitsInterns.length} Applicants
-                          </span>
+                          <h2 className="text-2xl font-bold tracking-tight">Workshop Registry</h2>
+                           <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-bold uppercase tracking-widest border border-orange-100">
+                              {workshopEntries.length} Applicants
+                           </span>
                        </div>
                        <div className="flex items-center gap-2 w-full sm:w-auto">
-                          <button onClick={fetchKitsInterns} className="flex-1 sm:flex-none px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-2">
+                          <button onClick={fetchWorkshopEntries} className="flex-1 sm:flex-none px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-2">
                              <History size={14} /> Refresh
                           </button>
-                          <button onClick={downloadKitsCsv} className="flex-1 sm:flex-none px-4 h-10 bg-[#92E3A9] text-black text-[10px] font-bold uppercase tracking-widest hover:bg-[#7ED195] transition-all flex items-center justify-center gap-2">
+                          <button onClick={downloadWorkshopCsv} className="flex-1 sm:flex-none px-4 h-10 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
                              <Download size={14} /> CSV
                           </button>
                        </div>
@@ -1278,101 +1276,68 @@ export default function CleedDashboard() {
                     {/* Desktop Table View */}
                     <div className="hidden md:block bg-white border border-zinc-100 shadow-2xl shadow-black/5 rounded-none overflow-hidden">
                        <div className="overflow-x-auto">
-                          <table className="w-full text-left font-sans">
-                             <thead>
-                                <tr className="bg-zinc-50 border-b border-zinc-100 text-left">
-                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Applicant Node</th>
-                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Academic Status</th>
-                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Interest Vector</th>
-                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Contact Path</th>
-                                   <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Artifacts</th>
-                                </tr>
-                             </thead>
-                             <tbody className="divide-y divide-zinc-50 text-left">
-                                {kitsInterns.map((intern) => (
-                                   <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
-                                      <td className="px-6 py-4">
-                                         <div className="flex items-center gap-3">
-                                            <div className="h-9 w-9 bg-black text-white flex items-center justify-center font-bold text-[11px] border border-black">
-                                               {intern.name[0]}
-                                            </div>
-                                            <div>
-                                               <p className="text-[14px] font-bold tracking-tight leading-none">{intern.name}</p>
-                                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">KITS Entity</p>
-                                            </div>
-                                         </div>
-                                      </td>
-                                      <td className="px-6 py-4">
-                                         <p className="text-[14px] font-bold text-zinc-800">{intern.branch}</p>
-                                         <p className="text-[11px] font-medium text-zinc-400 uppercase tracking-widest mt-0.5">{intern.year}</p>
-                                      </td>
-                                      <td className="px-6 py-4">
-                                         <span className="px-3 py-1 bg-blue-50 text-[#0055FF] text-[10px] font-bold uppercase border border-blue-100">
-                                            {intern.interestedArea}
-                                         </span>
-                                      </td>
-                                      <td className="px-6 py-4">
-                                         <p className="text-[13px] font-bold text-zinc-600">{intern.email}</p>
-                                         <p className="text-[11px] text-zinc-400 font-medium mt-0.5">{intern.phone}</p>
-                                      </td>
-                                      <td className="px-6 py-4 text-right">
-                                         <div className="flex justify-end gap-3 text-zinc-300">
-                                            {intern.portfolioLink && (
-                                              <a href={intern.portfolioLink} target="_blank" className="hover:text-[#0055FF] transition-colors" title="Portfolio Repository">
-                                                <Globe size={18} />
-                                              </a>
-                                            )}
-                                            {intern.recentProjectLink && (
-                                              <a href={intern.recentProjectLink} target="_blank" className="hover:text-black transition-colors" title="Artifact Link">
-                                                <ExternalLink size={18} />
-                                              </a>
-                                            )}
-                                         </div>
-                                      </td>
-                                   </tr>
-                                ))}
-                             </tbody>
-                          </table>
+                           <table className="w-full text-left font-sans">
+                              <thead>
+                                 <tr className="bg-zinc-50 border-b border-zinc-100 text-left">
+                                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Applicant Node</th>
+                                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Branch</th>
+                                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Year</th>
+                                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400">Email</th>
+                                    <th className="px-6 py-5 text-[10px] font-bold uppercase tracking-widest text-zinc-400 text-right">Phone</th>
+                                 </tr>
+                              </thead>
+                              <tbody className="divide-y divide-zinc-50 text-left">
+                                 {workshopEntries.map((intern) => (
+                                    <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
+                                       <td className="px-6 py-4">
+                                          <div className="flex items-center gap-3">
+                                             <div className="h-9 w-9 bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-[11px] border border-orange-200">
+                                                {intern.name[0]}
+                                             </div>
+                                             <div>
+                                                <p className="text-[14px] font-bold tracking-tight leading-none">{intern.name}</p>
+                                                <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1">Workshop Entity</p>
+                                             </div>
+                                          </div>
+                                       </td>
+                                       <td className="px-6 py-4">
+                                          <p className="text-[14px] font-bold text-zinc-800">{intern.branch}</p>
+                                       </td>
+                                       <td className="px-6 py-4">
+                                          <p className="text-[13px] font-bold text-zinc-500 uppercase tracking-widest">{intern.year}</p>
+                                       </td>
+                                       <td className="px-6 py-4">
+                                          <p className="text-[13px] font-medium text-zinc-600">{intern.email}</p>
+                                       </td>
+                                       <td className="px-6 py-4 text-right">
+                                          <p className="text-[13px] font-bold text-zinc-900">{intern.phone}</p>
+                                       </td>
+                                    </tr>
+                                 ))}
+                              </tbody>
+                           </table>
                        </div>
                     </div>
 
                     {/* Mobile Card View */}
                     <div className="md:hidden space-y-4">
-                       {kitsInterns.map((intern) => (
+                       {workshopEntries.map((intern) => (
                           <div key={intern.id} className="bg-white border border-zinc-100 p-6 space-y-6 shadow-sm">
                              <div className="flex items-center justify-between">
                                 <div className="flex flex-col gap-1">
                                    <p className="text-sm font-bold leading-tight">{intern.name}</p>
                                    <div className="flex">
-                                      <span className="px-2 py-0.5 bg-red-50 text-red-600 text-[10px] font-bold border border-red-100">
+                                      <span className="px-2 py-0.5 bg-orange-50 text-orange-600 text-[10px] font-bold border border-orange-100">
                                          {intern.branch}
                                       </span>
                                    </div>
                                 </div>
-                                <div className="flex gap-2">
-                                   {intern.portfolioLink && (
-                                      <a href={intern.portfolioLink} target="_blank" className="h-8 w-8 bg-zinc-50 flex items-center justify-center text-zinc-400 rounded-lg">
-                                         <Globe size={14} />
-                                      </a>
-                                   )}
-                                   {intern.recentProjectLink && (
-                                      <a href={intern.recentProjectLink} target="_blank" className="h-8 w-8 bg-zinc-50 flex items-center justify-center text-zinc-400 rounded-lg">
-                                         <ExternalLink size={14} />
-                                      </a>
-                                   )}
-                                </div>
                              </div>
 
-                             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-zinc-50">
+                             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-zinc-50">
                                 <div className="text-left">
                                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Year</p>
                                    <p className="text-xs font-medium text-zinc-700">{intern.year}</p>
-                                </div>
-                                <div className="text-left">
-                                   <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mb-1">Interest</p>
-                                   <span className="text-[9px] font-bold text-[#0055FF] border border-blue-100 bg-blue-50 px-2 py-0.5 uppercase inline-block">
-                                      {intern.interestedArea}
-                                   </span>
                                 </div>
                              </div>
 
@@ -1390,9 +1355,9 @@ export default function CleedDashboard() {
                        ))}
                     </div>
 
-                    {kitsInterns.length === 0 && (
+                    {workshopEntries.length === 0 && (
                        <div className="bg-white border border-zinc-100 py-24 text-center">
-                          <p className="text-zinc-300 font-bold uppercase tracking-widest text-[11px]">No Applicant Signals Synchronized</p>
+                          <p className="text-zinc-300 font-bold uppercase tracking-widest text-[11px]">No Workshop Signals Synchronized</p>
                        </div>
                     )}
                 </motion.div>
