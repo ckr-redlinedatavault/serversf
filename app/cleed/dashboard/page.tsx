@@ -43,11 +43,9 @@ interface Intern {
   handRaised: boolean;
   letterUrl?: string;
   lastActive?: string;
-  internForm?: {
-    college: string;
-    branch: string;
-    githubLink: string;
-  };
+  branch?: string;
+  college?: string;
+  githubLink?: string;
 }
 
 interface WorkshopEntry {
@@ -719,12 +717,12 @@ export default function CleedDashboard() {
                                                   <p className="text-[14px] font-bold leading-none">{intern.name}</p>
                                                   {intern.handRaised && <Hand size={12} className="text-amber-500" />}
                                                </div>
-                                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1 text-left">{intern.internForm?.branch || "Trainee"}</p>
+                                               <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-widest mt-1 text-left">{intern.branch || "Trainee"}</p>
                                             </div>
                                          </div>
                                       </td>
                                       <td className="px-6 py-4 text-[13px] text-zinc-600 font-medium">
-                                         {intern.internForm?.college || "Global Forge"}
+                                         {intern.college || "Global Forge"}
                                       </td>
                                       <td className="px-6 py-4 text-[13px] text-zinc-500">
                                          {intern.email}
@@ -746,7 +744,7 @@ export default function CleedDashboard() {
                                             <button onClick={() => { setSelectedIntern(intern); setActiveTab("certification"); }} className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-emerald-500 hover:text-white flex items-center justify-center transition-all border border-zinc-100">
                                                <FileBadge size={14} />
                                             </button>
-                                            <Link href={intern.internForm?.githubLink || "#"} target="_blank" className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-black hover:text-white flex items-center justify-center transition-all border border-zinc-100">
+                                            <Link href={intern.githubLink || "#"} target="_blank" className="h-8 w-8 bg-zinc-50 text-zinc-400 hover:bg-black hover:text-white flex items-center justify-center transition-all border border-zinc-100">
                                                <Github size={14} />
                                             </Link>
                                          </div>

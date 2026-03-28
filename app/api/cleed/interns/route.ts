@@ -7,9 +7,7 @@ export async function GET() {
       where: {
         role: "INTERN",
       },
-      include: {
-        internForm: true,
-      },
+
       orderBy: {
         createdAt: "desc",
       },
