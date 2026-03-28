@@ -654,9 +654,9 @@ export default function CleedDashboard() {
                                <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Dispatch</p>
                                <span className="text-sm font-bold group-hover:text-[#0055FF]">Schedule Hub</span>
                              </button>
-                             <button onClick={() => setActiveTab("workshop")} className="h-24 border border-zinc-100 hover:border-orange-500 p-6 text-left transition-all bg-white group shadow-sm">
+                             <button onClick={() => setActiveTab("workshop")} className="h-24 border border-zinc-100 hover:border-red-500 p-6 text-left transition-all bg-white group shadow-sm">
                                 <p className="text-[10px] font-bold text-zinc-400 uppercase mb-1">Audit</p>
-                                <span className="text-sm font-bold group-hover:text-orange-500">Workshop Registry</span>
+                                <span className="text-sm font-bold group-hover:text-red-500">Workshop Registry</span>
                             </button>
                          </div>
                       </div>
@@ -1257,7 +1257,7 @@ export default function CleedDashboard() {
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                        <div className="flex items-center gap-4">
                           <h2 className="text-2xl font-bold tracking-tight">Workshop Registry</h2>
-                           <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-bold uppercase tracking-widest border border-orange-100">
+                           <span className="px-3 py-1 bg-red-50 text-red-600 text-[10px] font-bold uppercase tracking-widest border border-red-100">
                               {workshopEntries.length} Applicants
                            </span>
                        </div>
@@ -1265,7 +1265,7 @@ export default function CleedDashboard() {
                           <button onClick={fetchWorkshopEntries} className="flex-1 sm:flex-none px-4 h-10 bg-white border border-zinc-100 text-[10px] font-bold uppercase tracking-widest hover:bg-zinc-50 transition-all flex items-center justify-center gap-2">
                              <History size={14} /> Refresh
                           </button>
-                          <button onClick={downloadWorkshopCsv} className="flex-1 sm:flex-none px-4 h-10 bg-orange-500 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-orange-600 transition-all flex items-center justify-center gap-2">
+                          <button onClick={downloadWorkshopCsv} className="flex-1 sm:flex-none px-4 h-10 bg-red-500 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-red-600 transition-all flex items-center justify-center gap-2">
                              <Download size={14} /> CSV
                           </button>
                        </div>
@@ -1289,7 +1289,7 @@ export default function CleedDashboard() {
                                     <tr key={intern.id} className="hover:bg-zinc-50/50 transition-colors">
                                        <td className="px-6 py-4">
                                           <div className="flex items-center gap-3">
-                                             <div className="h-9 w-9 bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-[11px] border border-orange-200">
+                                             <div className="h-9 w-9 bg-red-100 text-red-600 flex items-center justify-center font-bold text-[11px] border border-red-200">
                                                 {intern.name[0]}
                                              </div>
                                              <div>
@@ -1325,7 +1325,7 @@ export default function CleedDashboard() {
                                 <div className="flex flex-col gap-1">
                                    <p className="text-sm font-bold leading-tight">{intern.name}</p>
                                    <div className="flex">
-                                      <span className="px-2 py-0.5 bg-orange-50 text-orange-600 text-[10px] font-bold border border-orange-100">
+                                      <span className="px-2 py-0.5 bg-red-50 text-red-600 text-[10px] font-bold border border-red-100">
                                          {intern.branch}
                                       </span>
                                    </div>
